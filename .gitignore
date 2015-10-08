@@ -1,0 +1,26 @@
+/_tmp
+#
+# IDEA
+#
+.idea/
+*.iml
+#
+# Eclipse
+#
+.settings
+.project
+.classpath
+#
+# Maven
+#
+target/
+dependency-reduced-pom.xml
+#
+# OSX
+#
+.DS_Store
+#
+# AS
+#
+_jboss/
+_tmp/
