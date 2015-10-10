@@ -5,11 +5,11 @@ import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.reactor.CamundaReactor;
 import reactor.bus.EventBus;
 
-public class ReactorTaskListener implements TaskListener {
+public class PublisherTaskListener implements TaskListener {
 
   private final EventBus eventBus;
 
-  public ReactorTaskListener(final EventBus eventBus) {
+  public PublisherTaskListener(final EventBus eventBus) {
     this.eventBus = eventBus;
   }
 

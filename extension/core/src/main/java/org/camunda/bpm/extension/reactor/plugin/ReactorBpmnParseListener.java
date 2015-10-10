@@ -1,14 +1,13 @@
-package org.camunda.bpm.extension.reactor.listener;
+package org.camunda.bpm.extension.reactor.plugin;
 
-import org.camunda.bpm.engine.delegate.DelegateTask;
-import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.camunda.bpm.engine.impl.bpmn.parser.AbstractBpmnParseListener;
 import org.camunda.bpm.engine.impl.pvm.process.ActivityImpl;
 import org.camunda.bpm.engine.impl.pvm.process.ScopeImpl;
 import org.camunda.bpm.engine.impl.task.TaskDefinition;
 import org.camunda.bpm.engine.impl.util.xml.Element;
-import org.slf4j.LoggerFactory;
+import org.camunda.bpm.extension.reactor.listener.PublisherExecutionListener;
+import org.camunda.bpm.extension.reactor.listener.PublisherTaskListener;
 import reactor.bus.EventBus;
 
 import java.util.Arrays;
@@ -27,14 +26,14 @@ public class ReactorBpmnParseListener extends AbstractBpmnParseListener {
   static final List<String> TASK_EVENTS = Arrays.asList(EVENTNAME_ASSIGNMENT, EVENTNAME_COMPLETE, EVENTNAME_CREATE, EVENTNAME_DELETE);
   static final List<String> EXECUTION_EVENTS = Arrays.asList(EVENTNAME_START, EVENTNAME_TAKE, EVENTNAME_END);
 
-  private final ReactorTaskListener taskListener;
-  private final ReactorExecutionListener executionListener;
+  private final PublisherTaskListener taskListener;
+  private final PublisherExecutionListener executionListener;
 
   public ReactorBpmnParseListener(final EventBus eventBus) {
-    this(new ReactorTaskListener(eventBus), new ReactorExecutionListener(eventBus));
+    this(new PublisherTaskListener(eventBus), new PublisherExecutionListener(eventBus));
   }
 
-  public ReactorBpmnParseListener(final ReactorTaskListener taskListener, final ReactorExecutionListener executionListener) {
+  public ReactorBpmnParseListener(final PublisherTaskListener taskListener, final PublisherExecutionListener executionListener) {
     this.taskListener = taskListener;
     this.executionListener = executionListener;
   }
@@ -45,7 +44,7 @@ public class ReactorBpmnParseListener extends AbstractBpmnParseListener {
     addReactorTaskListener(taskDefinition(activity), taskListener);
   }
 
-  static void addReactorTaskListener(TaskDefinition taskDefinition, ReactorTaskListener listener) {
+  static void addReactorTaskListener(TaskDefinition taskDefinition, PublisherTaskListener listener) {
     for (String event : TASK_EVENTS) {
       taskDefinition.addTaskListener(event, listener);
     }

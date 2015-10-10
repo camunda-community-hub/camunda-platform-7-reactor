@@ -5,7 +5,7 @@ import org.camunda.bpm.engine.impl.cfg.ProcessEnginePlugin;
 import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.camunda.bpm.engine.impl.jobexecutor.JobHandler;
 import org.camunda.bpm.engine.test.mock.MockExpressionManager;
-import org.camunda.bpm.extension.reactor.ReactorProcessEnginePlugin;
+import org.camunda.bpm.extension.reactor.plugin.ReactorProcessEnginePlugin;
 import reactor.Environment;
 import reactor.bus.EventBus;
 

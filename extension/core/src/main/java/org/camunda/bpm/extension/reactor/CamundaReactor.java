@@ -4,26 +4,48 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.extension.reactor.event.DelegateExecutionEvent;
 import org.camunda.bpm.extension.reactor.event.DelegateTaskEvent;
+import org.camunda.bpm.extension.reactor.listener.SubscriberExecutionListener;
+import org.camunda.bpm.extension.reactor.listener.SubscriberTaskListener;
+import reactor.bus.EventBus;
 import reactor.bus.selector.Selector;
 import reactor.bus.selector.Selectors;
 
-import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
 
-public class CamundaReactor {
+public final class CamundaReactor {
 
-  private static final String KEY_PROCESS = "process";
-  private static final String KEY_ELEMENT = "element";
-  private static final String KEY_EVENT = "event";
+  public static final String CAMUNDA_TOPIC = "/camunda/{process}/{element}/{event}";
 
-  private static final String HEADER_PROCESS = "{" + KEY_PROCESS + "}";
-  private static final String HEADER_ELEMENT = "{" + KEY_ELEMENT + "}";
-  private static final String HEADER_EVENT = "{" + KEY_EVENT + "}";
+  public static class SubscribeTo {
+    private final EventBus eventBus;
 
-  public static final String CAMUNDE_TOPIC_FORMAT = "/camunda/{0}/{1}/{2}";
-  public static final String CAMUNDE_TOPIC = MessageFormat.format(CAMUNDE_TOPIC_FORMAT, HEADER_PROCESS, HEADER_ELEMENT, HEADER_EVENT);
+    SubscribeTo(EventBus eventBus) {
+      this.eventBus = eventBus;
+    }
+
+    public void on(Selector topic, SubscriberTaskListener listener) {
+      eventBus.on(topic, listener);
+    }
+
+    public void on(Selector topic, SubscriberExecutionListener listener) {
+      eventBus.on(topic, listener);
+    }
+  }
 
   public static String topic(final String process, final String element, final String event) {
-    return MessageFormat.format(CAMUNDE_TOPIC_FORMAT, nullsafeDefault(process, HEADER_PROCESS), nullsafeDefault(element, HEADER_ELEMENT), nullsafeDefault(event, HEADER_EVENT));
+    String topic = CAMUNDA_TOPIC;
+    for (Map.Entry<String, String> entry : new HashMap<String, String>() {{
+      put("{process}", process);
+      put("{element}", element);
+      put("{event}", event);
+    }}.entrySet()) {
+      if (entry.getValue() != null && !"".equals(entry.getKey())) {
+        topic = topic.replace(entry.getKey(), entry.getValue());
+      }
+    }
+
+    return topic;
   }
 
   public static String topic(final DelegateTask delegateTask) {
@@ -43,19 +65,28 @@ public class CamundaReactor {
   }
 
   public static Selector uri(String process, String element, String event) {
-    return Selectors.uri(topic(process,element,event));
+    return uri(topic(process, element, event));
   }
 
-  private static String nullsafeDefault(String key, String defaultValue) {
-    return key != null && !"".equals(key) ? key : defaultValue;
+  public static Selector uri(String topic) {
+    return Selectors.uri(topic);
+  }
+
+  public static SubscribeTo subscribeTo(final EventBus eventBus) {
+    return new SubscribeTo(eventBus);
   }
 
   /**
    * Ugly hack, delegate task shoul contain processdefinitionKey
+   *
    * @param processDefinitionId
    * @return
    */
   static String processDefintionKey(String processDefinitionId) {
     return processDefinitionId.replaceAll("(\\w+):\\d+:\\d+", "$1");
+  }
+
+  private CamundaReactor() {
+    // util class
   }
 }

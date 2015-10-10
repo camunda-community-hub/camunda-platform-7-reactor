@@ -1,9 +1,9 @@
-package org.camunda.bpm.extension.reactor.listener;
+package org.camunda.bpm.extension.reactor.plugin;
 
 import org.camunda.bpm.engine.impl.form.handler.TaskFormHandler;
 import org.camunda.bpm.engine.impl.task.TaskDefinition;
-import org.camunda.bpm.extension.reactor.listener.ReactorBpmnParseListener;
-import org.camunda.bpm.extension.reactor.listener.ReactorTaskListener;
+import org.camunda.bpm.extension.reactor.listener.PublisherTaskListener;
+import org.camunda.bpm.extension.reactor.plugin.ReactorBpmnParseListener;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,7 +17,7 @@ public class ReactorBpmnParseListenerTest {
 
   @Test
   public void add_taskListeners_to_taskDefinition() {
-    ReactorTaskListener taskListener = mock(ReactorTaskListener.class);
+    PublisherTaskListener taskListener = mock(PublisherTaskListener.class);
     TaskDefinition taskDefinition = new TaskDefinition(mock(TaskFormHandler.class));
 
     ReactorBpmnParseListener.addReactorTaskListener(taskDefinition, taskListener);

@@ -1,9 +1,8 @@
-package org.camunda.bpm.extension.reactor;
+package org.camunda.bpm.extension.reactor.plugin;
 
 import org.camunda.bpm.engine.impl.bpmn.parser.BpmnParseListener;
 import org.camunda.bpm.engine.impl.cfg.AbstractProcessEnginePlugin;
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.camunda.bpm.extension.reactor.listener.ReactorBpmnParseListener;
 import reactor.bus.EventBus;
 
 import java.util.ArrayList;

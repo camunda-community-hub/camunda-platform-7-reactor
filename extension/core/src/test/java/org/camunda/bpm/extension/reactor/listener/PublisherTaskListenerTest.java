@@ -1,7 +1,6 @@
 package org.camunda.bpm.extension.reactor.listener;
 
 import org.camunda.bpm.engine.delegate.DelegateTask;
-import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.reactor.CamundaReactor;
 import org.camunda.bpm.extension.reactor.event.DelegateTaskEvent;
 import org.junit.Test;
@@ -17,7 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
-public class ReactorTaskListenerTest {
+public class PublisherTaskListenerTest {
 
   private static final String ID = UUID.randomUUID().toString();
 
@@ -25,7 +24,7 @@ public class ReactorTaskListenerTest {
 
   private final EventBus eventBus = mock(EventBus.class);
 
-  private final ReactorTaskListener listener = new ReactorTaskListener(eventBus);
+  private final PublisherTaskListener listener = new PublisherTaskListener(eventBus);
 
   private ArgumentCaptor<String> topicCaptor  = ArgumentCaptor.forClass(String.class);
   private ArgumentCaptor<DelegateTaskEvent> eventCaptor  = ArgumentCaptor.forClass(DelegateTaskEvent.class);

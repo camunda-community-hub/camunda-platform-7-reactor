@@ -8,13 +8,8 @@ public class CamundaReactorTest {
 
 
   @Test
-  public void camunda_topic_format() {
-    assertThat(CamundaReactor.CAMUNDE_TOPIC_FORMAT).isEqualTo("/camunda/{0}/{1}/{2}");
-  }
-
-  @Test
   public void camunda_topic() {
-    assertThat(CamundaReactor.CAMUNDE_TOPIC).isEqualTo("/camunda/{process}/{element}/{event}");
+    assertThat(CamundaReactor.CAMUNDA_TOPIC).isEqualTo("/camunda/{process}/{element}/{event}");
   }
 
   @Test

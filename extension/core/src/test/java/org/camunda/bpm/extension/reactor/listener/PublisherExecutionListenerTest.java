@@ -1,11 +1,9 @@
 package org.camunda.bpm.extension.reactor.listener;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.extension.reactor.CamundaReactor;
 import org.camunda.bpm.extension.reactor.event.DelegateExecutionEvent;
-import org.camunda.bpm.extension.reactor.event.DelegateTaskEvent;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import reactor.bus.EventBus;
@@ -18,7 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
-public class ReactorExecutionListenerTest {
+public class PublisherExecutionListenerTest {
 
   private static final String ID = UUID.randomUUID().toString();
 
@@ -26,7 +24,7 @@ public class ReactorExecutionListenerTest {
 
   private final EventBus eventBus = mock(EventBus.class);
 
-  private final ReactorExecutionListener listener = new ReactorExecutionListener(eventBus);
+  private final PublisherExecutionListener listener = new PublisherExecutionListener(eventBus);
 
   private ArgumentCaptor<String> topicCaptor  = ArgumentCaptor.forClass(String.class);
   private ArgumentCaptor<DelegateExecutionEvent> eventCaptor  = ArgumentCaptor.forClass(DelegateExecutionEvent.class);
