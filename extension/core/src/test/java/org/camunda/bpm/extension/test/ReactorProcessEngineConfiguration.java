@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class ReactorProcessEngineConfiguration extends StandaloneInMemProcessEngineConfiguration {
 
 
-  public ReactorProcessEngineConfiguration(EventBus eventBus) {
+  public ReactorProcessEngineConfiguration() {
     this.history = HISTORY_FULL;
     this.databaseSchemaUpdate = DB_SCHEMA_UPDATE_TRUE;
     this.jobExecutorActivate = false;
@@ -24,7 +24,7 @@ public class ReactorProcessEngineConfiguration extends StandaloneInMemProcessEng
     this.setCustomJobHandlers(new ArrayList<JobHandler>());
     this.setProcessEnginePlugins(new ArrayList<ProcessEnginePlugin>());
 
-    this.getProcessEnginePlugins().add(new ReactorProcessEnginePlugin(eventBus));
+    this.getProcessEnginePlugins().add(new ReactorProcessEnginePlugin());
   }
 
   public void addCustomJobHandler(final JobHandler jobHandler) {

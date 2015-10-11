@@ -44,6 +44,8 @@ public class ReactorBpmnParseListener extends AbstractBpmnParseListener {
     addReactorTaskListener(taskDefinition(activity), taskListener);
   }
 
+
+
   static void addReactorTaskListener(TaskDefinition taskDefinition, PublisherTaskListener listener) {
     for (String event : TASK_EVENTS) {
       taskDefinition.addTaskListener(event, listener);

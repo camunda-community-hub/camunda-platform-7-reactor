@@ -1,16 +1,21 @@
 package org.camunda.bpm.extension.reactor;
 
+import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
+import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.camunda.bpm.engine.impl.cfg.ProcessEnginePlugin;
 import org.camunda.bpm.extension.reactor.event.DelegateExecutionEvent;
 import org.camunda.bpm.extension.reactor.event.DelegateTaskEvent;
 import org.camunda.bpm.extension.reactor.listener.SubscriberExecutionListener;
 import org.camunda.bpm.extension.reactor.listener.SubscriberTaskListener;
+import org.camunda.bpm.extension.reactor.plugin.ReactorProcessEnginePlugin;
 import reactor.bus.EventBus;
 import reactor.bus.selector.Selector;
 import reactor.bus.selector.Selectors;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class CamundaReactor {
@@ -56,6 +61,7 @@ public final class CamundaReactor {
     return topic(processDefintionKey(delegateExecution.getProcessDefinitionId()), delegateExecution.getCurrentActivityName(), delegateExecution.getEventName());
   }
 
+
   public static DelegateTaskEvent wrap(final DelegateTask delegateTask) {
     return new DelegateTaskEvent(delegateTask);
   }
@@ -74,6 +80,20 @@ public final class CamundaReactor {
 
   public static SubscribeTo subscribeTo(final EventBus eventBus) {
     return new SubscribeTo(eventBus);
+  }
+
+  public static EventBus getEventBus(ProcessEngine processEngine) {
+    ProcessEngineConfigurationImpl configuration = (ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration();
+    final List<ProcessEnginePlugin> plugins = configuration.getProcessEnginePlugins();
+
+    if (plugins != null) {
+      for (ProcessEnginePlugin plugin : plugins) {
+        if (plugin instanceof ReactorProcessEnginePlugin) {
+          return ((ReactorProcessEnginePlugin)plugin).getEventBus();
+        }
+      }
+    }
+    throw new IllegalStateException("No eventBus found. Make sure the Reactor plugin is configured correctly.");
   }
 
   /**

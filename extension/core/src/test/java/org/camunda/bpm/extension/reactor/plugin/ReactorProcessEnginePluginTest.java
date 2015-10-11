@@ -12,13 +12,10 @@ import org.camunda.bpm.extension.test.ReactorProcessEngineConfiguration;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.bridge.SLF4JBridgeHandler;
-import reactor.Environment;
 import reactor.bus.EventBus;
 import reactor.bus.selector.Selectors;
-import reactor.core.dispatch.SynchronousDispatcher;
 import reactor.fn.Consumer;
 
 import java.util.ArrayList;
@@ -29,28 +26,26 @@ import java.util.Map;
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.assertThat;
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.complete;
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.task;
-import static org.mockito.Mockito.spy;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ReactorProcessEnginePluginTest {
   static {
-    Environment.initializeIfEmpty().assignErrorJournal();
     SLF4JBridgeHandler.removeHandlersForRootLogger();
     SLF4JBridgeHandler.install();
   }
 
   private final Logger logger = getLogger(this.getClass());
 
-  private EventBus eventBus = spy(EventBus.create(new SynchronousDispatcher()));
-
-  private final ReactorProcessEngineConfiguration configuration = new ReactorProcessEngineConfiguration(eventBus);
+  private final ReactorProcessEngineConfiguration configuration = new ReactorProcessEngineConfiguration();
 
   @Rule
   public final ProcessEngineRule processEngineRule = new ProcessEngineRule(configuration.buildProcessEngine());
 
+  private EventBus eventBus;
+
   @Before
   public void init() {
-    MockitoAnnotations.initMocks(this);
+    eventBus = CamundaReactor.getEventBus(processEngineRule.getProcessEngine());
   }
 
   final Map<String, List<DelegateTaskEvent>> events = new LinkedHashMap<>();
