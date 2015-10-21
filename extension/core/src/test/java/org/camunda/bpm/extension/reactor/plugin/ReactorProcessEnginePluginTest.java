@@ -1,11 +1,13 @@
 package org.camunda.bpm.extension.reactor.plugin;
 
+import org.camunda.bpm.engine.delegate.BpmnModelExecutionContext;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.extension.reactor.CamundaReactor;
+import org.camunda.bpm.extension.reactor.event.DelegateEvent;
 import org.camunda.bpm.extension.reactor.event.DelegateTaskEvent;
 import org.camunda.bpm.extension.reactor.listener.SubscriberTaskListener;
 import org.camunda.bpm.extension.test.ReactorProcessEngineConfiguration;
@@ -14,12 +16,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+import reactor.bus.Event;
 import reactor.bus.EventBus;
 import reactor.bus.selector.Selectors;
 import reactor.fn.Consumer;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +52,7 @@ public class ReactorProcessEnginePluginTest {
     eventBus = CamundaReactor.getEventBus(processEngineRule.getProcessEngine());
   }
 
-  final Map<String, List<DelegateTaskEvent>> events = new LinkedHashMap<>();
+  final Map<String, LinkedHashSet<DelegateEvent>> events = new LinkedHashMap<>();
 
   @Test
   @Deployment(resources = {"ProcessA.bpmn"})
@@ -57,7 +61,10 @@ public class ReactorProcessEnginePluginTest {
     register(CamundaReactor.topic("process_a", null, null));
     register(CamundaReactor.topic("process_a", "task_a", null));
     register(CamundaReactor.topic("process_a", "task_a", "complete"));
+    register(CamundaReactor.topic("process_a", "task_a", "start"));
+    register(CamundaReactor.topic("process_a", "task_a", "end"));
     register(CamundaReactor.topic(null, null, "create"));
+    register(CamundaReactor.topic(null, null, null));
 
     CamundaReactor.subscribeTo(eventBus).on(CamundaReactor.uri(null, null, "create"), SubscriberTaskListener.create(new TaskListener() {
       @Override
@@ -76,33 +83,33 @@ public class ReactorProcessEnginePluginTest {
     complete(task(processInstance));
     assertThat(processInstance).isEnded();
 
-    assertThat(events).isNotEmpty();
-
-    for (Map.Entry<String, List<DelegateTaskEvent>> e : events.entrySet()) {
+    for (Map.Entry<String, LinkedHashSet<DelegateEvent>> e : events.entrySet()) {
       logger.info("* " + e.getKey());
-      for (DelegateTaskEvent v : e.getValue()) {
+      for (DelegateEvent v : e.getValue()) {
         logger.info("    * " + v);
       }
     }
-    assertThat(events.get("/camunda/process_a/{element}/{event}")).hasSize(6);
+
+    assertThat(events).isNotEmpty();
+
 
   }
 
   private void register(String uri) {
-    eventBus.on(Selectors.uri(uri), consumer(uri));
+    eventBus.on(Selectors.uri(uri), new Consumer<DelegateEvent>() {
+      @Override
+      public void accept(DelegateEvent event) {
+        LinkedHashSet<DelegateEvent> e = events.get(event.getKey());
+        if (e == null) {
+          events.put(event.getKey().toString(), new LinkedHashSet<DelegateEvent>());
+          accept(event);
+          return;
+        }
+
+        e.add(event);
+      }
+    });
   }
 
-  private Consumer<DelegateTaskEvent> consumer(final String uri) {
-    return new Consumer<DelegateTaskEvent>() {
-      @Override
-      public void accept(DelegateTaskEvent delegateTaskEvent) {
-        List<DelegateTaskEvent> e = events.get(uri);
-        if (e == null) {
-          e = new ArrayList<>();
-          events.put(uri, e);
-        }
-        e.add(delegateTaskEvent);
-      }
-    };
-  }
+
 }

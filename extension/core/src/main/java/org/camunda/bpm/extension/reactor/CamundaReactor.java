@@ -10,13 +10,17 @@ import org.camunda.bpm.extension.reactor.event.DelegateTaskEvent;
 import org.camunda.bpm.extension.reactor.listener.SubscriberExecutionListener;
 import org.camunda.bpm.extension.reactor.listener.SubscriberTaskListener;
 import org.camunda.bpm.extension.reactor.plugin.ReactorProcessEnginePlugin;
+import org.slf4j.LoggerFactory;
 import reactor.bus.EventBus;
 import reactor.bus.selector.Selector;
 import reactor.bus.selector.Selectors;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public final class CamundaReactor {
 
@@ -58,7 +62,9 @@ public final class CamundaReactor {
   }
 
   public static String topic(final DelegateExecution delegateExecution) {
-    return topic(processDefintionKey(delegateExecution.getProcessDefinitionId()), delegateExecution.getCurrentActivityName(), delegateExecution.getEventName());
+    String element = ("sequenceFlow".equals(delegateExecution.getBpmnModelElementInstance().getElementType().getTypeName())) ? delegateExecution.getCurrentTransitionId() : delegateExecution.getCurrentActivityId();
+
+    return topic(processDefintionKey(delegateExecution.getProcessDefinitionId()), element, delegateExecution.getEventName());
   }
 
 

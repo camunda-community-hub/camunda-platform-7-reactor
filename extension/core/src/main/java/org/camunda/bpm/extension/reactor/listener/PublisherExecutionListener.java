@@ -5,6 +5,7 @@ import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.reactor.CamundaReactor;
+import reactor.bus.Event;
 import reactor.bus.EventBus;
 
 public class PublisherExecutionListener implements ExecutionListener {
