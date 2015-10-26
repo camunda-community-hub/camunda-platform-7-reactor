@@ -3,8 +3,11 @@ package org.camunda.bpm.extension.reactor;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
+import org.camunda.bpm.engine.delegate.ExecutionListener;
+import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.camunda.bpm.engine.impl.cfg.ProcessEnginePlugin;
+import org.camunda.bpm.extension.reactor.event.DelegateEvent;
 import org.camunda.bpm.extension.reactor.event.DelegateExecutionEvent;
 import org.camunda.bpm.extension.reactor.event.DelegateTaskEvent;
 import org.camunda.bpm.extension.reactor.listener.SubscriberExecutionListener;
@@ -14,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import reactor.bus.EventBus;
 import reactor.bus.selector.Selector;
 import reactor.bus.selector.Selectors;
+import reactor.fn.Consumer;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -40,33 +44,35 @@ public final class CamundaReactor {
     public void on(Selector topic, SubscriberExecutionListener listener) {
       eventBus.on(topic, listener);
     }
+
+    public void on(Selector topic, TaskListener listener) {
+      on(topic, SubscriberTaskListener.create(listener));
+    }
+
+    public void on(Selector topic, ExecutionListener listener) {
+      eventBus.on(topic, SubscriberExecutionListener.create(listener));
+    }
+
+    public void on(SelectorBuilder topic, TaskListener listener) {
+      on(topic.build(), SubscriberTaskListener.create(listener));
+    }
+
+    public void on(SelectorBuilder topic, ExecutionListener listener) {
+      eventBus.on(topic.build(), SubscriberExecutionListener.create(listener));
+    }
   }
 
   public static String topic(final String process, final String element, final String event) {
-    String topic = CAMUNDA_TOPIC;
-    for (Map.Entry<String, String> entry : new HashMap<String, String>() {{
-      put("{process}", process);
-      put("{element}", element);
-      put("{event}", event);
-    }}.entrySet()) {
-      if (entry.getValue() != null && !"".equals(entry.getKey())) {
-        topic = topic.replace(entry.getKey(), entry.getValue());
-      }
-    }
-
-    return topic;
+    return SelectorBuilder.selector().process(process).element(element).event(event).createTopic();
   }
 
   public static String topic(final DelegateTask delegateTask) {
-    return topic(processDefintionKey(delegateTask.getProcessDefinitionId()), delegateTask.getTaskDefinitionKey(), delegateTask.getEventName());
+    return SelectorBuilder.selector(delegateTask).createTopic();
   }
 
   public static String topic(final DelegateExecution delegateExecution) {
-    String element = ("sequenceFlow".equals(delegateExecution.getBpmnModelElementInstance().getElementType().getTypeName())) ? delegateExecution.getCurrentTransitionId() : delegateExecution.getCurrentActivityId();
-
-    return topic(processDefintionKey(delegateExecution.getProcessDefinitionId()), element, delegateExecution.getEventName());
+    return SelectorBuilder.selector(delegateExecution).createTopic();
   }
-
 
   public static DelegateTaskEvent wrap(final DelegateTask delegateTask) {
     return new DelegateTaskEvent(delegateTask);
@@ -88,7 +94,7 @@ public final class CamundaReactor {
     return new SubscribeTo(eventBus);
   }
 
-  public static EventBus getEventBus(ProcessEngine processEngine) {
+  public static EventBus getEventBus(final ProcessEngine processEngine) {
     ProcessEngineConfigurationImpl configuration = (ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration();
     final List<ProcessEnginePlugin> plugins = configuration.getProcessEnginePlugins();
 
@@ -108,7 +114,7 @@ public final class CamundaReactor {
    * @param processDefinitionId
    * @return
    */
-  static String processDefintionKey(String processDefinitionId) {
+  public static String processDefintionKey(String processDefinitionId) {
     return processDefinitionId.replaceAll("(\\w+):\\d+:\\d+", "$1");
   }
 

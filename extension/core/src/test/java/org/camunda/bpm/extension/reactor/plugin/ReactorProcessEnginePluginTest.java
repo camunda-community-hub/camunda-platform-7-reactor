@@ -33,18 +33,12 @@ import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.task;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ReactorProcessEnginePluginTest {
-  static {
-    SLF4JBridgeHandler.removeHandlersForRootLogger();
-    SLF4JBridgeHandler.install();
-  }
 
-  private final Logger logger = getLogger(this.getClass());
-
-  private final ReactorProcessEngineConfiguration configuration = new ReactorProcessEngineConfiguration();
 
   @Rule
-  public final ProcessEngineRule processEngineRule = new ProcessEngineRule(configuration.buildProcessEngine());
+  public final ProcessEngineRule processEngineRule = ReactorProcessEngineConfiguration.buildRule();
 
+  private final Logger logger = getLogger(this.getClass());
   private EventBus eventBus;
 
   @Before
@@ -66,14 +60,14 @@ public class ReactorProcessEnginePluginTest {
     register(CamundaReactor.topic(null, null, "create"));
     register(CamundaReactor.topic(null, null, null));
 
-    CamundaReactor.subscribeTo(eventBus).on(CamundaReactor.uri(null, null, "create"), SubscriberTaskListener.create(new TaskListener() {
+    CamundaReactor.subscribeTo(eventBus).on(CamundaReactor.uri(null, null, "create"), new TaskListener() {
       @Override
       public void notify(DelegateTask delegateTask) {
         delegateTask.setAssignee("foo");
         delegateTask.addCandidateGroup("bar");
         delegateTask.setName("my task");
       }
-    }));
+    });
 
     final ProcessInstance processInstance = processEngineRule.getRuntimeService().startProcessInstanceByKey("process_a");
 

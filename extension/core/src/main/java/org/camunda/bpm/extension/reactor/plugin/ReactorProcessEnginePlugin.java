@@ -13,6 +13,9 @@ public class ReactorProcessEnginePlugin extends AbstractProcessEnginePlugin {
 
   private final EventBus eventBus;
 
+  /**
+   * Initializes synchronous eventBus.
+   */
   public ReactorProcessEnginePlugin() {
     this(EventBus.create(SynchronousDispatcher.INSTANCE));
   }

@@ -2,10 +2,11 @@ package org.camunda.bpm.extension.reactor.listener;
 
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.TaskListener;
+import org.camunda.bpm.extension.reactor.event.DelegateTaskEvent;
 import reactor.bus.Event;
 import reactor.fn.Consumer;
 
-public abstract class SubscriberTaskListener implements TaskListener, Consumer<Event<DelegateTask>> {
+public abstract class SubscriberTaskListener implements TaskListener, Consumer<DelegateTaskEvent> {
 
   public static SubscriberTaskListener create(final TaskListener taskListener) {
     return new SubscriberTaskListener() {
@@ -17,7 +18,7 @@ public abstract class SubscriberTaskListener implements TaskListener, Consumer<E
   }
 
   @Override
-  public void accept(final Event<DelegateTask> delegateTaskEvent) {
+  public void accept(final DelegateTaskEvent delegateTaskEvent) {
     notify(delegateTaskEvent.getData());
   }
 }
