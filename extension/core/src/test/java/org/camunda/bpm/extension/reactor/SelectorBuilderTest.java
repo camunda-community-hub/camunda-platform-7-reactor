@@ -19,13 +19,14 @@ public class SelectorBuilderTest {
   @Parameters(name = "{index}: builder=''{0}'', expected=''{1}''")
   public static Collection<Object[]> data() {
     return Arrays.asList(new Object[][]{
-      {selector(), "/camunda/{process}/{element}/{event}"},
-      {selector().process("foo"), "/camunda/foo/{element}/{event}"},
-      {selector().process("foo").element("bar"), "/camunda/foo/bar/{event}"},
-      {selector().process("foo").element("bar").event("create"), "/camunda/foo/bar/create"},
-      {selector().element("bar").event("create"), "/camunda/{process}/bar/create"},
-      {selector().element("bar"), "/camunda/{process}/bar/{event}"},
-      {selector().event("create"), "/camunda/{process}/{element}/create"},
+      {selector(), "/camunda/{type}/{process}/{element}/{event}"},
+      {selector().process("foo"), "/camunda/{type}/foo/{element}/{event}"},
+      {selector().process("foo").element("bar"), "/camunda/{type}/foo/bar/{event}"},
+      {selector().process("foo").element("bar").event("create"), "/camunda/{type}/foo/bar/create"},
+      {selector().element("bar").event("create"), "/camunda/{type}/{process}/bar/create"},
+      {selector().element("bar"), "/camunda/{type}/{process}/bar/{event}"},
+      {selector().event("create"), "/camunda/{type}/{process}/{element}/create"},
+      {selector().type("type"), "/camunda/type/{process}/{element}/{event}"},
     });
   }
 

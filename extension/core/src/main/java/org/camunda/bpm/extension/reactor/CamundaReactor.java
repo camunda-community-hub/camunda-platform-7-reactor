@@ -28,7 +28,7 @@ import java.util.Objects;
 
 public final class CamundaReactor {
 
-  public static final String CAMUNDA_TOPIC = "/camunda/{process}/{element}/{event}";
+  public static final String CAMUNDA_TOPIC = "/camunda/{type}/{process}/{element}/{event}";
 
   public static class SubscribeTo {
     private final EventBus eventBus;

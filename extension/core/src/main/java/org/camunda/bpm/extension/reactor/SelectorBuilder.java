@@ -1,6 +1,7 @@
 package org.camunda.bpm.extension.reactor;
 
 
+import org.camunda.bpm.engine.delegate.BpmnModelExecutionContext;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import reactor.bus.selector.Selector;
@@ -20,16 +21,19 @@ public class SelectorBuilder {
   public static SelectorBuilder selector(final DelegateTask delegateTask) {
     return selector().process(processDefintionKey(delegateTask.getProcessDefinitionId()))
       .element(delegateTask.getTaskDefinitionKey())
-      .event(delegateTask.getEventName());
+      .event(delegateTask.getEventName())
+      .type(extractTypeName(delegateTask));
   }
 
   public static SelectorBuilder selector(final DelegateExecution delegateExecution) {
-    String element = ("sequenceFlow".equals(delegateExecution.getBpmnModelElementInstance().getElementType().getTypeName()))
+    String typeName = extractTypeName(delegateExecution);
+    String element = ("sequenceFlow".equals(typeName))
       ? delegateExecution.getCurrentTransitionId()
       : delegateExecution.getCurrentActivityId();
     return selector().process(processDefintionKey(delegateExecution.getProcessDefinitionId()))
       .element(element)
-      .event(delegateExecution.getEventName());
+      .event(delegateExecution.getEventName())
+      .type(typeName);
   }
 
   private final Map<String, String> values = new HashMap<String, String>();
@@ -56,6 +60,12 @@ public class SelectorBuilder {
     return this;
   }
 
+  public SelectorBuilder type(String type) {
+    values.put("{type}", type);
+
+    return this;
+  }
+
   public Selector build() {
     return Selectors.uri(createTopic());
   }
@@ -73,5 +83,9 @@ public class SelectorBuilder {
   @Override
   public String toString() {
     return values.toString();
+  }
+
+  static String extractTypeName(BpmnModelExecutionContext bpmnModelExecutionContext) {
+    return bpmnModelExecutionContext.getBpmnModelElementInstance().getElementType().getTypeName();
   }
 }

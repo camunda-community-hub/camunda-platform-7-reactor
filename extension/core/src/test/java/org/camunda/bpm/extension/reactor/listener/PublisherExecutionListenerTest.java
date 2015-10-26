@@ -6,6 +6,7 @@ import org.camunda.bpm.extension.reactor.CamundaReactor;
 import org.camunda.bpm.extension.reactor.event.DelegateExecutionEvent;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 import reactor.bus.EventBus;
 
 import java.util.UUID;
@@ -20,7 +21,7 @@ public class PublisherExecutionListenerTest {
 
   private static final String ID = UUID.randomUUID().toString();
 
-  private final DelegateExecution delegateExecution = mock(DelegateExecution.class);
+  private final DelegateExecution delegateExecution = mock(DelegateExecution.class, Mockito.RETURNS_DEEP_STUBS);
 
   private final EventBus eventBus = mock(EventBus.class);
 
@@ -35,6 +36,7 @@ public class PublisherExecutionListenerTest {
     when(delegateExecution.getCurrentActivityId()).thenReturn("activity");
     when(delegateExecution.getEventName()).thenReturn(ExecutionListener.EVENTNAME_TAKE);
     when(delegateExecution.getId()).thenReturn(ID);
+    when(delegateExecution.getBpmnModelElementInstance().getElementType().getTypeName()).thenReturn("type");
 
     listener.notify(delegateExecution);
 
