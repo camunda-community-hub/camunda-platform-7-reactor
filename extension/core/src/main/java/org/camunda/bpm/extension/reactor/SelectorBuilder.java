@@ -4,6 +4,7 @@ package org.camunda.bpm.extension.reactor;
 import org.camunda.bpm.engine.delegate.BpmnModelExecutionContext;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
+import org.camunda.bpm.extension.reactor.listener.SubscriberListener;
 import reactor.bus.selector.Selector;
 import reactor.bus.selector.Selectors;
 
@@ -19,10 +20,11 @@ public class SelectorBuilder {
   }
 
   public static SelectorBuilder selector(final DelegateTask delegateTask) {
-    return selector().process(processDefintionKey(delegateTask.getProcessDefinitionId()))
+    return selector()
+      .type(extractTypeName(delegateTask))
+      .process(processDefintionKey(delegateTask.getProcessDefinitionId()))
       .element(delegateTask.getTaskDefinitionKey())
-      .event(delegateTask.getEventName())
-      .type(extractTypeName(delegateTask));
+      .event(delegateTask.getEventName());
   }
 
   public static SelectorBuilder selector(final DelegateExecution delegateExecution) {
@@ -30,10 +32,28 @@ public class SelectorBuilder {
     String element = ("sequenceFlow".equals(typeName))
       ? delegateExecution.getCurrentTransitionId()
       : delegateExecution.getCurrentActivityId();
-    return selector().process(processDefintionKey(delegateExecution.getProcessDefinitionId()))
+
+    return selector()
+      .type(typeName)
+      .process(processDefintionKey(delegateExecution.getProcessDefinitionId()))
       .element(element)
-      .event(delegateExecution.getEventName())
-      .type(typeName);
+      .event(delegateExecution.getEventName());
+  }
+
+  public static SelectorBuilder selector(Class<? extends SubscriberListener> subscriberListenerType) {
+    final CamundaSelector annotation = subscriberListenerType.getAnnotation(CamundaSelector.class);
+    if (annotation == null) {
+      throw new IllegalStateException(String.format("Unable to get @CamundaSelector annotation from %s.", subscriberListenerType.getName()));
+    }
+    return selector(annotation);
+  }
+
+  public static SelectorBuilder selector(final CamundaSelector annotation) {
+    return selector()
+      .type(annotation.type())
+      .process(annotation.process())
+      .element(annotation.element())
+      .event(annotation.event());
   }
 
   private final Map<String, String> values = new HashMap<String, String>();
@@ -73,7 +93,7 @@ public class SelectorBuilder {
   public String createTopic() {
     String topic = CamundaReactor.CAMUNDA_TOPIC;
     for (Map.Entry<String, String> entry : values.entrySet()) {
-      if (entry.getValue() != null && !"".equals(entry.getKey())) {
+      if (entry.getValue() != null && !"".equals(entry.getValue()) && !"".equals(entry.getKey())) {
         topic = topic.replace(entry.getKey(), entry.getValue());
       }
     }

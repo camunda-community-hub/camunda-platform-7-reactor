@@ -11,13 +11,15 @@ import java.util.List;
 
 public class ReactorProcessEnginePlugin extends AbstractProcessEnginePlugin {
 
+  public static final EventBus CAMUNDA_EVENTBUS = EventBus.create(SynchronousDispatcher.INSTANCE);
+
   private final EventBus eventBus;
 
   /**
    * Initializes synchronous eventBus.
    */
   public ReactorProcessEnginePlugin() {
-    this(EventBus.create(SynchronousDispatcher.INSTANCE));
+    this(CAMUNDA_EVENTBUS);
   }
 
   public ReactorProcessEnginePlugin(final EventBus eventBus) {

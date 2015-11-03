@@ -4,11 +4,14 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
+import org.camunda.bpm.extension.reactor.SelectorBuilder;
 import org.camunda.bpm.extension.reactor.event.DelegateExecutionEvent;
 import reactor.bus.Event;
+import reactor.bus.EventBus;
+import reactor.bus.selector.Selector;
 import reactor.fn.Consumer;
 
-public abstract class SubscriberExecutionListener implements ExecutionListener, Consumer<DelegateExecutionEvent> {
+public abstract class SubscriberExecutionListener extends SubscriberListener<DelegateExecutionEvent> implements ExecutionListener {
 
   public static SubscriberExecutionListener create(final ExecutionListener executionListener) {
     return new SubscriberExecutionListener() {
@@ -22,9 +25,11 @@ public abstract class SubscriberExecutionListener implements ExecutionListener, 
   @Override
   public void accept(final DelegateExecutionEvent delegateExecutionEvent) {
     try {
+      logger.debug("Received: {}", delegateExecutionEvent);
       notify(delegateExecutionEvent.getData());
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
+
 }

@@ -27,6 +27,7 @@ public class SelectorBuilderTest {
       {selector().element("bar"), "/camunda/{type}/{process}/bar/{event}"},
       {selector().event("create"), "/camunda/{type}/{process}/{element}/create"},
       {selector().type("type"), "/camunda/type/{process}/{element}/{event}"},
+      {selector().type(""), "/camunda/{type}/{process}/{element}/{event}"},
     });
   }
 

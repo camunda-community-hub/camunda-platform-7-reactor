@@ -1,30 +1,23 @@
 package org.camunda.bpm.extension.reactor;
 
 import org.camunda.bpm.engine.ProcessEngine;
+import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.camunda.bpm.engine.impl.cfg.ProcessEnginePlugin;
-import org.camunda.bpm.extension.reactor.event.DelegateEvent;
 import org.camunda.bpm.extension.reactor.event.DelegateExecutionEvent;
 import org.camunda.bpm.extension.reactor.event.DelegateTaskEvent;
 import org.camunda.bpm.extension.reactor.listener.SubscriberExecutionListener;
 import org.camunda.bpm.extension.reactor.listener.SubscriberTaskListener;
 import org.camunda.bpm.extension.reactor.plugin.ReactorProcessEnginePlugin;
-import org.slf4j.LoggerFactory;
 import reactor.bus.EventBus;
 import reactor.bus.selector.Selector;
 import reactor.bus.selector.Selectors;
-import reactor.fn.Consumer;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 public final class CamundaReactor {
 
@@ -62,15 +55,15 @@ public final class CamundaReactor {
     }
   }
 
-  public static String topic(final String process, final String element, final String event) {
+  public static String selector(final String process, final String element, final String event) {
     return SelectorBuilder.selector().process(process).element(element).event(event).createTopic();
   }
 
-  public static String topic(final DelegateTask delegateTask) {
+  public static String selector(final DelegateTask delegateTask) {
     return SelectorBuilder.selector(delegateTask).createTopic();
   }
 
-  public static String topic(final DelegateExecution delegateExecution) {
+  public static String selector(final DelegateExecution delegateExecution) {
     return SelectorBuilder.selector(delegateExecution).createTopic();
   }
 
@@ -83,7 +76,7 @@ public final class CamundaReactor {
   }
 
   public static Selector uri(String process, String element, String event) {
-    return uri(topic(process, element, event));
+    return uri(selector(process, element, event));
   }
 
   public static Selector uri(String topic) {
@@ -94,7 +87,7 @@ public final class CamundaReactor {
     return new SubscribeTo(eventBus);
   }
 
-  public static EventBus getEventBus(final ProcessEngine processEngine) {
+  public static EventBus eventBus(final ProcessEngine processEngine) {
     ProcessEngineConfigurationImpl configuration = (ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration();
     final List<ProcessEnginePlugin> plugins = configuration.getProcessEnginePlugins();
 
@@ -106,6 +99,14 @@ public final class CamundaReactor {
       }
     }
     throw new IllegalStateException("No eventBus found. Make sure the Reactor plugin is configured correctly.");
+  }
+
+  public static EventBus eventBus() {
+    final ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+    if (processEngine == null) {
+      throw new IllegalStateException("No processEngine registered.");
+    }
+    return eventBus(processEngine);
   }
 
   /**

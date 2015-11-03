@@ -1,6 +1,5 @@
 package org.camunda.bpm.extension.reactor.plugin;
 
-import org.camunda.bpm.engine.delegate.BpmnModelExecutionContext;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
@@ -8,23 +7,17 @@ import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.extension.reactor.CamundaReactor;
 import org.camunda.bpm.extension.reactor.event.DelegateEvent;
-import org.camunda.bpm.extension.reactor.event.DelegateTaskEvent;
-import org.camunda.bpm.extension.reactor.listener.SubscriberTaskListener;
 import org.camunda.bpm.extension.test.ReactorProcessEngineConfiguration;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.slf4j.Logger;
-import org.slf4j.bridge.SLF4JBridgeHandler;
-import reactor.bus.Event;
 import reactor.bus.EventBus;
 import reactor.bus.selector.Selectors;
 import reactor.fn.Consumer;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.assertThat;
@@ -43,7 +36,7 @@ public class ReactorProcessEnginePluginTest {
 
   @Before
   public void init() {
-    eventBus = CamundaReactor.getEventBus(processEngineRule.getProcessEngine());
+    eventBus = CamundaReactor.eventBus(processEngineRule.getProcessEngine());
   }
 
   final Map<String, LinkedHashSet<DelegateEvent>> events = new LinkedHashMap<>();
@@ -52,13 +45,13 @@ public class ReactorProcessEnginePluginTest {
   @Deployment(resources = {"ProcessA.bpmn"})
   public void fire_events_on_userTasks() {
 
-    register(CamundaReactor.topic("process_a", null, null));
-    register(CamundaReactor.topic("process_a", "task_a", null));
-    register(CamundaReactor.topic("process_a", "task_a", "complete"));
-    register(CamundaReactor.topic("process_a", "task_a", "start"));
-    register(CamundaReactor.topic("process_a", "task_a", "end"));
-    register(CamundaReactor.topic(null, null, "create"));
-    register(CamundaReactor.topic(null, null, null));
+    register(CamundaReactor.selector("process_a", null, null));
+    register(CamundaReactor.selector("process_a", "task_a", null));
+    register(CamundaReactor.selector("process_a", "task_a", "complete"));
+    register(CamundaReactor.selector("process_a", "task_a", "start"));
+    register(CamundaReactor.selector("process_a", "task_a", "end"));
+    register(CamundaReactor.selector(null, null, "create"));
+    register(CamundaReactor.selector(null, null, null));
 
     CamundaReactor.subscribeTo(eventBus).on(CamundaReactor.uri(null, null, "create"), new TaskListener() {
       @Override

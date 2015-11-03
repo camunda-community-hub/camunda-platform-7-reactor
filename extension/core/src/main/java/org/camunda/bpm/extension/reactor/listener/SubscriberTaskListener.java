@@ -6,7 +6,7 @@ import org.camunda.bpm.extension.reactor.event.DelegateTaskEvent;
 import reactor.bus.Event;
 import reactor.fn.Consumer;
 
-public abstract class SubscriberTaskListener implements TaskListener, Consumer<DelegateTaskEvent> {
+public abstract class SubscriberTaskListener extends SubscriberListener<DelegateTaskEvent> implements TaskListener {
 
   public static SubscriberTaskListener create(final TaskListener taskListener) {
     return new SubscriberTaskListener() {
@@ -19,6 +19,7 @@ public abstract class SubscriberTaskListener implements TaskListener, Consumer<D
 
   @Override
   public void accept(final DelegateTaskEvent delegateTaskEvent) {
+    logger.debug("Received: {}", delegateTaskEvent);
     notify(delegateTaskEvent.getData());
   }
 }

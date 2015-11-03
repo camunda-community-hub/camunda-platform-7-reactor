@@ -15,6 +15,6 @@ public class SubscriberJavaDelegate implements JavaDelegate{
 
   @Override
   public void execute(final DelegateExecution execution) throws Exception {
-    eventBus.notify(CamundaReactor.topic(execution), CamundaReactor.wrap(execution));
+    eventBus.notify(CamundaReactor.selector(execution), CamundaReactor.wrap(execution));
   }
 }
