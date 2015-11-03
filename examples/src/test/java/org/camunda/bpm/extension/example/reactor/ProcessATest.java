@@ -39,7 +39,7 @@ public class ProcessATest {
     assertThat(task()).hasCandidateGroup(ProcessA.GROUP_1);
     assertThat(task()).hasCandidateGroup(ProcessA.GROUP_2);
     assertThat(task()).hasCandidateGroup(ProcessA.GROUP_3);
-    assertThat(task()).isAssignedTo("me");
+//    assertThat(task()).isAssignedTo("me");
 
     
   }
