@@ -26,7 +26,7 @@ public class ProcessA {
   private final EventBus eventBus = CamundaReactor.eventBus();
 
   public void init() {
-    new TaskCreateListener().register(eventBus);
+    new TaskCreateListener(eventBus);
   }
 
 }

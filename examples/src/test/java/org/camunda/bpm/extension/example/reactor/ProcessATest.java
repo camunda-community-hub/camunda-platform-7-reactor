@@ -34,6 +34,7 @@ public class ProcessATest {
 
     assertThat(processInstance).isWaitingAt("task_a");
     assertThat(task()).hasDueDate(ProcessA.DUE_DATE);
+    assertThat(task()).isAssignedTo("me");
 
     assertThat(task()).hasCandidateGroup(ProcessA.GROUP_1);
     assertThat(task()).hasCandidateGroup(ProcessA.GROUP_2);
