@@ -1,15 +1,8 @@
 package org.camunda.bpm.extension.reactor.listener;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
-import org.camunda.bpm.engine.delegate.TaskListener;
-import org.camunda.bpm.extension.reactor.SelectorBuilder;
 import org.camunda.bpm.extension.reactor.event.DelegateExecutionEvent;
-import reactor.bus.Event;
-import reactor.bus.EventBus;
-import reactor.bus.selector.Selector;
-import reactor.fn.Consumer;
 
 public abstract class SubscriberExecutionListener extends SubscriberListener<DelegateExecutionEvent> implements ExecutionListener {
 

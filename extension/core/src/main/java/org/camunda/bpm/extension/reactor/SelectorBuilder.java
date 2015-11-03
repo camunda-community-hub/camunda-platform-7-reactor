@@ -4,7 +4,10 @@ package org.camunda.bpm.extension.reactor;
 import org.camunda.bpm.engine.delegate.BpmnModelExecutionContext;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
+import org.camunda.bpm.extension.reactor.listener.SubscriberExecutionListener;
 import org.camunda.bpm.extension.reactor.listener.SubscriberListener;
+import org.camunda.bpm.extension.reactor.listener.SubscriberTaskListener;
+
 import reactor.bus.selector.Selector;
 import reactor.bus.selector.Selectors;
 
@@ -40,10 +43,17 @@ public class SelectorBuilder {
       .event(delegateExecution.getEventName());
   }
 
-  public static SelectorBuilder selector(Class<? extends SubscriberListener> subscriberListenerType) {
-    final CamundaSelector annotation = subscriberListenerType.getAnnotation(CamundaSelector.class);
+  public static SelectorBuilder selector(SubscriberTaskListener subscriberListener) {
+    final CamundaSelector annotation = subscriberListener.getClass().getAnnotation(CamundaSelector.class);
     if (annotation == null) {
-      throw new IllegalStateException(String.format("Unable to get @CamundaSelector annotation from %s.", subscriberListenerType.getName()));
+      throw new IllegalStateException(String.format("Unable to get @CamundaSelector annotation from %s.", subscriberListener.getClass().getName()));
+    }
+    return selector(annotation);
+  }
+  public static SelectorBuilder selector(SubscriberExecutionListener subscriberListenerType) {
+    final CamundaSelector annotation = subscriberListenerType.getClass().getAnnotation(CamundaSelector.class);
+    if (annotation == null) {
+      throw new IllegalStateException(String.format("Unable to get @CamundaSelector annotation from %s.", subscriberListenerType.getClass().getName()));
     }
     return selector(annotation);
   }
@@ -87,10 +97,10 @@ public class SelectorBuilder {
   }
 
   public Selector build() {
-    return Selectors.uri(createTopic());
+    return Selectors.uri(key());
   }
 
-  public String createTopic() {
+  public String key() {
     String topic = CamundaReactor.CAMUNDA_TOPIC;
     for (Map.Entry<String, String> entry : values.entrySet()) {
       if (entry.getValue() != null && !"".equals(entry.getValue()) && !"".equals(entry.getKey())) {

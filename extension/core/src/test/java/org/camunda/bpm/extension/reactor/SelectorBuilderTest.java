@@ -39,7 +39,7 @@ public class SelectorBuilderTest {
 
   @Test
   public void createTopic() {
-    assertThat(builder.createTopic()).isEqualTo(expected);
+    assertThat(builder.key()).isEqualTo(expected);
   }
 
 }

@@ -18,11 +18,13 @@ public class TaskCreateListener extends SubscriberTaskListener {
 
   @Override
   public void notify(DelegateTask delegateTask) {
-    delegateTask.addCandidateGroups(Arrays.asList(ProcessA.GROUP_1, ProcessA.GROUP_2));
-    delegateTask.addCandidateGroup(ProcessA.GROUP_3);
-
-    delegateTask.setAssignee("me");
-
     delegateTask.setDueDate(ProcessA.DUE_DATE);    
+    
+    delegateTask.addCandidateGroup(ProcessA.GROUP_1);
+    delegateTask.addCandidateGroups(Arrays.asList(ProcessA.GROUP_2,ProcessA.GROUP_3));
+
+    //delegateTask.setAssignee("me");
+    
+    //delegateTask.getProcessEngineServices().getTaskService().claim(delegateTask.getId(), "me");
   }
 }

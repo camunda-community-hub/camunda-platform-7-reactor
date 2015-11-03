@@ -15,6 +15,6 @@ public class PublisherExecutionListener implements ExecutionListener {
 
   @Override
   public void notify(DelegateExecution delegateExecution) throws Exception {
-    eventBus.notify(CamundaReactor.selector(delegateExecution), CamundaReactor.wrap(delegateExecution));
+    eventBus.notify(CamundaReactor.key(delegateExecution), CamundaReactor.wrap(delegateExecution));
   }
 }

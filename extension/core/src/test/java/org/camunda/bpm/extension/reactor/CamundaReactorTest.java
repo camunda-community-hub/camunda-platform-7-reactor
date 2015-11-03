@@ -1,6 +1,7 @@
 package org.camunda.bpm.extension.reactor;
 
 import org.camunda.bpm.engine.ProcessEngine;
+import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.camunda.bpm.extension.reactor.plugin.ReactorProcessEnginePlugin;
 import org.camunda.bpm.extension.test.ReactorProcessEngineConfiguration;
@@ -29,27 +30,27 @@ public class CamundaReactorTest {
 
   @Test
   public void creates_topic_for_process_element_and_event() {
-    assertThat(CamundaReactor.selector("process", "task", "create")).isEqualTo("/camunda/{type}/process/task/create");
+    assertThat(CamundaReactor.key("process", "task", "create")).isEqualTo("/camunda/{type}/process/task/create");
   }
 
   @Test
   public void creates_general_topic_for_null_values() {
-    assertThat(CamundaReactor.selector(null, null, null)).isEqualTo("/camunda/{type}/{process}/{element}/{event}");
+    assertThat(CamundaReactor.key(null, null, null)).isEqualTo("/camunda/{type}/{process}/{element}/{event}");
   }
 
   @Test
   public void creates_topic_for_element() {
-    assertThat(CamundaReactor.selector(null, "task", null)).isEqualTo("/camunda/{type}/{process}/task/{event}");
+    assertThat(CamundaReactor.key(null, "task", null)).isEqualTo("/camunda/{type}/{process}/task/{event}");
   }
 
   @Test
   public void creates_topic_for_process() {
-    assertThat(CamundaReactor.selector("foo", null, null)).isEqualTo("/camunda/{type}/foo/{element}/{event}");
+    assertThat(CamundaReactor.key("foo", null, null)).isEqualTo("/camunda/{type}/foo/{element}/{event}");
   }
 
   @Test
   public void creates_topic_for_event() {
-    assertThat(CamundaReactor.selector(null, null, "bar")).isEqualTo("/camunda/{type}/{process}/{element}/bar");
+    assertThat(CamundaReactor.key(null, null, "bar")).isEqualTo("/camunda/{type}/{process}/{element}/bar");
   }
 
   @Test
@@ -83,7 +84,9 @@ public class CamundaReactorTest {
 
   @Test
   public void fails_to_get_eventBus_from_engine() {
-    ProcessEngine engine = new StandaloneInMemProcessEngineConfiguration().buildProcessEngine();
+    ProcessEngine engine = new StandaloneInMemProcessEngineConfiguration(){{
+      setDatabaseSchemaUpdate(ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_DROP_CREATE);
+    }}.buildProcessEngine();
     try {
       thrown.expect(IllegalStateException.class);
       thrown.expectMessage("No eventBus found. Make sure the Reactor plugin is configured correctly.");

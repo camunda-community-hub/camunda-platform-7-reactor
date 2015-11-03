@@ -9,6 +9,7 @@ import org.camunda.bpm.extension.reactor.CamundaReactor;
 import org.camunda.bpm.extension.reactor.event.DelegateEvent;
 import org.camunda.bpm.extension.test.ReactorProcessEngineConfiguration;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -24,6 +25,7 @@ import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.assertTh
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.complete;
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.task;
 import static org.slf4j.LoggerFactory.getLogger;
+
 
 public class ReactorProcessEnginePluginTest {
 
@@ -45,13 +47,13 @@ public class ReactorProcessEnginePluginTest {
   @Deployment(resources = {"ProcessA.bpmn"})
   public void fire_events_on_userTasks() {
 
-    register(CamundaReactor.selector("process_a", null, null));
-    register(CamundaReactor.selector("process_a", "task_a", null));
-    register(CamundaReactor.selector("process_a", "task_a", "complete"));
-    register(CamundaReactor.selector("process_a", "task_a", "start"));
-    register(CamundaReactor.selector("process_a", "task_a", "end"));
-    register(CamundaReactor.selector(null, null, "create"));
-    register(CamundaReactor.selector(null, null, null));
+    register(CamundaReactor.key("process_a", null, null));
+    register(CamundaReactor.key("process_a", "task_a", null));
+    register(CamundaReactor.key("process_a", "task_a", "complete"));
+    register(CamundaReactor.key("process_a", "task_a", "start"));
+    register(CamundaReactor.key("process_a", "task_a", "end"));
+    register(CamundaReactor.key(null, null, "create"));
+    register(CamundaReactor.key(null, null, null));
 
     CamundaReactor.subscribeTo(eventBus).on(CamundaReactor.uri(null, null, "create"), new TaskListener() {
       @Override

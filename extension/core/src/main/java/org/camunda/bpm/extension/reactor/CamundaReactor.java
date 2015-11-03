@@ -55,16 +55,17 @@ public final class CamundaReactor {
     }
   }
 
-  public static String selector(final String process, final String element, final String event) {
-    return SelectorBuilder.selector().process(process).element(element).event(event).createTopic();
+  @Deprecated
+  public static String key(final String process, final String element, final String event) {
+    return SelectorBuilder.selector().process(process).element(element).event(event).key();
   }
 
-  public static String selector(final DelegateTask delegateTask) {
-    return SelectorBuilder.selector(delegateTask).createTopic();
+  public static String key(final DelegateTask delegateTask) {
+    return SelectorBuilder.selector(delegateTask).key();
   }
 
-  public static String selector(final DelegateExecution delegateExecution) {
-    return SelectorBuilder.selector(delegateExecution).createTopic();
+  public static String key(final DelegateExecution delegateExecution) {
+    return SelectorBuilder.selector(delegateExecution).key();
   }
 
   public static DelegateTaskEvent wrap(final DelegateTask delegateTask) {
@@ -76,7 +77,7 @@ public final class CamundaReactor {
   }
 
   public static Selector uri(String process, String element, String event) {
-    return uri(selector(process, element, event));
+    return uri(key(process, element, event));
   }
 
   public static Selector uri(String topic) {
@@ -110,10 +111,10 @@ public final class CamundaReactor {
   }
 
   /**
-   * Ugly hack, delegate task shoul contain processdefinitionKey
+   * Ugly hack, delegate task should contain processdefinitionKey.
    *
-   * @param processDefinitionId
-   * @return
+   * @param processDefinitionId the process definition id
+   * @return process definition key
    */
   public static String processDefintionKey(String processDefinitionId) {
     return processDefinitionId.replaceAll("(\\w+):\\d+:\\d+", "$1");

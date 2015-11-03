@@ -42,7 +42,7 @@ public class PublisherTaskListenerTest {
 
     verify(eventBus).notify(topicCaptor.capture(), eventCaptor.capture());
 
-    assertThat(topicCaptor.getValue()).isEqualTo(CamundaReactor.selector(delegateTask));
+    assertThat(topicCaptor.getValue()).isEqualTo(CamundaReactor.key(delegateTask));
     assertThat(eventCaptor.getValue().getData().getExecutionId()).isEqualTo(ID);
   }
 }

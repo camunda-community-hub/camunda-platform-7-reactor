@@ -3,8 +3,6 @@ package org.camunda.bpm.extension.reactor.listener;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.reactor.event.DelegateTaskEvent;
-import reactor.bus.Event;
-import reactor.fn.Consumer;
 
 public abstract class SubscriberTaskListener extends SubscriberListener<DelegateTaskEvent> implements TaskListener {
 

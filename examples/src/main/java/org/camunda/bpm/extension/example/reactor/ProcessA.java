@@ -27,6 +27,7 @@ public class ProcessA {
 
   public void init() {
     new TaskCreateListener(eventBus);
+    new TaskAssignListener();
   }
 
 }

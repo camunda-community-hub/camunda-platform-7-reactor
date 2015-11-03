@@ -1,8 +1,8 @@
-package org.camunda.bpm.extension.reactor;
+package org.camunda.bpm.extension.example.reactor;
 
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineAssertions.assertThat;
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.complete;
-import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.claim;
+import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.taskService;
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.repositoryService;
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.runtimeService;
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.task;
@@ -20,6 +20,7 @@ import org.camunda.bpm.engine.impl.cfg.AbstractProcessEnginePlugin;
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.camunda.bpm.engine.impl.cfg.ProcessEnginePlugin;
 import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
+import org.camunda.bpm.engine.impl.persistence.entity.TaskEntity;
 import org.camunda.bpm.engine.impl.pvm.process.ActivityImpl;
 import org.camunda.bpm.engine.impl.pvm.process.ScopeImpl;
 import org.camunda.bpm.engine.impl.task.TaskDefinition;
@@ -27,6 +28,7 @@ import org.camunda.bpm.engine.impl.util.xml.Element;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
+import org.camunda.bpm.extension.reactor.CamundaSelector;
 import org.camunda.bpm.extension.reactor.event.DelegateTaskEvent;
 import org.camunda.bpm.extension.reactor.listener.PublisherTaskListener;
 import org.camunda.bpm.extension.reactor.listener.SubscriberTaskListener;
@@ -45,23 +47,6 @@ import reactor.fn.Consumer;
  * Spike that assures that the general approach is working.
  */
 public class CandidateGroupsViaPluginSpike {
-
- 
-  /**
-   * Plugin with PostParseListener that registers "publishTaskCreate".
-   */
-  private final ProcessEnginePlugin plugin = new AbstractProcessEnginePlugin(){
-    @Override
-    public void preInit(ProcessEngineConfigurationImpl processEngineConfiguration) {
-      processEngineConfiguration.getCustomPostBPMNParseListeners().add(new AbstractBpmnParseListener(){
-        @Override
-        public void parseUserTask(Element userTaskElement, ScopeImpl scope, ActivityImpl activity) {
-          TaskDefinition taskDefinition = ((UserTaskActivityBehavior) activity.getActivityBehavior()).getTaskDefinition();
-          taskDefinition.addTaskListener(TaskListener.EVENTNAME_CREATE, new PublisherTaskListener(CAMUNDA_EVENTBUS));
-        }
-      });
-    }
-  };
   
   @CamundaSelector(type="userTask", event="create")
   public static class OnCreateListener extends SubscriberTaskListener {
@@ -72,8 +57,8 @@ public class CandidateGroupsViaPluginSpike {
 
     @Override
     public void notify(DelegateTask delegateTask) {
-      delegateTask.addCandidateGroup("group");
-      delegateTask.addCandidateGroups(Arrays.asList("foo","bar"));
+      delegateTask.addCandidateGroup(ProcessA.GROUP_1);
+      delegateTask.addCandidateGroups(Arrays.asList(ProcessA.GROUP_2,ProcessA.GROUP_3));
     }
     
   }
@@ -88,7 +73,7 @@ public class CandidateGroupsViaPluginSpike {
   }};
 
   @Rule
-  public final ProcessEngineRule processEngineRule = new ProcessEngineRule(processEngineConfiguration.buildProcessEngine());
+  public final ProcessEngineRule processEngineRule = new ProcessEngineRule(ProcessA.CONFIGURATION.buildProcessEngine());
   
   /**
    * Small process with on user task.
@@ -103,7 +88,8 @@ public class CandidateGroupsViaPluginSpike {
   @Deployment(resources="ProcessA.bpmn")
   public void addCandidateGroup() {
     // register onCreate
-    new OnCreateListener();
+  //  new OnCreateListener();
+ new TaskCreateListener(CAMUNDA_EVENTBUS);
   
     // create process Engine
   //  processEngineConfiguration.buildProcessEngine();
@@ -112,27 +98,21 @@ public class CandidateGroupsViaPluginSpike {
     
    //repositoryService().createDeployment().addClasspathResource("ProcessA.bpmn").deploy();
 
-    
     final ProcessInstance processInstance = runtimeService().startProcessInstanceByKey("process_a");
 
     assertThat(processInstance).isWaitingAt("task_a");
-    assertThat(task()).hasCandidateGroup("group");
-    assertThat(task()).hasCandidateGroup("foo");
-    assertThat(task()).hasCandidateGroup("bar");
     
-    claim(task(), "me");
-    
-    assertThat(task()).isAssignedTo("me");
-    assertThat(task()).hasCandidateGroup("group");
-    assertThat(task()).hasCandidateGroup("foo");
-    assertThat(task()).hasCandidateGroup("bar");
+    assertThat(task()).hasCandidateGroup("group1");
+    assertThat(task()).hasCandidateGroup("group2");
+    assertThat(task()).hasCandidateGroup("group3");
     
     complete(task());
     
     assertThat(processInstance).isWaitingAt("task_b");
-    assertThat(task()).hasCandidateGroup("group");
-    assertThat(task()).hasCandidateGroup("foo");
-    assertThat(task()).hasCandidateGroup("bar");
+    assertThat(task()).hasCandidateGroup("group1");
+    assertThat(task()).hasCandidateGroup("group2");
+    assertThat(task()).hasCandidateGroup("group3");
+    
     complete(task());
     
     assertThat(processInstance).isEnded();
