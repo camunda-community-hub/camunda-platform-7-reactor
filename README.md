@@ -2,6 +2,29 @@
 
 Event-based listeners and delegates for camunda.
 
+## What is this about? 
+
+This extension provides a process engine plugin that registers Execution- and TaskListeners to all possible elements and all possible events. These listeners then publish their delegates (DelegateTask, DelegateExcution) to an event bus.
+
+Custom implementations that are interested in certain events may register on that bus and will get notified and executed when the registered listeners fire.
+
+Publishing and subscribing uses a topic pattern `/camunda/{type}/{process}/{element}/{event}` so it is possible to register on all that happens on the engine or the assignement event of a concrete userTask in a concrete process.
+
+Reference: a similar approach was already done in the engine-cdi module using CDI observers and qualifiers. 
+
+## Why do I need this?
+
+Using an event bus decouples registration and implemantation of listeners. The bpmn file has not to be touched for this. This is useful for implementations that can be considered "aspects" of the engine like task assignment and monitoring.
+
+Instead of registering listeners all over your bpmn files that always call the same rule service to determine the candidate groups of a task or write runtime information to a data source, you just hook into the event bus stream and wait for notification.
+
+## How is it done?
+
+This extension uses the event bus provided by projectreactor.io. This bus is fairly advanced and stable and allows separation of event-payload (the DelegateExpression) and event topic, so we do not need any additional qualifiers or concrete types to distinct between "listen to create of task B" or "listen to all events of task A".
+
+## What are the next steps?
+
+* extensions for spring and CDI
 
 ## Maintainer
 
