@@ -14,9 +14,11 @@ Reference: a similar approach was already done in the engine-cdi module using CD
 
 ## Why do I need this?
 
-Using an event bus decouples registration and implemantation of listeners. The bpmn file has not to be touched for this. This is useful for implementations that can be considered "aspects" of the engine like task assignment and monitoring.
+Using an event bus decouples registration and implementation of listeners. The bpmn file has not to be touched for this. This is useful for implementations that can be considered "aspects" of the engine like task assignment and monitoring.
 
 Instead of registering listeners all over your bpmn files that always call the same rule service to determine the candidate groups of a task or write runtime information to a data source, you just hook into the event bus stream and wait for notification.
+
+While this could be achieved with custom plugins/parselisteners, these share the problem that the engine has to have access to the code of the listeners added. With the decoupling via eventbus, this is avoided.
 
 ## How is it done?
 
