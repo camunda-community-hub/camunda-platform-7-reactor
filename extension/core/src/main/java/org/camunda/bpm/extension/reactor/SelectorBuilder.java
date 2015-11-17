@@ -116,6 +116,8 @@ public class SelectorBuilder {
   }
 
   static String extractTypeName(BpmnModelExecutionContext bpmnModelExecutionContext) {
+    
+    
     return bpmnModelExecutionContext.getBpmnModelElementInstance().getElementType().getTypeName();
   }
 }
