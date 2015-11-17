@@ -24,9 +24,40 @@ While this could be achieved with custom plugins/parselisteners, these share the
 
 This extension uses the event bus provided by projectreactor.io. This bus is fairly advanced and stable and allows separation of event-payload (the DelegateExpression) and event topic, so we do not need any additional qualifiers or concrete types to distinct between "listen to create of task B" or "listen to all events of task A".
 
-## What are the next steps?
+Using the extension is straight forward, you need to:
 
-* extensions for spring and CDI
+* access the eventBus instance used in the plugin by calling CamundaReactor.eventBus().
+* Use this bus to register an instance of an appropriate listener and specify the topic parts you are interested in.
+
+### Examples
+
+Register a listener that is fired for all "create" events on any user task in the system. 
+
+```java
+@CamundaSelector(type = "userTask", event = TaskListener.EVENTNAME_CREATE)
+public class TaskCreateListener extends SubscriberTaskListener {
+  
+  public TaskCreateListener(EventBus eventBus) {
+    register(eventBus);
+  }
+
+  @Override
+  public void notify(DelegateTask delegateTask) {
+   ...
+  }
+}
+```
+
+## Noteworthy
+
+This extensions works with delegateTasks and delegateEvents directly. These cannot be used outside the current thread, so the eventBus used is synchronous. 
+
+## Net Steps
+
+* publishing as an official communit extension on camunda
+* releasing 1.0 to maven central
+* provide extensions for spring and CDI
+* ...
 
 ## Maintainer
 
