@@ -23,8 +23,6 @@ public class TaskCreateListener extends SubscriberTaskListener {
     delegateTask.addCandidateGroup(ProcessA.GROUP_1);
     delegateTask.addCandidateGroups(Arrays.asList(ProcessA.GROUP_2,ProcessA.GROUP_3));
 
-    delegateTask.setAssignee("me");
-    
-    //delegateTask.getProcessEngineServices().getTaskService().claim(delegateTask.getId(), "me");
+    //delegateTask.setAssignee("me");
   }
 }

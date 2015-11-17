@@ -47,10 +47,10 @@ import reactor.fn.Consumer;
  * Spike that assures that the general approach is working.
  */
 public class CandidateGroupsViaPluginSpike {
-  
-  @CamundaSelector(type="userTask", event="create")
+
+  @CamundaSelector(type = "userTask", event = "create")
   public static class OnCreateListener extends SubscriberTaskListener {
-    
+
     public OnCreateListener() {
       register(CAMUNDA_EVENTBUS);
     }
@@ -58,63 +58,38 @@ public class CandidateGroupsViaPluginSpike {
     @Override
     public void notify(DelegateTask delegateTask) {
       delegateTask.addCandidateGroup(ProcessA.GROUP_1);
-      delegateTask.addCandidateGroups(Arrays.asList(ProcessA.GROUP_2,ProcessA.GROUP_3));
+      delegateTask.addCandidateGroups(Arrays.asList(ProcessA.GROUP_2, ProcessA.GROUP_3));
     }
-    
+
   }
- 
-  /**
-   * Configuration with plugin.
-   */
-  private final ProcessEngineConfigurationImpl processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration() {{
-    //setDatabaseSchemaUpdate(ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_DROP_CREATE);
-    setCustomPostBPMNParseListeners(new ArrayList<BpmnParseListener>());
-    getProcessEnginePlugins().add(new ReactorProcessEnginePlugin());
-  }};
 
   @Rule
   public final ProcessEngineRule processEngineRule = new ProcessEngineRule(ProcessA.CONFIGURATION.buildProcessEngine());
-  
-  /**
-   * Small process with on user task.
-   */
-  private final BpmnModelInstance modelInstance = Bpmn.createExecutableProcess("process")
-      .startEvent()
-      .userTask("task1").name("Do something")
-      .endEvent()
-      .done();
 
   @Test
-  @Deployment(resources="ProcessA.bpmn")
+  @Deployment(resources = "ProcessA.bpmn")
   public void addCandidateGroup() {
     // register onCreate
-  //  new OnCreateListener();
- new TaskCreateListener(CAMUNDA_EVENTBUS);
-  
-    // create process Engine
-  //  processEngineConfiguration.buildProcessEngine();
-    
-    //repositoryService().createDeployment().addModelInstance("process.bpmn", modelInstance).deploy();
-    
-   //repositoryService().createDeployment().addClasspathResource("ProcessA.bpmn").deploy();
+    // new OnCreateListener();
+    new TaskCreateListener(CAMUNDA_EVENTBUS);
 
     final ProcessInstance processInstance = runtimeService().startProcessInstanceByKey("process_a");
 
     assertThat(processInstance).isWaitingAt("task_a");
-    
+
     assertThat(task()).hasCandidateGroup("group1");
     assertThat(task()).hasCandidateGroup("group2");
     assertThat(task()).hasCandidateGroup("group3");
-    
+
     complete(task());
-    
+
     assertThat(processInstance).isWaitingAt("task_b");
     assertThat(task()).hasCandidateGroup("group1");
     assertThat(task()).hasCandidateGroup("group2");
     assertThat(task()).hasCandidateGroup("group3");
-    
+
     complete(task());
-    
+
     assertThat(processInstance).isEnded();
   }
 }
