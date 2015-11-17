@@ -22,7 +22,7 @@ public class ReactorBpmnParseListenerTest {
     PublisherExecutionListener executionListener = mock(PublisherExecutionListener.class);
     TaskDefinition taskDefinition = new TaskDefinition(mock(TaskFormHandler.class));
 
-    new ReactorBpmnParseListener(taskListener, executionListener).addReactorTaskListener(taskDefinition);
+    new ReactorBpmnParseListener(taskListener, executionListener).addTaskListener(taskDefinition);
 
     assertThat(taskDefinition.getTaskListeners()).hasSize(4);
 
