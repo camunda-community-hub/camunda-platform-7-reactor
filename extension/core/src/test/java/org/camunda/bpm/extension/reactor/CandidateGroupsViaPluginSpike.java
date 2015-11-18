@@ -120,12 +120,6 @@ public class CandidateGroupsViaPluginSpike {
     assertThat(task()).hasCandidateGroup("foo");
     assertThat(task()).hasCandidateGroup("bar");
     
-    claim(task(), "me");
-    
-    assertThat(task()).isAssignedTo("me");
-    assertThat(task()).hasCandidateGroup("group");
-    assertThat(task()).hasCandidateGroup("foo");
-    assertThat(task()).hasCandidateGroup("bar");
     
     complete(task());
     
