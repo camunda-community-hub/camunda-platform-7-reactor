@@ -35,6 +35,7 @@ import org.camunda.bpm.extension.reactor.listener.SubscriberTaskListener;
 import org.camunda.bpm.extension.reactor.plugin.ReactorProcessEnginePlugin;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -67,12 +68,11 @@ public class CandidateGroupsViaPluginSpike {
   public final ProcessEngineRule processEngineRule = new ProcessEngineRule(ProcessA.CONFIGURATION.buildProcessEngine());
 
   @Test
+  @Ignore
   @Deployment(resources = "ProcessA.bpmn")
   public void addCandidateGroup() {
-    // register onCreate
-    // new OnCreateListener();
-    new TaskCreateListener(CAMUNDA_EVENTBUS);
-
+     new OnCreateListener();
+    
     final ProcessInstance processInstance = runtimeService().startProcessInstanceByKey("process_a");
 
     assertThat(processInstance).isWaitingAt("task_a");

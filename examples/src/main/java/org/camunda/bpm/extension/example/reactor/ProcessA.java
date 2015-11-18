@@ -18,6 +18,7 @@ public class ProcessA {
 
   public static ProcessEngineConfiguration CONFIGURATION = new StandaloneInMemProcessEngineConfiguration() {
     {
+      this.databaseSchemaUpdate = DB_SCHEMA_UPDATE_TRUE;
       this.getProcessEnginePlugins().add(new ReactorProcessEnginePlugin());
     }
   };
