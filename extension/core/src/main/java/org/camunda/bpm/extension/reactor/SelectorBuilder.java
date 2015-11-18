@@ -7,6 +7,7 @@ import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.extension.reactor.listener.SubscriberExecutionListener;
 import org.camunda.bpm.extension.reactor.listener.SubscriberListener;
 import org.camunda.bpm.extension.reactor.listener.SubscriberTaskListener;
+import org.camunda.bpm.model.bpmn.instance.FlowElement;
 
 import reactor.bus.selector.Selector;
 import reactor.bus.selector.Selectors;
@@ -116,8 +117,9 @@ public class SelectorBuilder {
   }
 
   static String extractTypeName(BpmnModelExecutionContext bpmnModelExecutionContext) {
+    FlowElement bpmnModelElementInstance = bpmnModelExecutionContext.getBpmnModelElementInstance();
     
     
-    return bpmnModelExecutionContext.getBpmnModelElementInstance().getElementType().getTypeName();
+    return bpmnModelElementInstance.getElementType().getTypeName();
   }
 }

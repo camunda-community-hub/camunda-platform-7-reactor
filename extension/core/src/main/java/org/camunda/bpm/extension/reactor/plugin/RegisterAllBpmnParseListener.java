@@ -139,7 +139,8 @@ public class RegisterAllBpmnParseListener extends AbstractBpmnParseListener {
 
   @Override
   public void parseMultiInstanceLoopCharacteristics(Element activityElement, Element multiInstanceLoopCharacteristicsElement, ActivityImpl activity) {
-    addExecutionListener(activity);
+    // DO NOT IMPLEMENT!
+    // we do not notify on entering a multi-instance activity, this will be done for every single execution inside that loop.
   }
 
   @Override
