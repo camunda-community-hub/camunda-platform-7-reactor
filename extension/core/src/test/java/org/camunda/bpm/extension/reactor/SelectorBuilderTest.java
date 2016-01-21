@@ -1,17 +1,16 @@
 package org.camunda.bpm.extension.reactor;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.camunda.bpm.extension.reactor.SelectorBuilder.selector;
+
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
-import reactor.bus.selector.Selector;
-
-import java.util.Arrays;
-import java.util.Collection;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.camunda.bpm.extension.reactor.SelectorBuilder.selector;
 
 @RunWith(Parameterized.class)
 public class SelectorBuilderTest {
@@ -28,6 +27,9 @@ public class SelectorBuilderTest {
       {selector().event("create"), "/camunda/{type}/{process}/{element}/create"},
       {selector().type("type"), "/camunda/type/{process}/{element}/{event}"},
       {selector().type(""), "/camunda/{type}/{process}/{element}/{event}"},
+      {selector().caseDefinitionKey("foo"), "/camunda/{type}/foo/{element}/{event}"},
+      {selector().caseDefinitionKey("foo").element("bar"), "/camunda/{type}/foo/bar/{event}"},
+      {selector().caseDefinitionKey("foo").element("bar").event("create"), "/camunda/{type}/foo/bar/create"},
     });
   }
 

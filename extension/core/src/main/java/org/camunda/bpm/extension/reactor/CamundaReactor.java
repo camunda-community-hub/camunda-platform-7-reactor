@@ -1,13 +1,13 @@
 package org.camunda.bpm.extension.reactor;
 
+import java.util.List;
+
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngines;
-import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.DelegateTask;
-import org.camunda.bpm.engine.delegate.ExecutionListener;
-import org.camunda.bpm.engine.delegate.TaskListener;
+import org.camunda.bpm.engine.delegate.*;
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.camunda.bpm.engine.impl.cfg.ProcessEnginePlugin;
+import org.camunda.bpm.extension.reactor.event.DelegateCaseExecutionEvent;
 import org.camunda.bpm.extension.reactor.event.DelegateExecutionEvent;
 import org.camunda.bpm.extension.reactor.event.DelegateTaskEvent;
 import org.camunda.bpm.extension.reactor.listener.SubscriberExecutionListener;
@@ -16,8 +16,6 @@ import org.camunda.bpm.extension.reactor.plugin.ReactorProcessEnginePlugin;
 import reactor.bus.EventBus;
 import reactor.bus.selector.Selector;
 import reactor.bus.selector.Selectors;
-
-import java.util.List;
 
 public final class CamundaReactor {
 
@@ -68,12 +66,20 @@ public final class CamundaReactor {
     return SelectorBuilder.selector(delegateExecution).key();
   }
 
+  public static String key(final DelegateCaseExecution delegateCaseExecution) {
+    return SelectorBuilder.selector(delegateCaseExecution).key();
+  }
+
   public static DelegateTaskEvent wrap(final DelegateTask delegateTask) {
     return new DelegateTaskEvent(delegateTask);
   }
 
   public static DelegateExecutionEvent wrap(final DelegateExecution delegateExecution) {
     return new DelegateExecutionEvent(delegateExecution);
+  }
+
+  public static DelegateCaseExecutionEvent wrap(final DelegateCaseExecution delegateCaseExecution) {
+    return new DelegateCaseExecutionEvent(delegateCaseExecution);
   }
 
   public static Selector uri(String process, String element, String event) {
@@ -118,6 +124,16 @@ public final class CamundaReactor {
    */
   public static String processDefintionKey(String processDefinitionId) {
     return processDefinitionId.replaceAll("(\\w+):\\d+:\\d+", "$1");
+  }
+
+  /**
+   * Yet anpother ugly hack, delegate task should contain caseDefinitionKey.
+   *
+   * @param caseDefinitionId
+   * @return case definition key
+   */
+  public static String caseDefintionKey(String caseDefinitionId) {
+    return caseDefinitionId.replaceAll("(\\w+):\\d+:\\d+", "$1");
   }
 
   private CamundaReactor() {
