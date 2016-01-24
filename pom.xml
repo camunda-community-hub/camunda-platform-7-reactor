@@ -29,9 +29,10 @@
     <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
     <project.build.resourceEncoding>${encoding}</project.build.resourceEncoding>
 
-    <camunda.version>7.3.0</camunda.version>
-    <reactor.version>2.0.5.RELEASE</reactor.version>
+    <camunda.version>7.4.0</camunda.version>
+    <reactor.version>2.0.7.RELEASE</reactor.version>
     <slf4j.version>1.7.12</slf4j.version>
+    <commons-lang3.version>3.4</commons-lang3.version>
   </properties>
 
   <dependencyManagement>

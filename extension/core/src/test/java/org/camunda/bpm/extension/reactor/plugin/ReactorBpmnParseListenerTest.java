@@ -26,10 +26,10 @@ public class ReactorBpmnParseListenerTest {
 
     assertThat(taskDefinition.getTaskListeners()).hasSize(4);
 
-    assertThat(taskDefinition.getTaskListener(EVENTNAME_ASSIGNMENT)).containsExactly(taskListener);
-    assertThat(taskDefinition.getTaskListener(EVENTNAME_COMPLETE)).containsExactly(taskListener);
-    assertThat(taskDefinition.getTaskListener(EVENTNAME_CREATE)).containsExactly(taskListener);
-    assertThat(taskDefinition.getTaskListener(EVENTNAME_DELETE)).containsExactly(taskListener);
+    assertThat(taskDefinition.getTaskListeners(EVENTNAME_ASSIGNMENT)).containsExactly(taskListener);
+    assertThat(taskDefinition.getTaskListeners(EVENTNAME_COMPLETE)).containsExactly(taskListener);
+    assertThat(taskDefinition.getTaskListeners(EVENTNAME_CREATE)).containsExactly(taskListener);
+    assertThat(taskDefinition.getTaskListeners(EVENTNAME_DELETE)).containsExactly(taskListener);
   }
 
 
