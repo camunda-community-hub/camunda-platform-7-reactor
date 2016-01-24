@@ -1,21 +1,19 @@
 package org.camunda.bpm.extension.reactor;
 
 
-import org.camunda.bpm.engine.delegate.BpmnModelExecutionContext;
-import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.DelegateTask;
-import org.camunda.bpm.extension.reactor.listener.SubscriberExecutionListener;
-import org.camunda.bpm.extension.reactor.listener.SubscriberListener;
-import org.camunda.bpm.extension.reactor.listener.SubscriberTaskListener;
-import org.camunda.bpm.model.bpmn.instance.FlowElement;
-
-import reactor.bus.selector.Selector;
-import reactor.bus.selector.Selectors;
+import static org.camunda.bpm.extension.reactor.CamundaReactor.caseDefintionKey;
+import static org.camunda.bpm.extension.reactor.CamundaReactor.processDefintionKey;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.camunda.bpm.extension.reactor.CamundaReactor.processDefintionKey;
+import org.camunda.bpm.engine.delegate.*;
+import org.camunda.bpm.extension.reactor.listener.SubscriberExecutionListener;
+import org.camunda.bpm.extension.reactor.listener.SubscriberTaskListener;
+import org.camunda.bpm.model.bpmn.instance.FlowElement;
+import org.camunda.bpm.model.cmmn.instance.CmmnElement;
+import reactor.bus.selector.Selector;
+import reactor.bus.selector.Selectors;
 
 public class SelectorBuilder {
 
@@ -42,6 +40,17 @@ public class SelectorBuilder {
       .process(processDefintionKey(delegateExecution.getProcessDefinitionId()))
       .element(element)
       .event(delegateExecution.getEventName());
+  }
+
+  public static SelectorBuilder selector(final DelegateCaseExecution delegateCaseExecution) {
+    String typeName = extractTypeName(delegateCaseExecution);
+    String element = delegateCaseExecution.getActivityId();
+
+    return selector()
+      .type(typeName)
+      .caseDefinitionKey(caseDefintionKey(delegateCaseExecution.getCaseDefinitionId()))
+      .element(element)
+      .event(delegateCaseExecution.getEventName());
   }
 
   public static SelectorBuilder selector(SubscriberTaskListener subscriberListener) {
@@ -75,6 +84,14 @@ public class SelectorBuilder {
 
   public SelectorBuilder process(String process) {
     values.put("{process}", process);
+
+    return this;
+  }
+
+  public SelectorBuilder caseDefinitionKey(String caseDefinitionKey) {
+    //the caseDefinitionKey has to be put into the 'process' variable,
+    //because otherwise the topic template string in CamundaReactor.CAMUNDA_TOPIC won't work
+    values.put("{process}", caseDefinitionKey);
 
     return this;
   }
@@ -118,8 +135,11 @@ public class SelectorBuilder {
 
   static String extractTypeName(BpmnModelExecutionContext bpmnModelExecutionContext) {
     FlowElement bpmnModelElementInstance = bpmnModelExecutionContext.getBpmnModelElementInstance();
-    
-    
     return bpmnModelElementInstance.getElementType().getTypeName();
+  }
+
+  static String extractTypeName(CmmnModelExecutionContext cmmnModelExecutionContext) {
+    CmmnElement cmmnModelElementInstance = cmmnModelExecutionContext.getCmmnModelElementInstance();
+    return cmmnModelElementInstance.getElementType().getTypeName();
   }
 }
