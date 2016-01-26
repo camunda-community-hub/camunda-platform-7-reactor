@@ -1,25 +1,20 @@
 package org.camunda.bpm.extension.reactor.bus;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.camunda.bpm.engine.delegate.DelegateTask;
-import org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context;
+import org.camunda.bpm.extension.reactor.bus.SelectorBuilder.*;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
-
-import java.util.Arrays;
-import java.util.Collection;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.caseDefintionKey;
-import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.fromCamundaSelector;
-import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.processDefintionKey;
-import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.selector;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Runs multiple test contexts with enlosed runner to separate concerns.
@@ -119,7 +114,7 @@ public class SelectorBuilderTest {
 
     @Test
     public void retrieve_processDefinitionKey_from_definitionId() {
-      assertThat(processDefintionKey("process_a:1:3")).isEqualTo("process_a");
+      assertThat(SelectorBuilder.defintionKey("process_a:1:3")).isEqualTo("process_a");
     }
 
     @Test
@@ -139,7 +134,7 @@ public class SelectorBuilderTest {
       when(task.getEventName()).thenReturn("create");
       when(task.getTaskDefinitionKey()).thenReturn("task1");
 
-      assertThat(SelectorBuilder.selector(task).key()).isEqualTo("/camunda/task/userTask/process/task1/create");
+      assertThat(SelectorBuilder.selector(task).key()).isEqualTo("/camunda/task/{type}/process/task1/create");
     }
   }
 }
