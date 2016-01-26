@@ -3,6 +3,9 @@ package org.camunda.bpm.extension.reactor;
 
 import static org.camunda.bpm.extension.reactor.CamundaReactor.caseDefintionKey;
 import static org.camunda.bpm.extension.reactor.CamundaReactor.processDefintionKey;
+import static org.camunda.bpm.extension.reactor.CamundaSelector.Queue.caseExecutions;
+import static org.camunda.bpm.extension.reactor.CamundaSelector.Queue.processExecutions;
+import static org.camunda.bpm.extension.reactor.CamundaSelector.Queue.tasks;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +26,7 @@ public class SelectorBuilder {
 
   public static SelectorBuilder selector(final DelegateTask delegateTask) {
     return selector()
+      .queue(tasks)
       .type(extractTypeName(delegateTask))
       .process(processDefintionKey(delegateTask.getProcessDefinitionId()))
       .element(delegateTask.getTaskDefinitionKey())
@@ -36,6 +40,7 @@ public class SelectorBuilder {
       : delegateExecution.getCurrentActivityId();
 
     return selector()
+      .queue(processExecutions)
       .type(typeName)
       .process(processDefintionKey(delegateExecution.getProcessDefinitionId()))
       .element(element)
@@ -47,6 +52,7 @@ public class SelectorBuilder {
     String element = delegateCaseExecution.getActivityId();
 
     return selector()
+      .queue(caseExecutions)
       .type(typeName)
       .caseDefinitionKey(caseDefintionKey(delegateCaseExecution.getCaseDefinitionId()))
       .element(element)
@@ -70,6 +76,7 @@ public class SelectorBuilder {
 
   public static SelectorBuilder selector(final CamundaSelector annotation) {
     return selector()
+      .queue(annotation.queue())
       .type(annotation.type())
       .process(annotation.process())
       .element(annotation.element())
@@ -80,6 +87,12 @@ public class SelectorBuilder {
 
   private SelectorBuilder() {
     // noop
+  }
+
+  public SelectorBuilder queue(CamundaSelector.Queue queue) {
+    values.put("{queue}", queue==null ? "" : queue.name());
+
+    return this;
   }
 
   public SelectorBuilder process(String process) {

@@ -9,9 +9,17 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface CamundaSelector {
 
-  public String type() default "";
-  public String element() default "";
-  public String process() default "";
-  public String event() default "";
+  Queue queue() default Queue.none;
+  String type() default "";
+  String element() default "";
+  String process() default "";
+  String event() default "";
+
+  enum Queue {
+    tasks,
+    processExecutions,
+    caseExecutions,
+    none
+  }
 
 }
