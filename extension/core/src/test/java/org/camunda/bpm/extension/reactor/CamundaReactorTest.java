@@ -25,32 +25,32 @@ public class CamundaReactorTest {
 
   @Test
   public void camunda_topic() {
-    assertThat(CamundaReactor.CAMUNDA_TOPIC).isEqualTo("/camunda/{type}/{process}/{element}/{event}");
+    assertThat(CamundaReactor.CAMUNDA_TOPIC).isEqualTo("/camunda/{queue}/{type}/{process}/{element}/{event}");
   }
 
   @Test
   public void creates_topic_for_process_element_and_event() {
-    assertThat(CamundaReactor.key("process", "task", "create")).isEqualTo("/camunda/{type}/process/task/create");
+    assertThat(CamundaReactor.key("process", "task", "create")).isEqualTo("/camunda/{queue}/{type}/process/task/create");
   }
 
   @Test
   public void creates_general_topic_for_null_values() {
-    assertThat(CamundaReactor.key(null, null, null)).isEqualTo("/camunda/{type}/{process}/{element}/{event}");
+    assertThat(CamundaReactor.key(null, null, null)).isEqualTo("/camunda/{queue}/{type}/{process}/{element}/{event}");
   }
 
   @Test
   public void creates_topic_for_element() {
-    assertThat(CamundaReactor.key(null, "task", null)).isEqualTo("/camunda/{type}/{process}/task/{event}");
+    assertThat(CamundaReactor.key(null, "task", null)).isEqualTo("/camunda/{queue}/{type}/{process}/task/{event}");
   }
 
   @Test
   public void creates_topic_for_process() {
-    assertThat(CamundaReactor.key("foo", null, null)).isEqualTo("/camunda/{type}/foo/{element}/{event}");
+    assertThat(CamundaReactor.key("foo", null, null)).isEqualTo("/camunda/{queue}/{type}/foo/{element}/{event}");
   }
 
   @Test
   public void creates_topic_for_event() {
-    assertThat(CamundaReactor.key(null, null, "bar")).isEqualTo("/camunda/{type}/{process}/{element}/bar");
+    assertThat(CamundaReactor.key(null, null, "bar")).isEqualTo("/camunda/{queue}/{type}/{process}/{element}/bar");
   }
 
   @Test

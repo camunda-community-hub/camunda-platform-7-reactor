@@ -18,18 +18,18 @@ public class SelectorBuilderTest {
   @Parameters(name = "{index}: builder=''{0}'', expected=''{1}''")
   public static Collection<Object[]> data() {
     return Arrays.asList(new Object[][]{
-      {selector(), "/camunda/{type}/{process}/{element}/{event}"},
-      {selector().process("foo"), "/camunda/{type}/foo/{element}/{event}"},
-      {selector().process("foo").element("bar"), "/camunda/{type}/foo/bar/{event}"},
-      {selector().process("foo").element("bar").event("create"), "/camunda/{type}/foo/bar/create"},
-      {selector().element("bar").event("create"), "/camunda/{type}/{process}/bar/create"},
-      {selector().element("bar"), "/camunda/{type}/{process}/bar/{event}"},
-      {selector().event("create"), "/camunda/{type}/{process}/{element}/create"},
-      {selector().type("type"), "/camunda/type/{process}/{element}/{event}"},
-      {selector().type(""), "/camunda/{type}/{process}/{element}/{event}"},
-      {selector().caseDefinitionKey("foo"), "/camunda/{type}/foo/{element}/{event}"},
-      {selector().caseDefinitionKey("foo").element("bar"), "/camunda/{type}/foo/bar/{event}"},
-      {selector().caseDefinitionKey("foo").element("bar").event("create"), "/camunda/{type}/foo/bar/create"},
+      {selector(), "/camunda/{queue}/{type}/{process}/{element}/{event}"},
+      {selector().process("foo"), "/camunda/{queue}/{type}/foo/{element}/{event}"},
+      {selector().process("foo").element("bar"), "/camunda/{queue}/{type}/foo/bar/{event}"},
+      {selector().process("foo").element("bar").event("create"), "/camunda/{queue}/{type}/foo/bar/create"},
+      {selector().element("bar").event("create"), "/camunda/{queue}/{type}/{process}/bar/create"},
+      {selector().element("bar"), "/camunda/{queue}/{type}/{process}/bar/{event}"},
+      {selector().event("create"), "/camunda/{queue}/{type}/{process}/{element}/create"},
+      {selector().type("type"), "/camunda/{queue}/type/{process}/{element}/{event}"},
+      {selector().type(""), "/camunda/{queue}/{type}/{process}/{element}/{event}"},
+      {selector().caseDefinitionKey("foo"), "/camunda/{queue}/{type}/foo/{element}/{event}"},
+      {selector().caseDefinitionKey("foo").element("bar"), "/camunda/{queue}/{type}/foo/bar/{event}"},
+      {selector().caseDefinitionKey("foo").element("bar").event("create"), "/camunda/{queue}/{type}/foo/bar/create"},
     });
   }
 
