@@ -1,7 +1,6 @@
 package org.camunda.bpm.extension.reactor.plugin;
 
-import static org.camunda.bpm.engine.delegate.ExecutionListener.EVENTNAME_END;
-import static org.camunda.bpm.engine.delegate.ExecutionListener.EVENTNAME_START;
+import static org.camunda.bpm.engine.delegate.CaseExecutionListener.*;
 import static org.camunda.bpm.engine.delegate.TaskListener.*;
 
 import java.util.Arrays;
@@ -24,8 +23,24 @@ public class RegisterAllCmmnTransformListener extends AbstractCmmnTransformListe
     EVENTNAME_CREATE,
     EVENTNAME_DELETE);
   static final List<String> LIFECYCLE_EVENTS = Arrays.asList(
-    EVENTNAME_START,
-    EVENTNAME_END);
+    CREATE,
+    ENABLE,
+    DISABLE,
+    RE_ENABLE,
+    START,
+    MANUAL_START,
+    COMPLETE,
+    RE_ACTIVATE,
+    TERMINATE,
+    EXIT,
+    PARENT_TERMINATE,
+    SUSPEND,
+    RESUME,
+    PARENT_SUSPEND,
+    PARENT_RESUME,
+    CLOSE,
+    OCCUR
+    );
 
   private final CaseExecutionListener caseExecutionListener;
   private final TaskListener taskListener;
