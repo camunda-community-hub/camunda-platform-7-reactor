@@ -7,12 +7,13 @@ import org.camunda.bpm.engine.impl.bpmn.parser.BpmnParseListener;
 import org.camunda.bpm.engine.impl.cfg.AbstractProcessEnginePlugin;
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.camunda.bpm.engine.impl.cmmn.transformer.CmmnTransformListener;
+import org.camunda.bpm.extension.reactor.CamundaEventBus;
 import reactor.bus.EventBus;
 import reactor.core.dispatch.SynchronousDispatcher;
 
 public class ReactorProcessEnginePlugin extends AbstractProcessEnginePlugin {
 
-  public static final EventBus CAMUNDA_EVENTBUS = EventBus.create(SynchronousDispatcher.INSTANCE);
+  public static final EventBus CAMUNDA_EVENTBUS = new CamundaEventBus();
 
   private final EventBus eventBus;
 

@@ -60,6 +60,7 @@ public class SelectorBuilder {
     }
     return selector(annotation);
   }
+
   public static SelectorBuilder selector(SubscriberExecutionListener subscriberListenerType) {
     final CamundaSelector annotation = subscriberListenerType.getClass().getAnnotation(CamundaSelector.class);
     if (annotation == null) {
