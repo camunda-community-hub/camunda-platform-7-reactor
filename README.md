@@ -52,9 +52,8 @@ public class TaskCreateListener extends SubscriberTaskListener {
 
 This extensions works with delegateTasks and delegateEvents directly. These cannot be used outside the current thread, so the eventBus used is synchronous. 
 
-## Net Steps
+## Next Steps
 
-* publishing as an official communit extension on camunda
 * releasing 1.0 to maven central
 * provide extensions for spring and CDI
 * ...
