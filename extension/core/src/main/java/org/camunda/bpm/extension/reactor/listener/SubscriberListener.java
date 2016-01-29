@@ -2,8 +2,8 @@ package org.camunda.bpm.extension.reactor.listener;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-import org.camunda.bpm.extension.reactor.CamundaSelector;
-import org.camunda.bpm.extension.reactor.SelectorBuilder;
+import org.camunda.bpm.extension.reactor.bus.CamundaSelector;
+import org.camunda.bpm.extension.reactor.bus.SelectorBuilder;
 import org.camunda.bpm.extension.reactor.event.DelegateEvent;
 import org.slf4j.Logger;
 

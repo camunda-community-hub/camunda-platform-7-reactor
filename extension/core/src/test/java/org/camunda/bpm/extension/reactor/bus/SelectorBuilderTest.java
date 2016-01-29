@@ -1,11 +1,12 @@
-package org.camunda.bpm.extension.reactor;
+package org.camunda.bpm.extension.reactor.bus;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.camunda.bpm.extension.reactor.SelectorBuilder.selector;
+import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.selector;
 
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.camunda.bpm.extension.reactor.bus.SelectorBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

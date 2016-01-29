@@ -1,4 +1,4 @@
-package org.camunda.bpm.extension.reactor;
+package org.camunda.bpm.extension.reactor.bus;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

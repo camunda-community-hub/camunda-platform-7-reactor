@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
+import org.camunda.bpm.extension.reactor.bus.SelectorBuilder;
 import org.camunda.bpm.extension.reactor.plugin.ReactorProcessEnginePlugin;
-import org.camunda.bpm.extension.test.ReactorProcessEngineConfiguration;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -30,37 +30,37 @@ public class CamundaReactorTest {
 
   @Test
   public void creates_topic_for_process_element_and_event() {
-    assertThat(CamundaReactor.key("process", "task", "create")).isEqualTo("/camunda/{type}/process/task/create");
+    assertThat(CamundaReactor.selector().process("process").element("task").event("create").key()).isEqualTo("/camunda/{type}/process/task/create");
   }
 
   @Test
   public void creates_general_topic_for_null_values() {
-    assertThat(CamundaReactor.key(null, null, null)).isEqualTo("/camunda/{type}/{process}/{element}/{event}");
+    assertThat(CamundaReactor.selector().key()).isEqualTo("/camunda/{type}/{process}/{element}/{event}");
   }
 
   @Test
   public void creates_topic_for_element() {
-    assertThat(CamundaReactor.key(null, "task", null)).isEqualTo("/camunda/{type}/{process}/task/{event}");
+    assertThat(CamundaReactor.selector().element("task").key()).isEqualTo("/camunda/{type}/{process}/task/{event}");
   }
 
   @Test
   public void creates_topic_for_process() {
-    assertThat(CamundaReactor.key("foo", null, null)).isEqualTo("/camunda/{type}/foo/{element}/{event}");
+    assertThat(CamundaReactor.selector().process("foo").key()).isEqualTo("/camunda/{type}/foo/{element}/{event}");
   }
 
   @Test
   public void creates_topic_for_event() {
-    assertThat(CamundaReactor.key(null, null, "bar")).isEqualTo("/camunda/{type}/{process}/{element}/bar");
+    assertThat(CamundaReactor.selector().event("bar").key()).isEqualTo("/camunda/{type}/{process}/{element}/bar");
   }
 
   @Test
   public void retrieve_processDefinitionKey_from_definitionId() {
-    assertThat(CamundaReactor.processDefintionKey("process_a:1:3")).isEqualTo("process_a");
+    assertThat(SelectorBuilder.processDefintionKey("process_a:1:3")).isEqualTo("process_a");
   }
 
   @Test
   public void retrieve_caseDefinitionKey_from_definitionId() {
-    assertThat(CamundaReactor.caseDefintionKey("case_a:1:3")).isEqualTo("case_a");
+    assertThat(SelectorBuilder.caseDefintionKey("case_a:1:3")).isEqualTo("case_a");
   }
 
   @Test

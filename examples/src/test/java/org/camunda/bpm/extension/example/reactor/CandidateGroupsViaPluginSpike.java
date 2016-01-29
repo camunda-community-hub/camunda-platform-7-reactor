@@ -2,47 +2,21 @@ package org.camunda.bpm.extension.example.reactor;
 
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineAssertions.assertThat;
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.complete;
-import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.taskService;
-import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.repositoryService;
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.runtimeService;
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.task;
 import static org.camunda.bpm.extension.reactor.plugin.ReactorProcessEnginePlugin.CAMUNDA_EVENTBUS;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.camunda.bpm.engine.delegate.DelegateTask;
-import org.camunda.bpm.engine.delegate.TaskListener;
-import org.camunda.bpm.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
-import org.camunda.bpm.engine.impl.bpmn.parser.AbstractBpmnParseListener;
-import org.camunda.bpm.engine.impl.bpmn.parser.BpmnParseListener;
-import org.camunda.bpm.engine.impl.cfg.AbstractProcessEnginePlugin;
-import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.camunda.bpm.engine.impl.cfg.ProcessEnginePlugin;
-import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
-import org.camunda.bpm.engine.impl.persistence.entity.TaskEntity;
-import org.camunda.bpm.engine.impl.pvm.process.ActivityImpl;
-import org.camunda.bpm.engine.impl.pvm.process.ScopeImpl;
-import org.camunda.bpm.engine.impl.task.TaskDefinition;
-import org.camunda.bpm.engine.impl.util.xml.Element;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
-import org.camunda.bpm.extension.reactor.CamundaSelector;
-import org.camunda.bpm.extension.reactor.event.DelegateTaskEvent;
-import org.camunda.bpm.extension.reactor.listener.PublisherTaskListener;
+import org.camunda.bpm.extension.reactor.bus.CamundaSelector;
 import org.camunda.bpm.extension.reactor.listener.SubscriberTaskListener;
-import org.camunda.bpm.extension.reactor.plugin.ReactorProcessEnginePlugin;
-import org.camunda.bpm.model.bpmn.Bpmn;
-import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
-
-import reactor.bus.Event;
-import reactor.bus.registry.Registration;
-import reactor.bus.registry.Registry;
-import reactor.fn.Consumer;
 
 /**
  * Spike that assures that the general approach is working.
@@ -72,7 +46,7 @@ public class CandidateGroupsViaPluginSpike {
   @Deployment(resources = "ProcessA.bpmn")
   public void addCandidateGroup() {
      new OnCreateListener();
-    
+
     final ProcessInstance processInstance = runtimeService().startProcessInstanceByKey("process_a");
 
     assertThat(processInstance).isWaitingAt("task_a");

@@ -2,7 +2,7 @@ package org.camunda.bpm.extension.example.reactor;
 
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.TaskListener;
-import org.camunda.bpm.extension.reactor.CamundaSelector;
+import org.camunda.bpm.extension.reactor.bus.CamundaSelector;
 import org.camunda.bpm.extension.reactor.listener.SubscriberTaskListener;
 import org.camunda.bpm.extension.reactor.plugin.ReactorProcessEnginePlugin;
 

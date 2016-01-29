@@ -1,4 +1,4 @@
-package org.camunda.bpm.extension.reactor.plugin;
+package org.camunda.bpm.extension.reactor.plugin.parse;
 
 import static org.camunda.bpm.engine.delegate.CaseExecutionListener.*;
 import static org.camunda.bpm.engine.delegate.TaskListener.*;
@@ -17,11 +17,7 @@ import org.camunda.bpm.model.cmmn.instance.*;
 
 public class RegisterAllCmmnTransformListener extends AbstractCmmnTransformListener {
 
-  static final List<String> TASK_EVENTS = Arrays.asList(
-    EVENTNAME_COMPLETE,
-    EVENTNAME_ASSIGNMENT,
-    EVENTNAME_CREATE,
-    EVENTNAME_DELETE);
+  static final List<String> TASK_EVENTS = RegisterAllBpmnParseListener.TASK_EVENTS;
   static final List<String> LIFECYCLE_EVENTS = Arrays.asList(
     CREATE,
     ENABLE,

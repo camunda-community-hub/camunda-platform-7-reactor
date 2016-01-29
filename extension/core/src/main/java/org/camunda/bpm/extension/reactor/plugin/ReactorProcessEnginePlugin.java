@@ -1,21 +1,21 @@
 package org.camunda.bpm.extension.reactor.plugin;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.camunda.bpm.engine.impl.bpmn.parser.BpmnParseListener;
 import org.camunda.bpm.engine.impl.cfg.AbstractProcessEnginePlugin;
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.camunda.bpm.engine.impl.cmmn.transformer.CmmnTransformListener;
-import org.camunda.bpm.extension.reactor.CamundaEventBus;
-import reactor.bus.EventBus;
-import reactor.core.dispatch.SynchronousDispatcher;
+import org.camunda.bpm.extension.reactor.bus.CamundaEventBus;
+import org.camunda.bpm.extension.reactor.plugin.parse.RegisterAllBpmnParseListener;
+import org.camunda.bpm.extension.reactor.plugin.parse.RegisterAllCmmnTransformListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReactorProcessEnginePlugin extends AbstractProcessEnginePlugin {
 
-  public static final EventBus CAMUNDA_EVENTBUS = new CamundaEventBus();
+  public static final CamundaEventBus CAMUNDA_EVENTBUS = new CamundaEventBus();
 
-  private final EventBus eventBus;
+  private final CamundaEventBus eventBus;
 
   /**
    * Initializes synchronous eventBus.
@@ -24,17 +24,21 @@ public class ReactorProcessEnginePlugin extends AbstractProcessEnginePlugin {
     this(CAMUNDA_EVENTBUS);
   }
 
-  public ReactorProcessEnginePlugin(final EventBus eventBus) {
+  public ReactorProcessEnginePlugin(final CamundaEventBus eventBus) {
     this.eventBus = eventBus;
   }
 
   @Override
   public void preInit(final ProcessEngineConfigurationImpl processEngineConfiguration) {
-    customPreBPMNParseListeners(processEngineConfiguration).add(new ReactorBpmnParseListener(eventBus));
-    customPreCMMNTransformListeners(processEngineConfiguration).add(new ReactorCmmnTransformListener(eventBus));
+
+    customPreBPMNParseListeners(processEngineConfiguration)
+      .add(new RegisterAllBpmnParseListener(eventBus.getTaskListener(), eventBus.getExecutionListener()));
+
+    customPreCMMNTransformListeners(processEngineConfiguration).add(
+      new RegisterAllCmmnTransformListener(eventBus.getTaskListener(), eventBus.getCaseExecutionListener()));
   }
 
-  public EventBus getEventBus() {
+  public CamundaEventBus getEventBus() {
     return eventBus;
   }
 

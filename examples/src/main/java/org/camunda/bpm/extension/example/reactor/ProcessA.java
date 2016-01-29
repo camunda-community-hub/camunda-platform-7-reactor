@@ -20,6 +20,7 @@ public class ProcessA {
     {
       this.databaseSchemaUpdate = DB_SCHEMA_UPDATE_TRUE;
       this.getProcessEnginePlugins().add(new ReactorProcessEnginePlugin());
+      this.jobExecutorActivate = false;
     }
   };
 

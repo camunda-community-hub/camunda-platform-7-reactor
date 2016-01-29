@@ -1,6 +1,8 @@
-package org.camunda.bpm.extension.reactor;
+package org.camunda.bpm.extension.reactor.bus;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.extension.reactor.bus.CamundaSelector;
+import org.camunda.bpm.extension.reactor.bus.SelectorBuilder;
 import org.camunda.bpm.extension.reactor.listener.SubscriberExecutionListener;
 import org.junit.Test;
 
@@ -14,7 +16,7 @@ public class CamundaSelectorTest {
     @Override
     public void notify(DelegateExecution execution) throws Exception {
       // TODO Auto-generated method stub
-      
+
     }
 
   }
@@ -25,7 +27,7 @@ public class CamundaSelectorTest {
     @Override
     public void notify(DelegateExecution execution) throws Exception {
       // TODO Auto-generated method stub
-      
+
     }
 
   }

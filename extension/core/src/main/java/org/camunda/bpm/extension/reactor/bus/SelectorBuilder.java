@@ -1,19 +1,22 @@
-package org.camunda.bpm.extension.reactor;
+package org.camunda.bpm.extension.reactor.bus;
 
 
-import static org.camunda.bpm.extension.reactor.CamundaReactor.caseDefintionKey;
-import static org.camunda.bpm.extension.reactor.CamundaReactor.processDefintionKey;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import org.camunda.bpm.engine.delegate.*;
+import org.camunda.bpm.engine.delegate.BpmnModelExecutionContext;
+import org.camunda.bpm.engine.delegate.CmmnModelExecutionContext;
+import org.camunda.bpm.engine.delegate.DelegateCaseExecution;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.delegate.DelegateTask;
+import org.camunda.bpm.extension.reactor.CamundaReactor;
+import org.camunda.bpm.extension.reactor.listener.SubscriberCaseExecutionListener;
 import org.camunda.bpm.extension.reactor.listener.SubscriberExecutionListener;
 import org.camunda.bpm.extension.reactor.listener.SubscriberTaskListener;
 import org.camunda.bpm.model.bpmn.instance.FlowElement;
 import org.camunda.bpm.model.cmmn.instance.CmmnElement;
 import reactor.bus.selector.Selector;
 import reactor.bus.selector.Selectors;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SelectorBuilder {
 
@@ -54,17 +57,21 @@ public class SelectorBuilder {
   }
 
   public static SelectorBuilder selector(SubscriberTaskListener subscriberListener) {
-    final CamundaSelector annotation = subscriberListener.getClass().getAnnotation(CamundaSelector.class);
-    if (annotation == null) {
-      throw new IllegalStateException(String.format("Unable to get @CamundaSelector annotation from %s.", subscriberListener.getClass().getName()));
-    }
-    return selector(annotation);
+    return fromCamundaSelector(subscriberListener.getClass());
   }
 
   public static SelectorBuilder selector(SubscriberExecutionListener subscriberListenerType) {
-    final CamundaSelector annotation = subscriberListenerType.getClass().getAnnotation(CamundaSelector.class);
+    return fromCamundaSelector(subscriberListenerType.getClass());
+  }
+
+  public static SelectorBuilder selector(SubscriberCaseExecutionListener subscriberListenerType) {
+    return fromCamundaSelector(subscriberListenerType.getClass());
+  }
+
+  static SelectorBuilder fromCamundaSelector(Class<?> annotatedClass) {
+    final CamundaSelector annotation = annotatedClass.getAnnotation(CamundaSelector.class);
     if (annotation == null) {
-      throw new IllegalStateException(String.format("Unable to get @CamundaSelector annotation from %s.", subscriberListenerType.getClass().getName()));
+      throw new IllegalStateException(String.format("Unable to get @CamundaSelector annotation from %s.", annotatedClass.getName()));
     }
     return selector(annotation);
   }
@@ -92,9 +99,7 @@ public class SelectorBuilder {
   public SelectorBuilder caseDefinitionKey(String caseDefinitionKey) {
     //the caseDefinitionKey has to be put into the 'process' variable,
     //because otherwise the topic template string in CamundaReactor.CAMUNDA_TOPIC won't work
-    values.put("{process}", caseDefinitionKey);
-
-    return this;
+    return process(caseDefinitionKey);
   }
 
   public SelectorBuilder element(String element) {
@@ -127,6 +132,39 @@ public class SelectorBuilder {
       }
     }
     return topic;
+  }
+
+  /**
+   * Ugly hack, delegate task should contain processdefinitionKey.
+   *
+   * @param processDefinitionId the process definition id
+   * @return process definition key
+   */
+  public static String processDefintionKey(String processDefinitionId) {
+    return processDefinitionId.replaceAll("(\\w+):\\d+:\\d+", "$1");
+  }
+
+  static String processDefintionKey(DelegateExecution execution) {
+    return processDefintionKey(execution.getProcessDefinitionId());
+  }
+
+  static String processDefintionKey(DelegateTask task) {
+    return processDefintionKey(task.getProcessDefinitionId());
+  }
+
+  /**
+   * Yet anpother ugly hack, delegate task should contain caseDefinitionKey.
+   *
+   * @param caseDefinitionId
+   * @return case definition key
+   * @see #processDefintionKey(String)
+   */
+  public static String caseDefintionKey(String caseDefinitionId) {
+    return processDefintionKey(caseDefinitionId);
+  }
+
+  static String caseDefintionKey(DelegateCaseExecution execution) {
+    return caseDefintionKey(execution.getCaseDefinitionId());
   }
 
   @Override
