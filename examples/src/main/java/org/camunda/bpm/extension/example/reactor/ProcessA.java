@@ -3,6 +3,7 @@ package org.camunda.bpm.extension.example.reactor;
 import org.camunda.bpm.engine.ProcessEngineConfiguration;
 import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.camunda.bpm.extension.reactor.CamundaReactor;
+import org.camunda.bpm.extension.reactor.bus.CamundaEventBus;
 import org.camunda.bpm.extension.reactor.plugin.ReactorProcessEnginePlugin;
 import org.joda.time.DateTime;
 import reactor.bus.EventBus;
@@ -19,13 +20,13 @@ public class ProcessA {
   public static ProcessEngineConfiguration CONFIGURATION = new StandaloneInMemProcessEngineConfiguration() {
     {
       this.databaseSchemaUpdate = DB_SCHEMA_UPDATE_TRUE;
-      this.getProcessEnginePlugins().add(new ReactorProcessEnginePlugin());
+      this.getProcessEnginePlugins().add(CamundaReactor.plugin());
       this.jobExecutorActivate = false;
     }
   };
 
 
-  private final EventBus eventBus = CamundaReactor.eventBus();
+  private final CamundaEventBus eventBus = CamundaReactor.eventBus();
 
   public void init() {
     new TaskCreateListener(eventBus);

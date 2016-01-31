@@ -17,7 +17,6 @@ import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.extension.reactor.bus.CamundaSelector;
-import org.camunda.bpm.extension.reactor.listener.SubscriberTaskListener;
 import org.camunda.bpm.extension.reactor.plugin.ReactorProcessEnginePlugin;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
@@ -38,7 +37,6 @@ import static org.camunda.bpm.extension.reactor.plugin.ReactorProcessEnginePlugi
  */
 public class CandidateGroupsViaPluginSpike {
 
-
   /**
    * Plugin with PostParseListener that registers "publishTaskCreate".
    */
@@ -56,10 +54,10 @@ public class CandidateGroupsViaPluginSpike {
   };
 
   @CamundaSelector(type="userTask", event="create")
-  public static class OnCreateListener extends SubscriberTaskListener {
+  public static class OnCreateListener implements TaskListener {
 
     public OnCreateListener() {
-      register(CAMUNDA_EVENTBUS);
+      CAMUNDA_EVENTBUS.register(this);
     }
 
     @Override

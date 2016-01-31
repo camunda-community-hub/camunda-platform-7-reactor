@@ -6,10 +6,10 @@ import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.extension.reactor.CamundaReactor;
+import org.camunda.bpm.extension.reactor.ReactorProcessEngineConfiguration;
 import org.camunda.bpm.extension.reactor.bus.CamundaEventBus;
 import org.camunda.bpm.extension.reactor.event.DelegateEvent;
 import org.camunda.bpm.extension.reactor.event.DelegateEventConsumer;
-import org.camunda.bpm.extension.reactor.ReactorProcessEngineConfiguration;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -59,16 +59,16 @@ public class ReactorProcessEnginePluginTest {
   @Test
   public void fire_events_on_userTasks() {
 
-    eventBus.on(selector().process("process_a"), delegateEventConsumer);
-    eventBus.on(selector().process("process_a").element("task_a"), delegateEventConsumer);
-    eventBus.on(selector().process("process_a").element("task_a").event("complete"), delegateEventConsumer);
-    eventBus.on(selector().process("process_a").element("task_a").event("start"), delegateEventConsumer);
-    eventBus.on(selector().process("process_a").element("task_a").event("end"), delegateEventConsumer);
-    eventBus.on(selector().event("create"), delegateEventConsumer);
-    eventBus.on(selector(), delegateEventConsumer);
+    eventBus.register(selector().process("process_a"), delegateEventConsumer);
+    eventBus.register(selector().process("process_a").element("task_a"), delegateEventConsumer);
+    eventBus.register(selector().process("process_a").element("task_a").event("complete"), delegateEventConsumer);
+    eventBus.register(selector().process("process_a").element("task_a").event("start"), delegateEventConsumer);
+    eventBus.register(selector().process("process_a").element("task_a").event("end"), delegateEventConsumer);
+    eventBus.register(selector().event("create"), delegateEventConsumer);
+    eventBus.register(selector(), delegateEventConsumer);
 
 
-    eventBus.on(selector().event("create"), new TaskListener() {
+    eventBus.register(selector().event("create"), new TaskListener() {
       @Override
       public void notify(DelegateTask delegateTask) {
         delegateTask.setAssignee("foo");

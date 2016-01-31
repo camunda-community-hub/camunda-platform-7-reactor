@@ -18,12 +18,10 @@ public class ReactorProcessEngineConfiguration extends StandaloneInMemProcessEng
     }
 
   public static ProcessEngineRule buildRule() {
-
     final ReactorProcessEngineConfiguration configuration = new ReactorProcessEngineConfiguration();
 
     return new ProcessEngineRule(configuration.buildProcessEngine());
   }
-
 
   public ReactorProcessEngineConfiguration() {
     this.history = HISTORY_FULL;
@@ -32,22 +30,7 @@ public class ReactorProcessEngineConfiguration extends StandaloneInMemProcessEng
     this.jobExecutorActivate = false;
     this.expressionManager = new MockExpressionManager();
 
-    this.setCustomPostBPMNParseListeners(new ArrayList<BpmnParseListener>());
-    this.setCustomJobHandlers(new ArrayList<JobHandler>());
-    this.setProcessEnginePlugins(new ArrayList<ProcessEnginePlugin>());
-
     this.getProcessEnginePlugins().add(new ReactorProcessEnginePlugin());
   }
 
-  public void addCustomJobHandler(final JobHandler jobHandler) {
-    getCustomJobHandlers().add(jobHandler);
-  }
-
-  public void addCustomPostBpmnParseListener(final BpmnParseListener bpmnParseListener) {
-    getCustomPostBPMNParseListeners().add(bpmnParseListener);
-  }
-
-  public void addProcessEnginePlugin(final ProcessEnginePlugin processEnginePlugin) {
-    getProcessEnginePlugins().add(processEnginePlugin);
-  }
 }

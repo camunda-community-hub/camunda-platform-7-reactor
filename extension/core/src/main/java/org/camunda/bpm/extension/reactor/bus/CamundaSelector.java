@@ -1,5 +1,8 @@
 package org.camunda.bpm.extension.reactor.bus;
 
+
+import org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -13,5 +16,6 @@ public @interface CamundaSelector {
   public String element() default "";
   public String process() default "";
   public String event() default "";
+  public Context context() default Context.bpmn;
 
 }

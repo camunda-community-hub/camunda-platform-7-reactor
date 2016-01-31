@@ -2,14 +2,14 @@ package org.camunda.bpm.extension.reactor.bus;
 
 
 import org.camunda.bpm.engine.delegate.BpmnModelExecutionContext;
+import org.camunda.bpm.engine.delegate.CaseExecutionListener;
 import org.camunda.bpm.engine.delegate.CmmnModelExecutionContext;
 import org.camunda.bpm.engine.delegate.DelegateCaseExecution;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
+import org.camunda.bpm.engine.delegate.ExecutionListener;
+import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.reactor.CamundaReactor;
-import org.camunda.bpm.extension.reactor.listener.SubscriberCaseExecutionListener;
-import org.camunda.bpm.extension.reactor.listener.SubscriberExecutionListener;
-import org.camunda.bpm.extension.reactor.listener.SubscriberTaskListener;
 import org.camunda.bpm.model.bpmn.instance.FlowElement;
 import org.camunda.bpm.model.cmmn.instance.CmmnElement;
 import reactor.bus.selector.Selector;
@@ -20,12 +20,19 @@ import java.util.Map;
 
 public class SelectorBuilder {
 
+  public static enum Context {
+    task,
+    bpmn,
+    cmmn,
+  }
+
   public static SelectorBuilder selector() {
     return new SelectorBuilder();
   }
 
   public static SelectorBuilder selector(final DelegateTask delegateTask) {
     return selector()
+      .context(Context.task)
       .type(extractTypeName(delegateTask))
       .process(processDefintionKey(delegateTask.getProcessDefinitionId()))
       .element(delegateTask.getTaskDefinitionKey())
@@ -39,6 +46,7 @@ public class SelectorBuilder {
       : delegateExecution.getCurrentActivityId();
 
     return selector()
+      .context(Context.bpmn)
       .type(typeName)
       .process(processDefintionKey(delegateExecution.getProcessDefinitionId()))
       .element(element)
@@ -50,34 +58,44 @@ public class SelectorBuilder {
     String element = delegateCaseExecution.getActivityId();
 
     return selector()
+      .context(Context.cmmn)
       .type(typeName)
       .caseDefinitionKey(caseDefintionKey(delegateCaseExecution.getCaseDefinitionId()))
       .element(element)
       .event(delegateCaseExecution.getEventName());
   }
 
-  public static SelectorBuilder selector(SubscriberTaskListener subscriberListener) {
-    return fromCamundaSelector(subscriberListener.getClass());
+  public static SelectorBuilder selector(final TaskListener listener) {
+    return fromCamundaSelector(listener.getClass()).context(Context.task).type(null);
   }
 
-  public static SelectorBuilder selector(SubscriberExecutionListener subscriberListenerType) {
-    return fromCamundaSelector(subscriberListenerType.getClass());
+  public static SelectorBuilder selector(final ExecutionListener listener) {
+    return fromCamundaSelector(listener.getClass()).context(Context.bpmn);
   }
 
-  public static SelectorBuilder selector(SubscriberCaseExecutionListener subscriberListenerType) {
-    return fromCamundaSelector(subscriberListenerType.getClass());
+  public static SelectorBuilder selector(final CaseExecutionListener listener) {
+    return fromCamundaSelector(listener.getClass()).context(Context.cmmn);
   }
 
   static SelectorBuilder fromCamundaSelector(Class<?> annotatedClass) {
-    final CamundaSelector annotation = annotatedClass.getAnnotation(CamundaSelector.class);
+    CamundaSelector annotation = null;
+    while (annotatedClass != Object.class) {
+      annotation = annotatedClass.getAnnotation(CamundaSelector.class);
+      if (annotation != null) {
+        break;
+      }
+      annotatedClass = annotatedClass.getSuperclass();
+    }
+
     if (annotation == null) {
-      throw new IllegalStateException(String.format("Unable to get @CamundaSelector annotation from %s.", annotatedClass.getName()));
+      throw new IllegalStateException(String.format("Unable to get @CamundaSelector annotation from %s hierarchy.", annotatedClass.getName()));
     }
     return selector(annotation);
   }
 
   public static SelectorBuilder selector(final CamundaSelector annotation) {
     return selector()
+      .context(annotation.context())
       .type(annotation.type())
       .process(annotation.process())
       .element(annotation.element())
@@ -120,6 +138,12 @@ public class SelectorBuilder {
     return this;
   }
 
+  public SelectorBuilder context(Context context) {
+    values.put("{context}", context.name());
+
+    return this;
+  }
+
   public Selector build() {
     return Selectors.uri(key());
   }
@@ -140,7 +164,7 @@ public class SelectorBuilder {
    * @param processDefinitionId the process definition id
    * @return process definition key
    */
-  public static String processDefintionKey(String processDefinitionId) {
+  static String processDefintionKey(String processDefinitionId) {
     return processDefinitionId.replaceAll("(\\w+):\\d+:\\d+", "$1");
   }
 
@@ -159,7 +183,7 @@ public class SelectorBuilder {
    * @return case definition key
    * @see #processDefintionKey(String)
    */
-  public static String caseDefintionKey(String caseDefinitionId) {
+  static String caseDefintionKey(String caseDefinitionId) {
     return processDefintionKey(caseDefinitionId);
   }
 

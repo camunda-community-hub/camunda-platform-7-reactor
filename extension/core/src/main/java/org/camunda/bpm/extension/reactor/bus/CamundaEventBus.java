@@ -1,181 +1,171 @@
 package org.camunda.bpm.extension.reactor.bus;
 
-import org.camunda.bpm.engine.ProcessEngine;
-import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.delegate.CaseExecutionListener;
 import org.camunda.bpm.engine.delegate.DelegateCaseExecution;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
-import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.camunda.bpm.engine.impl.cfg.ProcessEnginePlugin;
 import org.camunda.bpm.extension.reactor.event.DelegateCaseExecutionEvent;
 import org.camunda.bpm.extension.reactor.event.DelegateEvent;
 import org.camunda.bpm.extension.reactor.event.DelegateEventConsumer;
 import org.camunda.bpm.extension.reactor.event.DelegateExecutionEvent;
 import org.camunda.bpm.extension.reactor.event.DelegateTaskEvent;
-import org.camunda.bpm.extension.reactor.listener.SubscriberCaseExecutionListener;
-import org.camunda.bpm.extension.reactor.listener.SubscriberExecutionListener;
-import org.camunda.bpm.extension.reactor.listener.SubscriberTaskListener;
-import org.camunda.bpm.extension.reactor.plugin.ReactorProcessEnginePlugin;
+import org.slf4j.Logger;
 import reactor.bus.EventBus;
-import reactor.bus.selector.Selector;
+import reactor.bus.spec.EventBusSpec;
 import reactor.core.dispatch.SynchronousDispatcher;
-import reactor.fn.Consumer;
 
-import java.util.List;
+import java.io.Serializable;
 
 import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.selector;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * EventBus with camunda specific configuration.
+ * Wrapper for reactor eventBus with camunda specific register and notify methods.
  */
-public class CamundaEventBus extends EventBus implements SubscribeTo {
+public class CamundaEventBus implements Serializable {
 
-  public static CamundaEventBus eventBus(final ProcessEngine processEngine) {
-    ProcessEngineConfigurationImpl configuration = (ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration();
-    final List<ProcessEnginePlugin> plugins = configuration.getProcessEnginePlugins();
+  private final Logger logger = getLogger(this.getClass());
 
-    if (plugins != null) {
-      for (ProcessEnginePlugin plugin : plugins) {
-        if (plugin instanceof ReactorProcessEnginePlugin) {
-          return ((ReactorProcessEnginePlugin) plugin).getEventBus();
-        }
-      }
-    }
-    throw new IllegalStateException("No eventBus found. Make sure the Reactor plugin is configured correctly.");
-  }
-
-  public static CamundaEventBus eventBus() {
-    final ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
-    if (processEngine == null) {
-      throw new IllegalStateException("No processEngine registered.");
-    }
-    return eventBus(processEngine);
-  }
-
-  private final TaskListener taskListener = new TaskListener() {
-    @Override
-    public void notify(DelegateTask delegateTask) {
-      CamundaEventBus.this.notify(selector(delegateTask).key(), DelegateEvent.wrap(delegateTask));
-    }
-  };
-
-  private final ExecutionListener executionListener = new ExecutionListener() {
-    @Override
-    public void notify(DelegateExecution execution) throws Exception {
-      CamundaEventBus.this.notify(selector(execution).key(), DelegateEvent.wrap(execution));
-    }
-
-  };
-
-  private final CaseExecutionListener caseExecutionListener = new CaseExecutionListener() {
-    @Override
-    public void notify(DelegateCaseExecution caseExecution) throws Exception {
-      CamundaEventBus.this.notify(selector(caseExecution).key(), DelegateEvent.wrap(caseExecution));
-    }
-  };
+  private final EventBus eventBus;
 
   public CamundaEventBus() {
-    super(SynchronousDispatcher.INSTANCE, null, null, UncaughtErrorHandler.INSTANCE);
+    this.eventBus = new EventBusSpec().dispatcher(SynchronousDispatcher.INSTANCE).uncaughtErrorHandler(UncaughtErrorHandler.INSTANCE).get();
   }
 
-  @Override
-  public void on(Selector topic, SubscriberTaskListener listener) {
-    this.on(topic, (Consumer<DelegateTaskEvent>) listener);
+  private void notifyDelegateEvent(final String topic, final DelegateEvent event) {
+    logger.debug("Notify execution: {} on topic {}", event.getData(), topic);
+    eventBus.notify(topic, event);
   }
 
-  @Override
-  public void on(SelectorBuilder topicBuilder, SubscriberTaskListener listener) {
-    on(topicBuilder.build(), listener);
+  public void notify(final DelegateCaseExecution caseExecution) {
+    notifyDelegateEvent(selector(caseExecution).key(), DelegateEvent.wrap(caseExecution));
   }
 
-  @Override
-  public void on(Selector topic, SubscriberExecutionListener listener) {
-    this.on(topic, (Consumer<DelegateExecutionEvent>) listener);
+  public void notify(final DelegateTask task) {
+    notifyDelegateEvent(selector(task).key(), DelegateEvent.wrap(task));
   }
 
-  @Override
-  public void on(SelectorBuilder topicBuilder, SubscriberExecutionListener listener) {
-    on(topicBuilder.build(), listener);
-  }
-
-  @Override
-  public void on(Selector topic, SubscriberCaseExecutionListener listener) {
-    this.on(topic, (Consumer<DelegateCaseExecutionEvent>) listener);
-  }
-
-  @Override
-  public void on(SelectorBuilder topicBuilder, SubscriberCaseExecutionListener listener) {
-    on(topicBuilder.build(), listener);
-  }
-
-  @Override
-  public void on(Selector topic, TaskListener listener) {
-    on(topic, SubscriberTaskListener.create(listener));
-  }
-
-  @Override
-  public void on(SelectorBuilder topic, TaskListener listener) {
-    on(topic.build(), SubscriberTaskListener.create(listener));
-  }
-
-  @Override
-  public void on(Selector topic, ExecutionListener listener) {
-    on(topic, SubscriberExecutionListener.create(listener));
-  }
-
-  @Override
-  public void on(SelectorBuilder topicBuilder, ExecutionListener listener) {
-    on(topicBuilder.build(), SubscriberExecutionListener.create(listener));
-  }
-
-  @Override
-  public void on(Selector topic, CaseExecutionListener listener) {
-    on(topic, SubscriberCaseExecutionListener.create(listener));
-  }
-
-  @Override
-  public void on(SelectorBuilder topicBuilder, CaseExecutionListener listener) {
-    on(topicBuilder.build(), SubscriberCaseExecutionListener.create(listener));
-  }
-
-
-  @Override
-  public void on(SelectorBuilder topicBuilder, DelegateEventConsumer consumer) {
-    on(topicBuilder.build(), consumer);
-  }
-
-  public SubscribeTo getListenerSubscriber() {
-    return this;
+  public void notify(final DelegateExecution execution) {
+    notifyDelegateEvent(selector(execution).key(), DelegateEvent.wrap(execution));
   }
 
   /**
    * @return this eventbus downcasted to standard api
    */
   public EventBus get() {
-    return this;
+    return eventBus;
   }
 
   /**
    * @return caseExecutionListener that fires all parse events to bus
    */
   public CaseExecutionListener getCaseExecutionListener() {
-    return caseExecutionListener;
+    return new CaseExecutionListener() {
+      @Override
+      public void notify(DelegateCaseExecution caseExecution) throws Exception {
+        CamundaEventBus.this.notify(caseExecution);
+      }
+    };
   }
 
   /**
    * @return ExecutionListener that fires all parse events to bus
    */
   public ExecutionListener getExecutionListener() {
-    return executionListener;
+    return new ExecutionListener() {
+      @Override
+      public void notify(final DelegateExecution execution) throws Exception {
+        CamundaEventBus.this.notify(execution);
+      }
+    };
   }
 
   /**
    * @return taskListener that fires all parse events to bus
    */
   public TaskListener getTaskListener() {
-    return taskListener;
+    return new TaskListener() {
+      @Override
+      public void notify(DelegateTask task) {
+        CamundaEventBus.this.notify(task);
+      }
+    };
   }
+
+  /**
+   * Register listener for the topic parsed from CamundaSelector annotation.
+   *
+   * @see #register(SelectorBuilder, TaskListener)
+   * @param listener the listener to register
+   */
+  public void register(final TaskListener listener) {
+    register(SelectorBuilder.selector(listener), listener);
+  }
+
+  /**
+   * Register listener for the topic parsed from CamundaSelector annotation.
+   *
+   * @param topicBuilder the topic to register on
+   * @param listener the listener to register
+   */
+  public void register(final SelectorBuilder topicBuilder, final TaskListener listener) {
+    eventBus.on(topicBuilder.build(), DelegateTaskEvent.consumer(listener));
+    logger.debug("registered {} to '{}'", listener.getClass().getSimpleName(), topicBuilder.key());
+  }
+
+  /**
+   * Register listener for the topic parsed from CamundaSelector annotation.
+   *
+   * @see #register(SelectorBuilder, ExecutionListener)
+   * @param listener the listener to register
+   */
+  public void register(final ExecutionListener listener) {
+    register(SelectorBuilder.selector(listener), listener);
+  }
+
+  /**
+   * Register listener for the topic parsed from CamundaSelector annotation.
+   *
+   * @param topicBuilder the topic to register on
+   * @param listener the listener to register
+   */
+  public void register(final SelectorBuilder topicBuilder, final ExecutionListener listener) {
+    eventBus.on(topicBuilder.build(), DelegateExecutionEvent.consumer(listener));
+    logger.debug("registered {} to '{}'", listener.getClass().getSimpleName(), topicBuilder.key());
+  }
+
+  /**
+   * Register listener for the topic parsed from CamundaSelector annotation.
+   *
+   * @see #register(SelectorBuilder, CaseExecutionListener)
+   * @param listener the listener to register
+   */
+  public void register(final CaseExecutionListener listener) {
+    register(SelectorBuilder.selector(listener), listener);
+  }
+
+  /**
+   * Register listener for the given topic.
+   *
+   * @param topicBuilder the topic to register on
+   * @param listener the listener to register
+   */
+  public void register(final SelectorBuilder topicBuilder, final CaseExecutionListener listener) {
+    eventBus.on(topicBuilder.build(), DelegateCaseExecutionEvent.consumer(listener));
+    logger.debug("registered {} to '{}'", listener.getClass().getSimpleName(), topicBuilder.key());
+  }
+
+  /**
+   * Register generic consumer for given topic..
+   *
+   * @param topicBuilder the topic to register on
+   * @param consumer the consumer to register
+   */
+  public void register(final SelectorBuilder topicBuilder, final DelegateEventConsumer consumer) {
+    eventBus.on(topicBuilder.build(), consumer);
+    logger.debug("registered {} to '{}'", consumer.getClass().getSimpleName(), topicBuilder.key());
+  }
+
 }

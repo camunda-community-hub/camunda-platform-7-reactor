@@ -1,11 +1,5 @@
 package org.camunda.bpm.extension.reactor.plugin.parse;
 
-import static org.camunda.bpm.engine.delegate.CaseExecutionListener.*;
-import static org.camunda.bpm.engine.delegate.TaskListener.*;
-
-import java.util.Arrays;
-import java.util.List;
-
 import org.camunda.bpm.engine.delegate.CaseExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.engine.impl.cmmn.behavior.HumanTaskActivityBehavior;
@@ -13,7 +7,34 @@ import org.camunda.bpm.engine.impl.cmmn.model.CmmnActivity;
 import org.camunda.bpm.engine.impl.cmmn.transformer.AbstractCmmnTransformListener;
 import org.camunda.bpm.engine.impl.task.TaskDefinition;
 import org.camunda.bpm.model.cmmn.impl.instance.CasePlanModel;
-import org.camunda.bpm.model.cmmn.instance.*;
+import org.camunda.bpm.model.cmmn.instance.CaseTask;
+import org.camunda.bpm.model.cmmn.instance.EventListener;
+import org.camunda.bpm.model.cmmn.instance.HumanTask;
+import org.camunda.bpm.model.cmmn.instance.Milestone;
+import org.camunda.bpm.model.cmmn.instance.PlanItem;
+import org.camunda.bpm.model.cmmn.instance.ProcessTask;
+import org.camunda.bpm.model.cmmn.instance.Stage;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.camunda.bpm.engine.delegate.CaseExecutionListener.CLOSE;
+import static org.camunda.bpm.engine.delegate.CaseExecutionListener.COMPLETE;
+import static org.camunda.bpm.engine.delegate.CaseExecutionListener.CREATE;
+import static org.camunda.bpm.engine.delegate.CaseExecutionListener.DISABLE;
+import static org.camunda.bpm.engine.delegate.CaseExecutionListener.ENABLE;
+import static org.camunda.bpm.engine.delegate.CaseExecutionListener.EXIT;
+import static org.camunda.bpm.engine.delegate.CaseExecutionListener.MANUAL_START;
+import static org.camunda.bpm.engine.delegate.CaseExecutionListener.OCCUR;
+import static org.camunda.bpm.engine.delegate.CaseExecutionListener.PARENT_RESUME;
+import static org.camunda.bpm.engine.delegate.CaseExecutionListener.PARENT_SUSPEND;
+import static org.camunda.bpm.engine.delegate.CaseExecutionListener.PARENT_TERMINATE;
+import static org.camunda.bpm.engine.delegate.CaseExecutionListener.RESUME;
+import static org.camunda.bpm.engine.delegate.CaseExecutionListener.RE_ACTIVATE;
+import static org.camunda.bpm.engine.delegate.CaseExecutionListener.RE_ENABLE;
+import static org.camunda.bpm.engine.delegate.CaseExecutionListener.START;
+import static org.camunda.bpm.engine.delegate.CaseExecutionListener.SUSPEND;
+import static org.camunda.bpm.engine.delegate.CaseExecutionListener.TERMINATE;
 
 public class RegisterAllCmmnTransformListener extends AbstractCmmnTransformListener {
 
