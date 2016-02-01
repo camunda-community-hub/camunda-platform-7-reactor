@@ -35,10 +35,10 @@ Register a listener that is fired for all "create" events on any user task in th
 
 ```java
 @CamundaSelector(type = "userTask", event = TaskListener.EVENTNAME_CREATE)
-public class TaskCreateListener extends SubscriberTaskListener {
+public class TaskCreateListener implements TaskListener {
   
   public TaskCreateListener(EventBus eventBus) {
-    register(eventBus);
+    eventBus.register(this);
   }
 
   @Override
@@ -61,6 +61,7 @@ This extensions works with delegateTasks and delegateEvents directly. These cann
 ## Maintainer
 
 * [Jan Galinski](https://github.com/jangalinski), [Holisticon AG](http://www.holisticon.de/)
+* Philipp Ossler, [Camunda GmbH]
 
 ## License
 
