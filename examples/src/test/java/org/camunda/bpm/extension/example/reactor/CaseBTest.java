@@ -24,7 +24,7 @@ public class CaseBTest {
   }
 
   @Rule
-  public final ProcessEngineRule processEngineRule = new ProcessEngineRule(Setup.CONFIGURATION.buildProcessEngine());
+  public final ProcessEngineRule processEngineRule = new ProcessEngineRule(Setup.processEngine);
 
   @Test
   @Deployment(resources = "CaseB.cmmn")

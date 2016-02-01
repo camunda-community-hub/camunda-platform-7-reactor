@@ -15,18 +15,14 @@ import org.camunda.bpm.extension.reactor.event.DelegateEventConsumer;
 import org.junit.Rule;
 import org.junit.Test;
 import org.slf4j.Logger;
-import org.slf4j.bridge.SLF4JBridgeHandler;
 
 @Deployment(resources = "ProcessA.bpmn")
 public class ProcessATest {
-  static {
-    SLF4JBridgeHandler.removeHandlersForRootLogger();
-    SLF4JBridgeHandler.install();
-  }
 
   private final Logger logger = getLogger(this.getClass());
+
   @Rule
-  public final ProcessEngineRule processEngineRule = new ProcessEngineRule(Setup.CONFIGURATION.buildProcessEngine());
+  public final ProcessEngineRule processEngineRule = new ProcessEngineRule(Setup.processEngine);
 
   @Test
   public void run_process() {
