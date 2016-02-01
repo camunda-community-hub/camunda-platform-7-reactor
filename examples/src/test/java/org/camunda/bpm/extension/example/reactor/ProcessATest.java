@@ -1,5 +1,9 @@
 package org.camunda.bpm.extension.example.reactor;
 
+import static org.camunda.bpm.engine.test.assertions.ProcessEngineAssertions.assertThat;
+import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.*;
+import static org.slf4j.LoggerFactory.getLogger;
+
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.test.Deployment;
@@ -13,13 +17,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
-import static org.camunda.bpm.engine.test.assertions.ProcessEngineAssertions.assertThat;
-import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.runtimeService;
-import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.task;
-import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.taskQuery;
-import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.taskService;
-import static org.slf4j.LoggerFactory.getLogger;
-
 @Deployment(resources = "ProcessA.bpmn")
 public class ProcessATest {
   static {
@@ -29,11 +26,11 @@ public class ProcessATest {
 
   private final Logger logger = getLogger(this.getClass());
   @Rule
-  public final ProcessEngineRule processEngineRule = new ProcessEngineRule(ProcessA.CONFIGURATION.buildProcessEngine());
+  public final ProcessEngineRule processEngineRule = new ProcessEngineRule(Setup.CONFIGURATION.buildProcessEngine());
 
   @Test
   public void run_process() {
-    new ProcessA().init();
+    Setup.init();
 
     CamundaReactor.eventBus().register(SelectorBuilder.selector(), new DelegateEventConsumer() {
       @Override

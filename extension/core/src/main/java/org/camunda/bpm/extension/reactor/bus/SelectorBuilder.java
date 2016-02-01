@@ -1,22 +1,15 @@
 package org.camunda.bpm.extension.reactor.bus;
 
 
-import org.camunda.bpm.engine.delegate.BpmnModelExecutionContext;
-import org.camunda.bpm.engine.delegate.CaseExecutionListener;
-import org.camunda.bpm.engine.delegate.CmmnModelExecutionContext;
-import org.camunda.bpm.engine.delegate.DelegateCaseExecution;
-import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.DelegateTask;
-import org.camunda.bpm.engine.delegate.ExecutionListener;
-import org.camunda.bpm.engine.delegate.TaskListener;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.camunda.bpm.engine.delegate.*;
 import org.camunda.bpm.extension.reactor.CamundaReactor;
 import org.camunda.bpm.model.bpmn.instance.FlowElement;
 import org.camunda.bpm.model.cmmn.instance.CmmnElement;
 import reactor.bus.selector.Selector;
 import reactor.bus.selector.Selectors;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class SelectorBuilder {
 
@@ -33,8 +26,8 @@ public class SelectorBuilder {
   public static SelectorBuilder selector(final DelegateTask delegateTask) {
     return selector()
       .context(Context.task)
-      .type(extractTypeName(delegateTask))
-      .process(processDefintionKey(delegateTask.getProcessDefinitionId()))
+      .type(null)
+      .process(defintionKey(delegateTask))
       .element(delegateTask.getTaskDefinitionKey())
       .event(delegateTask.getEventName());
   }
@@ -48,7 +41,7 @@ public class SelectorBuilder {
     return selector()
       .context(Context.bpmn)
       .type(typeName)
-      .process(processDefintionKey(delegateExecution.getProcessDefinitionId()))
+      .process(defintionKey(delegateExecution.getProcessDefinitionId()))
       .element(element)
       .event(delegateExecution.getEventName());
   }
@@ -159,21 +152,21 @@ public class SelectorBuilder {
   }
 
   /**
-   * Ugly hack, delegate task should contain processdefinitionKey.
+   * Ugly hack, delegate task should contain processdefinitionKey or caseDefinitionKey.
    *
-   * @param processDefinitionId the process definition id
-   * @return process definition key
+   * @param definitionId the process or case definition id
+   * @return process or case definition key
    */
-  static String processDefintionKey(String processDefinitionId) {
-    return processDefinitionId.replaceAll("(\\w+):\\d+:\\d+", "$1");
+  static String defintionKey(String definitionId) {
+    return definitionId.replaceAll("(\\w+):\\d+:\\d+", "$1");
   }
 
-  static String processDefintionKey(DelegateExecution execution) {
-    return processDefintionKey(execution.getProcessDefinitionId());
-  }
-
-  static String processDefintionKey(DelegateTask task) {
-    return processDefintionKey(task.getProcessDefinitionId());
+  static String defintionKey(DelegateTask task) {
+    if (task.getProcessDefinitionId() == null) {
+      return defintionKey(task.getCaseDefinitionId());
+    } else {
+      return defintionKey(task.getProcessDefinitionId());
+    }
   }
 
   /**
@@ -181,10 +174,10 @@ public class SelectorBuilder {
    *
    * @param caseDefinitionId
    * @return case definition key
-   * @see #processDefintionKey(String)
+   * @see #defintionKey(String)
    */
   static String caseDefintionKey(String caseDefinitionId) {
-    return processDefintionKey(caseDefinitionId);
+    return defintionKey(caseDefinitionId);
   }
 
   static String caseDefintionKey(DelegateCaseExecution execution) {
