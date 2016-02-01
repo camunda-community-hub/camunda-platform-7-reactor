@@ -61,7 +61,7 @@ This extensions works with delegateTasks and delegateEvents directly. These cann
 ## Maintainer
 
 * [Jan Galinski](https://github.com/jangalinski), [Holisticon AG](http://www.holisticon.de/)
-* Philipp Ossler, [Camunda GmbH]
+* [Philipp Ossler](https://github.com/saig0), [Camunda Services GmbH](http://www.camunda.org/)
 
 ## License
 
