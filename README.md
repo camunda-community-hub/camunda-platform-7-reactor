@@ -54,14 +54,15 @@ This extensions works with delegateTasks and delegateEvents directly. These cann
 
 ## Next Steps
 
-* releasing 1.0 to maven central
 * provide extensions for spring and CDI
+* use eventbus for message correlation end/start
 * ...
 
 ## Maintainer
 
 * [Jan Galinski](https://github.com/jangalinski), [Holisticon AG](http://www.holisticon.de/)
 * [Philipp Ossler](https://github.com/saig0), [Camunda Services GmbH](http://www.camunda.org/)
+* [Malte Sörensen](https://github.com/malteser), [Holisticon AG](http://www.holisticon.de/)
 
 ## License
 
