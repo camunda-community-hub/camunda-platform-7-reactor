@@ -9,9 +9,10 @@ public class Setup {
 
   public static ProcessEngineConfiguration CONFIGURATION = new StandaloneInMemProcessEngineConfiguration() {
     {
-      this.databaseSchemaUpdate = DB_SCHEMA_UPDATE_TRUE;
+      this.databaseSchemaUpdate = DB_SCHEMA_UPDATE_DROP_CREATE;
       this.getProcessEnginePlugins().add(CamundaReactor.plugin());
       this.jobExecutorActivate = false;
+      this.isDbMetricsReporterActivate = false;
     }
   };
 
