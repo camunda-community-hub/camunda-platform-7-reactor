@@ -12,6 +12,7 @@ public class Setup {
       this.databaseSchemaUpdate = DB_SCHEMA_UPDATE_TRUE;
       this.getProcessEnginePlugins().add(CamundaReactor.plugin());
       this.jobExecutorActivate = false;
+      this.isDbMetricsReporterActivate = false;
     }
   };
 

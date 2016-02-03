@@ -1,14 +1,21 @@
 package org.camunda.bpm.extension.reactor.bus;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.*;
-import static org.mockito.Mockito.*;
+import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.caseDefintionKey;
+import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.fromCamundaSelector;
+import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.selector;
+import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context.bpmn;
+import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context.cmmn;
+import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context.task;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collection;
 
 import org.camunda.bpm.engine.delegate.DelegateTask;
-import org.camunda.bpm.extension.reactor.bus.SelectorBuilder.*;
+import org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
@@ -137,4 +144,40 @@ public class SelectorBuilderTest {
       assertThat(SelectorBuilder.selector(task).key()).isEqualTo("/camunda/task/{type}/process/task1/create");
     }
   }
+  
+    @RunWith(Parameterized.class)
+    public static class ContextTest {
+
+      @Parameters(name = "{index}: context=''{0}'', builder=''{1}'', expected=''{2}''")
+      public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][]{
+          {bpmn, selector(), false},
+          {task, selector(), false},
+          {cmmn, selector(), false},
+          {bpmn, selector().context(bpmn), true},
+          {bpmn, selector().context(cmmn), false},
+          {bpmn, selector().context(task), false},
+          {cmmn, selector().context(bpmn), false},
+          {cmmn, selector().context(cmmn), true},
+          {cmmn, selector().context(task), false},
+          {task, selector().context(bpmn), false},
+          {task, selector().context(cmmn), false},
+          {task, selector().context(task), true},
+        });
+      }
+      
+      @Parameter(0)
+      public Context context;
+
+      @Parameter(1)
+      public SelectorBuilder builder;
+
+      @Parameter(2)
+      public boolean  expected;
+
+      @Test
+      public void matchesBuilder() {
+        assertThat(context.matches(builder)).isEqualTo(expected);
+      }
+    }
 }

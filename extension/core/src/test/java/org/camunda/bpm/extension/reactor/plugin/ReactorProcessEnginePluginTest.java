@@ -8,6 +8,7 @@ import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.extension.reactor.CamundaReactor;
 import org.camunda.bpm.extension.reactor.ReactorProcessEngineConfiguration;
 import org.camunda.bpm.extension.reactor.bus.CamundaEventBus;
+import org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context;
 import org.camunda.bpm.extension.reactor.event.DelegateEvent;
 import org.camunda.bpm.extension.reactor.event.DelegateEventConsumer;
 import org.junit.Before;
@@ -68,7 +69,7 @@ public class ReactorProcessEnginePluginTest {
     eventBus.register(selector(), delegateEventConsumer);
 
 
-    eventBus.register(selector().event("create"), new TaskListener() {
+    eventBus.register(selector().event("create").context(Context.task), new TaskListener() {
       @Override
       public void notify(DelegateTask delegateTask) {
         delegateTask.setAssignee("foo");

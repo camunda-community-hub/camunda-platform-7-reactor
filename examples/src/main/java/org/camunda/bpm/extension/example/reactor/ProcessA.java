@@ -2,8 +2,6 @@ package org.camunda.bpm.extension.example.reactor;
 
 import java.util.Date;
 
-import org.camunda.bpm.extension.reactor.CamundaReactor;
-import org.camunda.bpm.extension.reactor.bus.CamundaEventBus;
 import org.joda.time.DateTime;
 
 public class ProcessA {

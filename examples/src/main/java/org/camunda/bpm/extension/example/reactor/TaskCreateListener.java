@@ -7,8 +7,6 @@ import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.reactor.bus.CamundaEventBus;
 import org.camunda.bpm.extension.reactor.bus.CamundaSelector;
 
-import reactor.bus.EventBus;
-
 @CamundaSelector(type = "userTask", event = TaskListener.EVENTNAME_CREATE)
 public class TaskCreateListener implements TaskListener {
 

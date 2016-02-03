@@ -1,15 +1,10 @@
 package org.camunda.bpm.extension.reactor;
 
-import org.camunda.bpm.engine.impl.bpmn.parser.BpmnParseListener;
-import org.camunda.bpm.engine.impl.cfg.ProcessEnginePlugin;
 import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
-import org.camunda.bpm.engine.impl.jobexecutor.JobHandler;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.engine.test.mock.MockExpressionManager;
 import org.camunda.bpm.extension.reactor.plugin.ReactorProcessEnginePlugin;
 import org.slf4j.bridge.SLF4JBridgeHandler;
-
-import java.util.ArrayList;
 
 public class ReactorProcessEngineConfiguration extends StandaloneInMemProcessEngineConfiguration {
     static {

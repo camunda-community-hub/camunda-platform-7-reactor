@@ -35,7 +35,7 @@ public class ProcessATest {
     CamundaReactor.eventBus().register(SelectorBuilder.selector(), new DelegateEventConsumer() {
       @Override
       public void accept(DelegateEvent delegateEvent) {
-        logger.info(delegateEvent.toString());
+        logger.debug(delegateEvent.toString());
       }
     });
 

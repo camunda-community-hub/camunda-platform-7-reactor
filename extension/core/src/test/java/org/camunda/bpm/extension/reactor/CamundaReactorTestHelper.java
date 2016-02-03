@@ -1,5 +1,6 @@
 package org.camunda.bpm.extension.reactor;
 
+import org.camunda.bpm.engine.delegate.DelegateCaseExecution;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.extension.reactor.bus.CamundaEventBus;
@@ -44,6 +45,17 @@ public class CamundaReactorTestHelper {
     when(execution.getProcessDefinitionId()).thenReturn("process:1:1");
     when(execution.getEventName()).thenReturn("start");
     when(execution.getCurrentActivityId()).thenReturn("service1");
+
+    return execution;
+  }
+
+  public static DelegateCaseExecution delegateCaseExecution() {
+    final DelegateCaseExecution execution = mock(DelegateCaseExecution.class, RETURNS_DEEP_STUBS);
+
+    when(execution.getCmmnModelElementInstance().getElementType().getTypeName()).thenReturn("serviceTask");
+    when(execution.getCaseDefinitionId()).thenReturn("process:1:1");
+    when(execution.getEventName()).thenReturn("start");
+    when(execution.getActivityId()).thenReturn("service1");
 
     return execution;
   }

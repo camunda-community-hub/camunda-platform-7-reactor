@@ -1,13 +1,23 @@
 package org.camunda.bpm.extension.reactor.bus;
 
 
+import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context.task;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.camunda.bpm.engine.delegate.*;
+import org.camunda.bpm.engine.delegate.BpmnModelExecutionContext;
+import org.camunda.bpm.engine.delegate.CaseExecutionListener;
+import org.camunda.bpm.engine.delegate.CmmnModelExecutionContext;
+import org.camunda.bpm.engine.delegate.DelegateCaseExecution;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.delegate.DelegateTask;
+import org.camunda.bpm.engine.delegate.ExecutionListener;
+import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.reactor.CamundaReactor;
 import org.camunda.bpm.model.bpmn.instance.FlowElement;
 import org.camunda.bpm.model.cmmn.instance.CmmnElement;
+
 import reactor.bus.selector.Selector;
 import reactor.bus.selector.Selectors;
 
@@ -16,7 +26,11 @@ public class SelectorBuilder {
   public static enum Context {
     task,
     bpmn,
-    cmmn,
+    cmmn;
+    
+    public boolean matches(SelectorBuilder selectorBuilder) {
+      return this.name().equals(selectorBuilder.values.get("{context}"));
+    }
   }
 
   public static SelectorBuilder selector() {
@@ -59,7 +73,7 @@ public class SelectorBuilder {
   }
 
   public static SelectorBuilder selector(final TaskListener listener) {
-    return fromCamundaSelector(listener.getClass()).context(Context.task).type(null);
+    return fromCamundaSelector(listener.getClass()).context(task).type(null);
   }
 
   public static SelectorBuilder selector(final ExecutionListener listener) {
@@ -136,7 +150,7 @@ public class SelectorBuilder {
 
     return this;
   }
-
+  
   public Selector build() {
     return Selectors.uri(key());
   }

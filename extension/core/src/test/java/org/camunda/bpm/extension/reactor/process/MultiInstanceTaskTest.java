@@ -1,5 +1,7 @@
 package org.camunda.bpm.extension.reactor.process;
 
+import java.util.Arrays;
+
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.engine.test.assertions.ProcessEngineTests;
@@ -13,10 +15,6 @@ import org.camunda.bpm.extension.reactor.event.DelegateEventConsumer;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import reactor.bus.EventBus;
-import reactor.fn.Consumer;
-
-import java.util.Arrays;
 
 public class MultiInstanceTaskTest {
 

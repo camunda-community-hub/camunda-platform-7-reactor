@@ -6,6 +6,7 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
+import org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context;
 import org.camunda.bpm.extension.reactor.event.DelegateCaseExecutionEvent;
 import org.camunda.bpm.extension.reactor.event.DelegateEvent;
 import org.camunda.bpm.extension.reactor.event.DelegateEventConsumer;
@@ -25,6 +26,8 @@ import static org.slf4j.LoggerFactory.getLogger;
  * Wrapper for reactor eventBus with camunda specific register and notify methods.
  */
 public class CamundaEventBus implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   private final Logger logger = getLogger(this.getClass());
 
@@ -111,6 +114,9 @@ public class CamundaEventBus implements Serializable {
    * @param listener the listener to register
    */
   public void register(final SelectorBuilder topicBuilder, final TaskListener listener) {
+    if (!Context.task.matches(topicBuilder)) {
+      throw new IllegalArgumentException("can not register taskListener to topic: " + topicBuilder.key());
+    }
     eventBus.on(topicBuilder.build(), DelegateTaskEvent.consumer(listener));
     logger.debug("registered {} to '{}'", listener.getClass().getSimpleName(), topicBuilder.key());
   }
@@ -132,6 +138,10 @@ public class CamundaEventBus implements Serializable {
    * @param listener the listener to register
    */
   public void register(final SelectorBuilder topicBuilder, final ExecutionListener listener) {
+    if (!Context.bpmn.matches(topicBuilder)) {
+      throw new IllegalArgumentException("can not register executionListener to topic: " + topicBuilder.key());
+    }
+    
     eventBus.on(topicBuilder.build(), DelegateExecutionEvent.consumer(listener));
     logger.debug("registered {} to '{}'", listener.getClass().getSimpleName(), topicBuilder.key());
   }
@@ -153,6 +163,9 @@ public class CamundaEventBus implements Serializable {
    * @param listener the listener to register
    */
   public void register(final SelectorBuilder topicBuilder, final CaseExecutionListener listener) {
+    if (!Context.cmmn.matches(topicBuilder)) {
+      throw new IllegalArgumentException("can not register caseExecutionListener to topic: " + topicBuilder.key());
+    }
     eventBus.on(topicBuilder.build(), DelegateCaseExecutionEvent.consumer(listener));
     logger.debug("registered {} to '{}'", listener.getClass().getSimpleName(), topicBuilder.key());
   }
