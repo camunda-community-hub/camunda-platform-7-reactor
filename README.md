@@ -1,5 +1,8 @@
 # camunda-bpm-reactor
 
+
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension/camunda-bpm-reactorbadge.svg)](https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension/camunda-bpm-reactor)
+
 Event-based listeners and delegates for camunda.
 
 ## What is this about? 
