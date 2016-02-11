@@ -48,6 +48,8 @@ public class TaskCreateListener implements TaskListener {
 }
 ```
 
+More examples can be found in the sub-module [examples](examples).
+
 ## Noteworthy
 
 This extensions works with delegateTasks and delegateEvents directly. These cannot be used outside the current thread, so the eventBus used is synchronous. 
