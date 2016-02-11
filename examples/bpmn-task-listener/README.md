@@ -58,7 +58,7 @@ public class TaskCreateListener implements TaskListener {
 }
 ```
 
-The annotation {{@CamundaSelector}} specifies that the listener should be invoked when the process engine enters a user task (type='userTask') and creates a task entity (event='create'). 
+The annotation `@CamundaSelector` specifies that the listener should be invoked when the process engine enters a user task (type='userTask') and creates a task entity (event='create'). 
 
 At least, the listener must be registered on the event bus. For example, by self-registration in constructor:
 
