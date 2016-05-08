@@ -5,6 +5,7 @@ import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context.task
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.camunda.bpm.engine.delegate.BpmnModelExecutionContext;
 import org.camunda.bpm.engine.delegate.CaseExecutionListener;
@@ -15,6 +16,7 @@ import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.reactor.CamundaReactor;
+import org.camunda.bpm.extension.reactor.plugin.parse.RegisterAllBpmnParseListener;
 import org.camunda.bpm.model.bpmn.instance.FlowElement;
 import org.camunda.bpm.model.cmmn.instance.CmmnElement;
 
@@ -27,7 +29,7 @@ public class SelectorBuilder {
     task,
     bpmn,
     cmmn;
-    
+
     public boolean matches(SelectorBuilder selectorBuilder) {
       return this.name().equals(selectorBuilder.values.get("{context}"));
     }
@@ -136,6 +138,10 @@ public class SelectorBuilder {
   public SelectorBuilder event(String event) {
     values.put("{event}", event);
 
+    if (RegisterAllBpmnParseListener.TASK_EVENTS.contains(event)) {
+      context(Context.task);
+    }
+
     return this;
   }
 
@@ -150,7 +156,7 @@ public class SelectorBuilder {
 
     return this;
   }
-  
+
   public Selector build() {
     return Selectors.uri(key());
   }

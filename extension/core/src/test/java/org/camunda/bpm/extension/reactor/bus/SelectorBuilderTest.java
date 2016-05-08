@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.camunda.bpm.engine.delegate.DelegateTask;
+import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
@@ -116,6 +117,31 @@ public class SelectorBuilderTest {
 
   }
 
+  public static class DeferTaskContext {
+
+
+    @Test
+    public void eventName_create() throws Exception {
+      assertThat(SelectorBuilder.selector().event(TaskListener.EVENTNAME_CREATE).key()).isEqualTo("/camunda/task/{type}/{process}/{element}/create");
+    }
+
+    @Test
+    public void eventName_assignment() throws Exception {
+      assertThat(SelectorBuilder.selector().event(TaskListener.EVENTNAME_ASSIGNMENT).key()).isEqualTo("/camunda/task/{type}/{process}/{element}/assignment");
+    }
+
+    @Test
+    public void eventName_complete() throws Exception {
+      assertThat(SelectorBuilder.selector().event(TaskListener.EVENTNAME_COMPLETE).key()).isEqualTo("/camunda/task/{type}/{process}/{element}/complete");
+    }
+
+    @Test
+    public void eventName_delete() throws Exception {
+      assertThat(SelectorBuilder.selector().event(TaskListener.EVENTNAME_DELETE).key()).isEqualTo("/camunda/task/{type}/{process}/{element}/delete");
+    }
+
+  }
+
   public static class GetDefinitionKey {
 
 
@@ -144,7 +170,7 @@ public class SelectorBuilderTest {
       assertThat(SelectorBuilder.selector(task).key()).isEqualTo("/camunda/task/{type}/process/task1/create");
     }
   }
-  
+
     @RunWith(Parameterized.class)
     public static class ContextTest {
 
@@ -165,7 +191,7 @@ public class SelectorBuilderTest {
           {task, selector().context(task), true},
         });
       }
-      
+
       @Parameter(0)
       public Context context;
 
