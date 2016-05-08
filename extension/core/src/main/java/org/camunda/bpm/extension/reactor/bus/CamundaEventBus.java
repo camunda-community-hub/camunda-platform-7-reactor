@@ -21,10 +21,9 @@ import org.slf4j.Logger;
 import reactor.bus.EventBus;
 import reactor.bus.selector.Selectors;
 import reactor.bus.spec.EventBusSpec;
-import reactor.core.dispatch.SynchronousDispatcher;
-import reactor.fn.Consumer;
 
 import java.io.Serializable;
+import java.util.function.Consumer;
 
 import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.selector;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -41,7 +40,8 @@ public class CamundaEventBus implements Serializable {
   private final EventBus eventBus;
 
   public CamundaEventBus() {
-    this.eventBus = new EventBusSpec().dispatcher(SynchronousDispatcher.INSTANCE).uncaughtErrorHandler(UncaughtErrorHandler.INSTANCE).get();
+    this.eventBus = new EventBusSpec().sync().uncaughtErrorHandler(UncaughtErrorHandler.INSTANCE).get();
+    //this.eventBus = new EventBusSpec().dispatcher(SynchronousDispatcher.INSTANCE).uncaughtErrorHandler(UncaughtErrorHandler.INSTANCE).get();
   }
 
   private void notifyDelegateEvent(final String topic, final DelegateEvent event) {

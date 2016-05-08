@@ -1,8 +1,8 @@
 package org.camunda.bpm.extension.reactor.bus;
 
-
 import org.camunda.bpm.engine.ProcessEngineException;
-import reactor.fn.Consumer;
+
+import java.util.function.Consumer;
 
 /**
  * Singleton instance of errorHandler that applies when execution of listeners fails.
