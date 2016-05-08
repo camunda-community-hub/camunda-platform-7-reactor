@@ -8,7 +8,7 @@ This extension provides a process engine plugin that registers Execution- and Ta
 
 Custom implementations that are interested in certain events may register on that bus and will get notified and executed when the registered listeners fire.
 
-Publishing and subscribing uses a topic pattern `/camunda/{type}/{process}/{element}/{event}` so it is possible to register on all that happens on the engine or the assignement event of a concrete userTask in a concrete process.
+Publishing and subscribing uses a topic pattern `/camunda/{context}/{type}/{process}/{element}/{event}` so it is possible to register on all that happens on the engine or the assignement event of a concrete userTask in a concrete process.
 
 Reference: a similar approach was already done in the engine-cdi module using CDI observers and qualifiers. 
 
