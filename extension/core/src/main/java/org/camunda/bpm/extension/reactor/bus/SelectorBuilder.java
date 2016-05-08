@@ -138,10 +138,6 @@ public class SelectorBuilder {
   public SelectorBuilder event(String event) {
     values.put("{event}", event);
 
-    if (RegisterAllBpmnParseListener.TASK_EVENTS.contains(event)) {
-      context(Context.task);
-    }
-
     return this;
   }
 
@@ -155,6 +151,19 @@ public class SelectorBuilder {
     values.put("{context}", context.name());
 
     return this;
+  }
+
+  public SelectorBuilder task() {
+    return context(Context.task);
+  }
+
+  public SelectorBuilder cmmn() {
+    return context(Context.cmmn);
+  }
+
+
+  public SelectorBuilder bpmn() {
+    return context(Context.bpmn);
   }
 
   public Selector build() {

@@ -3,6 +3,7 @@ package org.camunda.bpm.extension.reactor;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
+import org.camunda.bpm.extension.reactor.bus.CamundaEventBus;
 import org.camunda.bpm.extension.reactor.plugin.ReactorProcessEnginePlugin;
 import org.junit.Rule;
 import org.junit.Test;
@@ -25,7 +26,8 @@ public class CamundaReactorTest {
 
   @Test
   public void get_eventBus_from_engine() {
-    ProcessEngine engine = new ReactorProcessEngineConfiguration().buildProcessEngine();
+    final CamundaEventBus eventBus = ReactorProcessEnginePlugin.CAMUNDA_EVENTBUS;
+    ProcessEngine engine = new ReactorProcessEngineConfiguration(eventBus).buildProcessEngine();
 
     try {
       assertThat(CamundaReactor.eventBus(engine)).isEqualTo(ReactorProcessEnginePlugin.CAMUNDA_EVENTBUS);
@@ -37,7 +39,8 @@ public class CamundaReactorTest {
 
   @Test
   public void get_eventBus_from_default_engine() {
-    ProcessEngine engine = new ReactorProcessEngineConfiguration().buildProcessEngine();
+    CamundaEventBus camundaEventBus = ReactorProcessEnginePlugin.CAMUNDA_EVENTBUS;
+    ProcessEngine engine = new ReactorProcessEngineConfiguration(camundaEventBus).buildProcessEngine();
 
     try {
       assertThat(CamundaReactor.eventBus()).isEqualTo(ReactorProcessEnginePlugin.CAMUNDA_EVENTBUS);

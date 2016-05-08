@@ -30,16 +30,13 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Deployment(resources = {"ProcessA.bpmn"})
 public class ReactorProcessEnginePluginTest {
 
+  private final CamundaEventBus eventBus = new CamundaEventBus();
+
   @Rule
-  public final ProcessEngineRule processEngineRule = ReactorProcessEngineConfiguration.buildRule();
+  public final ProcessEngineRule processEngineRule = ReactorProcessEngineConfiguration.buildRule(eventBus);
 
   private final Logger logger = getLogger(this.getClass());
-  private CamundaEventBus eventBus;
 
-  @Before
-  public void init() {
-    eventBus = CamundaReactor.eventBus(processEngineRule.getProcessEngine());
-  }
 
   final Map<String, LinkedHashSet<DelegateEvent>> events = new LinkedHashMap<>();
 

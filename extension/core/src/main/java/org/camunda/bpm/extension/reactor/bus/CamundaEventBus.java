@@ -6,16 +6,23 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
+import org.camunda.bpm.engine.impl.cfg.ProcessEnginePlugin;
 import org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context;
 import org.camunda.bpm.extension.reactor.event.DelegateCaseExecutionEvent;
 import org.camunda.bpm.extension.reactor.event.DelegateEvent;
 import org.camunda.bpm.extension.reactor.event.DelegateEventConsumer;
 import org.camunda.bpm.extension.reactor.event.DelegateExecutionEvent;
 import org.camunda.bpm.extension.reactor.event.DelegateTaskEvent;
+import org.camunda.bpm.extension.reactor.event.ProcessEnginePluginEvent;
+import org.camunda.bpm.extension.reactor.event.ProcessEnginePluginEvent.PostProcessEngineBuild;
+import org.camunda.bpm.extension.reactor.event.ProcessEnginePluginEvent.PostInitEvent;
+import org.camunda.bpm.extension.reactor.event.ProcessEnginePluginEvent.PreInitEvent;
 import org.slf4j.Logger;
 import reactor.bus.EventBus;
+import reactor.bus.selector.Selectors;
 import reactor.bus.spec.EventBusSpec;
 import reactor.core.dispatch.SynchronousDispatcher;
+import reactor.fn.Consumer;
 
 import java.io.Serializable;
 
@@ -52,6 +59,10 @@ public class CamundaEventBus implements Serializable {
 
   public void notify(final DelegateExecution execution) {
     notifyDelegateEvent(selector(execution).key(), DelegateEvent.wrap(execution));
+  }
+
+  public void notify(final ProcessEnginePluginEvent processEnginePluginEvent) {
+    eventBus.notify(processEnginePluginEvent.getType(), processEnginePluginEvent);
   }
 
   /**
@@ -107,6 +118,31 @@ public class CamundaEventBus implements Serializable {
     register(SelectorBuilder.selector(listener), listener);
   }
 
+
+  public void register(final ProcessEnginePlugin processEnginePlugin) {
+
+    eventBus.on(Selectors.type(PreInitEvent.class), new Consumer<PreInitEvent>() {
+      @Override
+      public void accept(PreInitEvent event) {
+        processEnginePlugin.preInit(event.getData());
+      }
+    });
+
+    eventBus.on(Selectors.type(PostInitEvent.class), new Consumer<PostInitEvent>() {
+      @Override
+      public void accept(PostInitEvent event) {
+        processEnginePlugin.postInit(event.getData());
+      }
+    });
+
+    eventBus.on(Selectors.type(PostProcessEngineBuild.class), new Consumer<PostProcessEngineBuild>() {
+      @Override
+      public void accept(PostProcessEngineBuild event) {
+        processEnginePlugin.postProcessEngineBuild(event.getData());
+      }
+    });
+  }
+
   /**
    * Register listener for the topic parsed from CamundaSelector annotation.
    *
@@ -141,7 +177,7 @@ public class CamundaEventBus implements Serializable {
     if (!Context.bpmn.matches(topicBuilder)) {
       throw new IllegalArgumentException("can not register executionListener to topic: " + topicBuilder.key());
     }
-    
+
     eventBus.on(topicBuilder.build(), DelegateExecutionEvent.consumer(listener));
     logger.debug("registered {} to '{}'", listener.getClass().getSimpleName(), topicBuilder.key());
   }

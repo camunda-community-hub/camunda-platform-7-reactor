@@ -9,7 +9,7 @@ import org.camunda.bpm.extension.reactor.bus.CamundaSelector;
 @CamundaSelector(type = "humanTask", event = TaskListener.EVENTNAME_CREATE)
 public class CaseTaskCreateListener implements TaskListener {
 
-  public CaseTaskCreateListener(CamundaEventBus eventBus) {
+  public CaseTaskCreateListener(final CamundaEventBus eventBus) {
     eventBus.register(this);
   }
 

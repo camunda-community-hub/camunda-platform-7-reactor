@@ -39,18 +39,21 @@ public class SelectorBuilderTest {
     @Parameters(name = "{index}: builder=''{0}'', expected=''{1}''")
     public static Collection<Object[]> data() {
       return Arrays.asList(new Object[][]{
+        // 0
         {selector(), "/camunda/{context}/{type}/{process}/{element}/{event}"},
         {selector().process("foo"), "/camunda/{context}/{type}/foo/{element}/{event}"},
         {selector().process("foo").element("bar"), "/camunda/{context}/{type}/foo/bar/{event}"},
-        {selector().process("foo").element("bar").event("create"), "/camunda/{context}/{type}/foo/bar/create"},
-        {selector().element("bar").event("create"), "/camunda/{context}/{type}/{process}/bar/create"},
+        {selector().process("foo").element("bar").event("create").task(), "/camunda/task/{type}/foo/bar/create"},
+        {selector().element("bar").event("assignment").task(), "/camunda/task/{type}/{process}/bar/assignment"},
+        // 5
         {selector().element("bar"), "/camunda/{context}/{type}/{process}/bar/{event}"},
         {selector().event("create"), "/camunda/{context}/{type}/{process}/{element}/create"},
         {selector().type("type"), "/camunda/{context}/type/{process}/{element}/{event}"},
         {selector().type(""), "/camunda/{context}/{type}/{process}/{element}/{event}"},
         {selector().caseDefinitionKey("foo"), "/camunda/{context}/{type}/foo/{element}/{event}"},
-        {selector().caseDefinitionKey("foo").element("bar"), "/camunda/{context}/{type}/foo/bar/{event}"},
-        {selector().caseDefinitionKey("foo").element("bar").event("create"), "/camunda/{context}/{type}/foo/bar/create"},
+        // 10
+        {selector().caseDefinitionKey("foo").element("bar").cmmn(), "/camunda/cmmn/{type}/foo/bar/{event}"},
+        {selector().caseDefinitionKey("foo").element("bar").event("create").task(), "/camunda/task/{type}/foo/bar/create"},
       });
     }
 
@@ -113,31 +116,6 @@ public class SelectorBuilderTest {
     @Test
     public void empty_selector_path() {
       assertThat(SelectorBuilder.fromCamundaSelector(Empty.class).key()).isEqualTo("/camunda/bpmn/{type}/{process}/{element}/{event}");
-    }
-
-  }
-
-  public static class DeferTaskContext {
-
-
-    @Test
-    public void eventName_create() throws Exception {
-      assertThat(SelectorBuilder.selector().event(TaskListener.EVENTNAME_CREATE).key()).isEqualTo("/camunda/task/{type}/{process}/{element}/create");
-    }
-
-    @Test
-    public void eventName_assignment() throws Exception {
-      assertThat(SelectorBuilder.selector().event(TaskListener.EVENTNAME_ASSIGNMENT).key()).isEqualTo("/camunda/task/{type}/{process}/{element}/assignment");
-    }
-
-    @Test
-    public void eventName_complete() throws Exception {
-      assertThat(SelectorBuilder.selector().event(TaskListener.EVENTNAME_COMPLETE).key()).isEqualTo("/camunda/task/{type}/{process}/{element}/complete");
-    }
-
-    @Test
-    public void eventName_delete() throws Exception {
-      assertThat(SelectorBuilder.selector().event(TaskListener.EVENTNAME_DELETE).key()).isEqualTo("/camunda/task/{type}/{process}/{element}/delete");
     }
 
   }

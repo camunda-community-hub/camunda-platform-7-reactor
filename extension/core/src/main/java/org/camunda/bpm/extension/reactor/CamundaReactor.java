@@ -1,5 +1,6 @@
 package org.camunda.bpm.extension.reactor;
 
+import org.camunda.bpm.container.RuntimeContainerDelegate;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.delegate.DelegateCaseExecution;
@@ -70,6 +71,10 @@ public final class CamundaReactor {
   }
 
   public static ReactorProcessEnginePlugin plugin() {
+    return plugin(ReactorProcessEnginePlugin.CAMUNDA_EVENTBUS);
+  }
+
+  public static ReactorProcessEnginePlugin plugin(CamundaEventBus camundaEventBus) {
     return new ReactorProcessEnginePlugin();
   }
 

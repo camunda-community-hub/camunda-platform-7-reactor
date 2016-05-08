@@ -24,12 +24,12 @@ import static org.camunda.bpm.engine.delegate.TaskListener.EVENTNAME_DELETE;
 
 public class RegisterAllBpmnParseListener extends AbstractBpmnParseListener {
 
-  static final List<String> TASK_EVENTS = Arrays.asList(
+  public static final List<String> TASK_EVENTS = Arrays.asList(
     EVENTNAME_COMPLETE,
     EVENTNAME_ASSIGNMENT,
     EVENTNAME_CREATE,
     EVENTNAME_DELETE);
-  static final List<String> EXECUTION_EVENTS = Arrays.asList(
+  public static final List<String> EXECUTION_EVENTS = Arrays.asList(
     EVENTNAME_START,
     EVENTNAME_END);
 
