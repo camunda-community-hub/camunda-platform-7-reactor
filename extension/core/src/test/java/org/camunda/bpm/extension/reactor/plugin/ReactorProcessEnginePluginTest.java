@@ -6,6 +6,7 @@ import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.extension.reactor.CamundaReactor;
+import org.camunda.bpm.extension.reactor.CamundaReactorTestHelper;
 import org.camunda.bpm.extension.reactor.ReactorProcessEngineConfiguration;
 import org.camunda.bpm.extension.reactor.bus.CamundaEventBus;
 import org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context;
@@ -24,6 +25,8 @@ import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.assertTh
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.complete;
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.task;
 import static org.camunda.bpm.extension.reactor.CamundaReactor.selector;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.slf4j.LoggerFactory.getLogger;
 
 
@@ -36,7 +39,6 @@ public class ReactorProcessEnginePluginTest {
   public final ProcessEngineRule processEngineRule = ReactorProcessEngineConfiguration.buildRule(eventBus);
 
   private final Logger logger = getLogger(this.getClass());
-
 
   final Map<String, LinkedHashSet<DelegateEvent>> events = new LinkedHashMap<>();
 
@@ -55,8 +57,7 @@ public class ReactorProcessEnginePluginTest {
   };
 
   @Test
-  public void fire_events_on_userTasks() {
-
+  public void register_events() throws Exception {
     eventBus.register(selector().process("process_a"), delegateEventConsumer);
     eventBus.register(selector().process("process_a").element("task_a"), delegateEventConsumer);
     eventBus.register(selector().process("process_a").element("task_a").event("complete"), delegateEventConsumer);
@@ -65,23 +66,7 @@ public class ReactorProcessEnginePluginTest {
     eventBus.register(selector().event("create"), delegateEventConsumer);
     eventBus.register(selector(), delegateEventConsumer);
 
-
-    eventBus.register(selector().event("create").context(Context.task), new TaskListener() {
-      @Override
-      public void notify(DelegateTask delegateTask) {
-        delegateTask.setAssignee("foo");
-        delegateTask.addCandidateGroup("bar");
-        delegateTask.setName("my task");
-      }
-    });
-
-    final ProcessInstance processInstance = processEngineRule.getRuntimeService().startProcessInstanceByKey("process_a");
-
-
-    complete(task(processInstance));
-    assertThat(task(processInstance)).isAssignedTo("foo");
-    complete(task(processInstance));
-    assertThat(processInstance).isEnded();
+    processEngineRule.getRuntimeService().startProcessInstanceByKey("process_a");
 
     for (Map.Entry<String, LinkedHashSet<DelegateEvent>> e : events.entrySet()) {
       logger.info("* " + e.getKey());
@@ -91,6 +76,30 @@ public class ReactorProcessEnginePluginTest {
     }
 
     assertThat(events).isNotEmpty();
+  }
+
+  @Test
+  public void simulate_assign_task_on_event() {
+    // a caching component is always present
+    assertThat(eventBus.get().getConsumerRegistry()).hasSize(1);
+
+    eventBus.register(selector().event("create").task(), new TaskListener() {
+      @Override
+      public void notify(DelegateTask delegateTask) {
+        delegateTask.setAssignee("foo");
+        delegateTask.addCandidateGroup("bar");
+        delegateTask.setName("my task");
+      }
+    });
+
+    assertThat(eventBus.get().getConsumerRegistry()).hasSize(2);
+
+    DelegateTask task = CamundaReactorTestHelper.delegateTask();
+    eventBus.notify(task);
+    verify(task).setAssignee("foo");
+    verify(task).addCandidateGroup("bar");
+    verify(task).setName("my task");
+
   }
 
 }

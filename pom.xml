@@ -31,6 +31,7 @@
     <camunda.version>7.4.0</camunda.version>
     <reactor.version>2.0.8.RELEASE</reactor.version>
     <slf4j.version>1.7.12</slf4j.version>
+    <surefire.runOrder>reversealphabetical</surefire.runOrder>
   </properties>
 
   <dependencyManagement>
@@ -42,6 +43,17 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <runOrder>${surefire.runOrder}</runOrder>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
   <licenses>
     <license>

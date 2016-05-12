@@ -15,16 +15,7 @@ import java.util.List;
 
 public class ReactorProcessEnginePlugin extends AbstractProcessEnginePlugin {
 
-  public static final CamundaEventBus CAMUNDA_EVENTBUS = new CamundaEventBus();
-
   private final CamundaEventBus eventBus;
-
-  /**
-   * Initializes synchronous eventBus.
-   */
-  public ReactorProcessEnginePlugin() {
-    this(CAMUNDA_EVENTBUS);
-  }
 
   public ReactorProcessEnginePlugin(final CamundaEventBus eventBus) {
     this.eventBus = eventBus;

@@ -26,11 +26,11 @@ public class CamundaReactorTest {
 
   @Test
   public void get_eventBus_from_engine() {
-    final CamundaEventBus eventBus = ReactorProcessEnginePlugin.CAMUNDA_EVENTBUS;
+    final CamundaEventBus eventBus = new CamundaEventBus();
     ProcessEngine engine = new ReactorProcessEngineConfiguration(eventBus).buildProcessEngine();
 
     try {
-      assertThat(CamundaReactor.eventBus(engine)).isEqualTo(ReactorProcessEnginePlugin.CAMUNDA_EVENTBUS);
+      assertThat(CamundaReactor.eventBus(engine)).isEqualTo(eventBus);
 
     } finally {
       engine.close();
@@ -39,11 +39,11 @@ public class CamundaReactorTest {
 
   @Test
   public void get_eventBus_from_default_engine() {
-    CamundaEventBus camundaEventBus = ReactorProcessEnginePlugin.CAMUNDA_EVENTBUS;
+    CamundaEventBus camundaEventBus = new CamundaEventBus();
     ProcessEngine engine = new ReactorProcessEngineConfiguration(camundaEventBus).buildProcessEngine();
 
     try {
-      assertThat(CamundaReactor.eventBus()).isEqualTo(ReactorProcessEnginePlugin.CAMUNDA_EVENTBUS);
+      assertThat(CamundaReactor.eventBus()).isEqualTo(camundaEventBus);
     } finally {
       engine.close();
     }
