@@ -41,7 +41,6 @@ public class CamundaEventBus implements Serializable {
 
   public CamundaEventBus() {
     this.eventBus = new EventBusSpec().sync().uncaughtErrorHandler(UncaughtErrorHandler.INSTANCE).get();
-    //this.eventBus = new EventBusSpec().dispatcher(SynchronousDispatcher.INSTANCE).uncaughtErrorHandler(UncaughtErrorHandler.INSTANCE).get();
   }
 
   private void notifyDelegateEvent(final String topic, final DelegateEvent event) {
