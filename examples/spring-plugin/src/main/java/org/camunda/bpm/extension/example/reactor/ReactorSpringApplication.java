@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Component;
 
 @SpringBootApplication
-@Import(CamundaReactorConfiguration.class)
 public class ReactorSpringApplication {
 
   public static void main(final String... args) {

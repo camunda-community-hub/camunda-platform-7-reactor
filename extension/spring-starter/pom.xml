@@ -10,12 +10,12 @@
     <version>1.2-SNAPSHOT</version>
   </parent>
 
-  <artifactId>camunda-bpm-reactor-spring</artifactId>
+  <artifactId>camunda-bpm-reactor-spring-starter</artifactId>
 
   <dependencies>
     <dependency>
       <groupId>org.camunda.bpm.extension</groupId>
-      <artifactId>camunda-bpm-reactor-core</artifactId>
+      <artifactId>camunda-bpm-reactor-spring</artifactId>
     </dependency>
 
     <dependency>
