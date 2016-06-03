@@ -56,7 +56,7 @@ This extensions works with delegateTasks and delegateEvents directly. These cann
 
 ## Next Steps
 
-* provide extensions for spring and CDI
+* provide extension for CDI (?)
 * use eventbus for message correlation end/start
 * ...
 
