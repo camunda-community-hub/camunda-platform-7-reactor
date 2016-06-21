@@ -15,7 +15,31 @@ import java.util.List;
 
 public class ReactorProcessEnginePlugin extends AbstractProcessEnginePlugin {
 
+  public static class Configuration {
+
+    public String getImplementationVersion() {
+      return ProcessEngine.class.getPackage().getImplementationVersion();
+    }
+
+    public int getMajorMinorVersion() {
+      return Integer.valueOf(getImplementationVersion()
+        .replaceAll("\\.","")
+        .substring(0,2));
+    }
+
+    /**
+     * Transaction threw a CCE in 7.4 so it is now only activated for version >= 7.5.x.
+     *
+     * @return <code>true</code>  if eventbus should be registered on transaction element.
+     */
+    public boolean isActivateTransaction() {
+      return getMajorMinorVersion() >= 75;
+    }
+  }
+
   private final CamundaEventBus eventBus;
+
+  private Configuration configuration = new Configuration();
 
   public ReactorProcessEnginePlugin(final CamundaEventBus eventBus) {
     this.eventBus = eventBus;
@@ -25,7 +49,7 @@ public class ReactorProcessEnginePlugin extends AbstractProcessEnginePlugin {
   public void preInit(final ProcessEngineConfigurationImpl processEngineConfiguration) {
 
     customPreBPMNParseListeners(processEngineConfiguration)
-      .add(new RegisterAllBpmnParseListener(eventBus.getTaskListener(), eventBus.getExecutionListener()));
+      .add(new RegisterAllBpmnParseListener(eventBus.getTaskListener(), eventBus.getExecutionListener(), configuration));
 
     customPreCMMNTransformListeners(processEngineConfiguration).add(
       new RegisterAllCmmnTransformListener(eventBus.getTaskListener(), eventBus.getCaseExecutionListener()));
