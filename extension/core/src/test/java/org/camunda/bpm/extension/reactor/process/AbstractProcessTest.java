@@ -6,17 +6,23 @@ import org.camunda.bpm.extension.reactor.ReactorProcessEngineConfiguration;
 import org.camunda.bpm.extension.reactor.bus.CamundaEventBus;
 import org.junit.Before;
 import org.junit.Rule;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 public class AbstractProcessTest {
-	@Rule
-	public final ProcessEngineRule processEngineRule = ReactorProcessEngineConfiguration
-			.buildRule();
 
-	protected CamundaEventBus eventBus;
+  static {
+    SLF4JBridgeHandler.removeHandlersForRootLogger();
+    SLF4JBridgeHandler.install();
+  }
 
-	@Before
-	public void init() {
-		eventBus = CamundaReactor.eventBus();
-	}
+  @Rule
+  public final ProcessEngineRule processEngineRule = ReactorProcessEngineConfiguration.buildRule();
+
+  protected CamundaEventBus eventBus;
+
+  @Before
+  public void init() {
+    eventBus = CamundaReactor.eventBus();
+  }
 
 }

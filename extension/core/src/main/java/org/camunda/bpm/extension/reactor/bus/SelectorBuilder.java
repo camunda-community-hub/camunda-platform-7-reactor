@@ -1,12 +1,6 @@
 package org.camunda.bpm.extension.reactor.bus;
 
 
-import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context.task;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import org.camunda.bpm.engine.delegate.BpmnModelExecutionContext;
 import org.camunda.bpm.engine.delegate.CaseExecutionListener;
 import org.camunda.bpm.engine.delegate.CmmnModelExecutionContext;
@@ -16,12 +10,15 @@ import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.reactor.CamundaReactor;
-import org.camunda.bpm.extension.reactor.plugin.parse.RegisterAllBpmnParseListener;
 import org.camunda.bpm.model.bpmn.instance.FlowElement;
 import org.camunda.bpm.model.cmmn.instance.CmmnElement;
-
 import reactor.bus.selector.Selector;
 import reactor.bus.selector.Selectors;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context.task;
 
 public class SelectorBuilder {
 
@@ -50,6 +47,7 @@ public class SelectorBuilder {
 
   public static SelectorBuilder selector(final DelegateExecution delegateExecution) {
     String typeName = extractTypeName(delegateExecution);
+
     String element = ("sequenceFlow".equals(typeName))
       ? delegateExecution.getCurrentTransitionId()
       : delegateExecution.getCurrentActivityId();

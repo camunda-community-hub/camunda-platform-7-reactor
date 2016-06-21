@@ -11,21 +11,22 @@ import org.camunda.bpm.extension.reactor.event.DelegateEventConsumer;
 import org.junit.Test;
 
 public class MultiInstanceTaskTest extends AbstractProcessTest {
+
   @Test
   @Deployment(resources="MultiInstanceTaskProcess.bpmn")
   public void start_multi_instance_process() throws Exception {
+
+    final StringBuffer b = new StringBuffer();
 
     eventBus.register(SelectorBuilder.selector(), new DelegateEventConsumer() {
 
       @Override
       public void accept(DelegateEvent t) {
-        System.out.println(t);
+        b.append(t.toString());
       }
     });
 
     ProcessEngineTests.runtimeService().startProcessInstanceByKey("multiInstanceTaskProcess", Variables.createVariables().putValue("items", Arrays.asList("foo","bar")));
-
-
   }
 
 }

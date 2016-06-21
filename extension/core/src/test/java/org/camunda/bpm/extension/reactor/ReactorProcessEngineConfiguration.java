@@ -17,13 +17,13 @@ public class ReactorProcessEngineConfiguration extends StandaloneInMemProcessEng
     return buildRule(new CamundaEventBus());
   }
 
-  public static ProcessEngineRule buildRule(CamundaEventBus camundaEventBus) {
+  public static ProcessEngineRule buildRule(final CamundaEventBus camundaEventBus) {
     final ReactorProcessEngineConfiguration configuration = new ReactorProcessEngineConfiguration(camundaEventBus);
 
     return new ProcessEngineRule(configuration.buildProcessEngine());
   }
 
-  public ReactorProcessEngineConfiguration(CamundaEventBus camundaEventBus) {
+  public ReactorProcessEngineConfiguration(final CamundaEventBus camundaEventBus) {
     this.history = HISTORY_FULL;
     this.databaseSchemaUpdate = DB_SCHEMA_UPDATE_DROP_CREATE;
 

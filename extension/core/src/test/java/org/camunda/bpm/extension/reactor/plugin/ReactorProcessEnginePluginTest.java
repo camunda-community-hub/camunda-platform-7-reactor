@@ -2,17 +2,13 @@ package org.camunda.bpm.extension.reactor.plugin;
 
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.TaskListener;
-import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
-import org.camunda.bpm.extension.reactor.CamundaReactor;
 import org.camunda.bpm.extension.reactor.CamundaReactorTestHelper;
 import org.camunda.bpm.extension.reactor.ReactorProcessEngineConfiguration;
 import org.camunda.bpm.extension.reactor.bus.CamundaEventBus;
-import org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context;
 import org.camunda.bpm.extension.reactor.event.DelegateEvent;
 import org.camunda.bpm.extension.reactor.event.DelegateEventConsumer;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -22,10 +18,9 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.assertThat;
-import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.complete;
-import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.task;
 import static org.camunda.bpm.extension.reactor.CamundaReactor.selector;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -102,4 +97,17 @@ public class ReactorProcessEnginePluginTest {
 
   }
 
+  @Test
+  public void verify_config_activateTransaction() throws Exception {
+    ReactorProcessEnginePlugin.Configuration configuration = spy(new ReactorProcessEnginePlugin.Configuration());
+
+    doReturn("7.4.0").when(configuration).getImplementationVersion();
+    assertThat(configuration.isActivateTransaction()).isFalse();
+
+    doReturn("7.5.0").when(configuration).getImplementationVersion();
+    assertThat(configuration.isActivateTransaction()).isTrue();
+
+    doReturn("7.6.0-alpha1").when(configuration).getImplementationVersion();
+    assertThat(configuration.isActivateTransaction()).isTrue();
+  }
 }
