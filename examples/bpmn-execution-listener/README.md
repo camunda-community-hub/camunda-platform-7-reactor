@@ -43,7 +43,7 @@ ProcessEngineConfiguration configuration = new StandaloneInMemProcessEngineConfi
 
 ### Create an Execution Listener
 
-Now, create an execution lister that should measure KPIs. A KPI is modeled in the process as none intermediate throw event which has a name starts with 'KPI:' and contains the name of the KPI, for example 'KPI: step1'.
+Now, create an execution listener that should measure KPIs. A KPI is modeled in the process as none intermediate throw event which has a name starts with 'KPI:' and contains the name of the KPI, for example 'KPI: step1'.
 
 ```java
 @CamundaSelector(type = "intermediateThrowEvent", event = ExecutionListener.EVENTNAME_START)
