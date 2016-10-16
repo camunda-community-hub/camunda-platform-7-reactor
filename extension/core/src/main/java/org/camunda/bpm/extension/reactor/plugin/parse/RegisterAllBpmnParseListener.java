@@ -10,6 +10,7 @@ import org.camunda.bpm.engine.impl.pvm.process.ScopeImpl;
 import org.camunda.bpm.engine.impl.pvm.process.TransitionImpl;
 import org.camunda.bpm.engine.impl.task.TaskDefinition;
 import org.camunda.bpm.engine.impl.util.xml.Element;
+import org.camunda.bpm.extension.reactor.plugin.ReactorProcessEnginePlugin;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,10 +36,14 @@ public class RegisterAllBpmnParseListener extends AbstractBpmnParseListener {
 
   private final TaskListener taskListener;
   private final ExecutionListener executionListener;
+  private final ReactorProcessEnginePlugin.Configuration configuration;
 
-  public RegisterAllBpmnParseListener(final TaskListener taskListener, final ExecutionListener executionListener) {
+
+  public RegisterAllBpmnParseListener(final TaskListener taskListener, final ExecutionListener executionListener, ReactorProcessEnginePlugin.Configuration configuration) {
     this.taskListener = taskListener;
     this.executionListener = executionListener;
+
+    this.configuration = configuration;
   }
 
   @Override
@@ -195,7 +200,9 @@ public class RegisterAllBpmnParseListener extends AbstractBpmnParseListener {
 
   @Override
   public void parseTransaction(Element transactionElement, ScopeImpl scope, ActivityImpl activity) {
-    addExecutionListener(activity);
+    if (configuration.isActivateTransaction()) {
+      addExecutionListener(activity);
+    }
   }
 
   void addExecutionListener(final ActivityImpl activity) {

@@ -1,0 +1,7 @@
+sudo: false
+language: java
+jdk: oraclejdk7
+install: true
+cache:
+  directories: $HOME/.m2
+script: mvn clean install

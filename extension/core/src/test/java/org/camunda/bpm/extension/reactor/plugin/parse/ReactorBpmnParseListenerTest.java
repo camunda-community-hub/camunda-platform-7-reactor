@@ -4,6 +4,7 @@ import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.engine.impl.form.handler.TaskFormHandler;
 import org.camunda.bpm.engine.impl.task.TaskDefinition;
+import org.camunda.bpm.extension.reactor.plugin.ReactorProcessEnginePlugin;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,7 +22,8 @@ public class ReactorBpmnParseListenerTest {
     ExecutionListener executionListener = mock(ExecutionListener.class);
     TaskDefinition taskDefinition = new TaskDefinition(mock(TaskFormHandler.class));
 
-    new RegisterAllBpmnParseListener(taskListener, executionListener).addTaskListener(taskDefinition);
+    new RegisterAllBpmnParseListener(taskListener, executionListener, new ReactorProcessEnginePlugin.Configuration())
+      .addTaskListener(taskDefinition);
 
     assertThat(taskDefinition.getTaskListeners()).hasSize(4);
 

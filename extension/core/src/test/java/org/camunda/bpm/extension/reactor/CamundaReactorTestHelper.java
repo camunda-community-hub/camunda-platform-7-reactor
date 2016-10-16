@@ -28,12 +28,16 @@ public class CamundaReactorTestHelper {
   }
 
   public static DelegateTask delegateTask() {
-    final DelegateTask task = mock(DelegateTask.class, RETURNS_DEEP_STUBS);
+    return delegateTask("task1", "process:1:1", "create");
+  }
 
+  public static DelegateTask delegateTask(String taskName, String processDefinitionId, String eventName) {
+    final DelegateTask task = mock(DelegateTask.class, RETURNS_DEEP_STUBS);
     when(task.getBpmnModelElementInstance().getElementType().getTypeName()).thenReturn("userTask");
-    when(task.getProcessDefinitionId()).thenReturn("process:1:1");
-    when(task.getEventName()).thenReturn("create");
-    when(task.getTaskDefinitionKey()).thenReturn("task1");
+
+    when(task.getTaskDefinitionKey()).thenReturn(taskName);
+    when(task.getProcessDefinitionId()).thenReturn(processDefinitionId);
+    when(task.getEventName()).thenReturn(eventName);
 
     return task;
   }

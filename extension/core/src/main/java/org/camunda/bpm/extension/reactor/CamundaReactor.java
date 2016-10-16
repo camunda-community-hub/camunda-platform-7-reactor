@@ -71,11 +71,11 @@ public final class CamundaReactor {
   }
 
   public static ReactorProcessEnginePlugin plugin() {
-    return plugin(ReactorProcessEnginePlugin.CAMUNDA_EVENTBUS);
+    return plugin(new CamundaEventBus());
   }
 
-  public static ReactorProcessEnginePlugin plugin(CamundaEventBus camundaEventBus) {
-    return new ReactorProcessEnginePlugin();
+  public static ReactorProcessEnginePlugin plugin(final CamundaEventBus camundaEventBus) {
+    return new ReactorProcessEnginePlugin(camundaEventBus);
   }
 
   private CamundaReactor() {

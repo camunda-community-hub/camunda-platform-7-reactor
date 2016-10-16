@@ -1,4 +1,5 @@
-# ![camunda logo](http://camunda.github.io/camunda-bpm-assert/resources/images/camunda.png)&nbsp;camunda-bpm-reactor&nbsp;[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension/camunda-bpm-reactor-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension/camunda-bpm-reactor-core)
+# ![camunda logo](http://camunda.github.io/camunda-bpm-assert/resources/images/camunda.png)&nbsp;camunda-bpm-reactor&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension/camunda-bpm-reactor-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension/camunda-bpm-reactor-core)&nbsp;[![Travis Build](https://travis-ci.org/camunda/camunda-bpm-spring-boot-starter.svg?branch=master)](https://travis-ci.org/camunda/camunda-bpm-spring-boot-starter)
+
 
 Event-based listeners and delegates for camunda.
 
@@ -8,7 +9,7 @@ This extension provides a process engine plugin that registers Execution- and Ta
 
 Custom implementations that are interested in certain events may register on that bus and will get notified and executed when the registered listeners fire.
 
-Publishing and subscribing uses a topic pattern `/camunda/{type}/{process}/{element}/{event}` so it is possible to register on all that happens on the engine or the assignement event of a concrete userTask in a concrete process.
+Publishing and subscribing uses a topic pattern `/camunda/{context}/{type}/{process}/{element}/{event}` so it is possible to register on all that happens on the engine or the assignement event of a concrete userTask in a concrete process.
 
 Reference: a similar approach was already done in the engine-cdi module using CDI observers and qualifiers. 
 
@@ -56,7 +57,7 @@ This extensions works with delegateTasks and delegateEvents directly. These cann
 
 ## Next Steps
 
-* provide extensions for spring and CDI
+* provide extension for CDI (?)
 * use eventbus for message correlation end/start
 * ...
 
