@@ -41,6 +41,15 @@ public class ReactorProcessEnginePlugin extends AbstractProcessEnginePlugin {
 
   private Configuration configuration = new Configuration();
 
+  /**
+   * Default constructor for bean initialization. Uses <code>new CamundaEventBus()</code>.
+   *
+   * @see #ReactorProcessEnginePlugin(CamundaEventBus)
+   */
+  public ReactorProcessEnginePlugin() {
+    this(new CamundaEventBus());
+  }
+
   public ReactorProcessEnginePlugin(final CamundaEventBus eventBus) {
     this.eventBus = eventBus;
   }

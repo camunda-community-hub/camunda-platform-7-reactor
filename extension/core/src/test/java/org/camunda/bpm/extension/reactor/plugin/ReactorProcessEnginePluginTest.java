@@ -110,4 +110,11 @@ public class ReactorProcessEnginePluginTest {
     doReturn("7.6.0-alpha1").when(configuration).getImplementationVersion();
     assertThat(configuration.isActivateTransaction()).isTrue();
   }
+
+  @Test
+  public void provides_default_constructor() throws Exception {
+    ReactorProcessEnginePlugin plugin = new ReactorProcessEnginePlugin();
+
+    assertThat(plugin.getEventBus()).isNotNull();
+  }
 }
