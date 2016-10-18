@@ -61,7 +61,6 @@ public class CamundaEventBus implements Serializable {
   }
 
   public void notify(final ProcessEnginePluginEvent processEnginePluginEvent) {
-    eventBus.notify(processEnginePluginEvent.getType(), processEnginePluginEvent);
   }
 
   /**
