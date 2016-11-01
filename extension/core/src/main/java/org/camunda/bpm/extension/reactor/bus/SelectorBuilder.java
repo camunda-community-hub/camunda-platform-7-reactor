@@ -10,6 +10,7 @@ import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.reactor.CamundaReactor;
+import org.camunda.bpm.extension.reactor.event.ProcessEnginePluginEvent;
 import org.camunda.bpm.model.bpmn.instance.FlowElement;
 import org.camunda.bpm.model.cmmn.instance.CmmnElement;
 import reactor.bus.selector.Selector;
@@ -22,7 +23,10 @@ import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context.task
 
 public class SelectorBuilder {
 
-  public static enum Context {
+  public static final String EMPTY = "";
+  public static final Context CONTEXT = Context.bpmn;
+
+  public enum Context {
     task,
     bpmn,
     cmmn;
@@ -159,7 +163,6 @@ public class SelectorBuilder {
     return context(Context.cmmn);
   }
 
-
   public SelectorBuilder bpmn() {
     return context(Context.bpmn);
   }
@@ -225,4 +228,5 @@ public class SelectorBuilder {
     CmmnElement cmmnModelElementInstance = cmmnModelExecutionContext.getCmmnModelElementInstance();
     return cmmnModelElementInstance.getElementType().getTypeName();
   }
+
 }

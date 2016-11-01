@@ -4,6 +4,7 @@ package org.camunda.bpm.extension.reactor.event;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import reactor.bus.Event;
+import reactor.bus.EventBus;
 
 /**
  * @param <T> the type of the event value (configuration or engine)
@@ -41,7 +42,6 @@ public abstract class ProcessEnginePluginEvent<T, S> extends Event<T> {
     return new PostProcessEngineBuild(processEngine);
   }
 
-
   private final Class<S> type;
 
   protected ProcessEnginePluginEvent(T data, Class<S> type) {
@@ -49,27 +49,11 @@ public abstract class ProcessEnginePluginEvent<T, S> extends Event<T> {
     this.type = type;
   }
 
-  public static class PreInitEvent extends ProcessEnginePluginEvent<ProcessEngineConfigurationImpl, PreInitEvent> {
-
-    protected PreInitEvent(final ProcessEngineConfigurationImpl processEngineConfiguration) {
-      super(processEngineConfiguration, PreInitEvent.class);
-    }
-  }
-
-  public static class PostInitEvent extends ProcessEnginePluginEvent<ProcessEngineConfigurationImpl, PostInitEvent> {
-
-    protected PostInitEvent(final ProcessEngineConfigurationImpl processEngineConfiguration) {
-      super(processEngineConfiguration, PostInitEvent.class);
-    }
-  }
-
-  public static class PostProcessEngineBuild extends ProcessEnginePluginEvent<ProcessEngine, PostProcessEngineBuild> {
-    protected PostProcessEngineBuild(final ProcessEngine processEngine) {
-      super(processEngine, PostProcessEngineBuild.class);
-    }
-  }
-
   public Class<S> getType() {
     return type;
+  }
+
+  public void notify(final EventBus eventBus) {
+    eventBus.notify(getType(), this);
   }
 }

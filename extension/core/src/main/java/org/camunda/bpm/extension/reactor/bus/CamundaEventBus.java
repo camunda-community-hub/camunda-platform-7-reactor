@@ -14,9 +14,9 @@ import org.camunda.bpm.extension.reactor.event.DelegateEventConsumer;
 import org.camunda.bpm.extension.reactor.event.DelegateExecutionEvent;
 import org.camunda.bpm.extension.reactor.event.DelegateTaskEvent;
 import org.camunda.bpm.extension.reactor.event.ProcessEnginePluginEvent;
-import org.camunda.bpm.extension.reactor.event.ProcessEnginePluginEvent.PostProcessEngineBuild;
-import org.camunda.bpm.extension.reactor.event.ProcessEnginePluginEvent.PostInitEvent;
-import org.camunda.bpm.extension.reactor.event.ProcessEnginePluginEvent.PreInitEvent;
+import org.camunda.bpm.extension.reactor.event.PostProcessEngineBuild;
+import org.camunda.bpm.extension.reactor.event.PostInitEvent;
+import org.camunda.bpm.extension.reactor.event.PreInitEvent;
 import org.slf4j.Logger;
 import reactor.bus.EventBus;
 import reactor.bus.selector.Selectors;
@@ -117,7 +117,6 @@ public class CamundaEventBus implements Serializable {
   public void register(final TaskListener listener) {
     register(SelectorBuilder.selector(listener), listener);
   }
-
 
   public void register(final ProcessEnginePlugin processEnginePlugin) {
 
