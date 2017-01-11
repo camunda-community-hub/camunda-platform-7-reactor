@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class ReactorTaskListener implements TaskListener {
 
   @Autowired
-  public void register(CamundaEventBus camundaEventBus) {
+  public void register(final CamundaEventBus camundaEventBus) {
     camundaEventBus.register(this);
   }
 

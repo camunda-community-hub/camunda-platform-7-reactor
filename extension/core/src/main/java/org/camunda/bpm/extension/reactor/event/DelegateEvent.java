@@ -7,13 +7,15 @@ import reactor.bus.Event;
 
 public abstract class DelegateEvent<T> extends Event<T> {
 
-  public static DelegateTaskEvent wrap(DelegateTask delegateTask) {
+  public static DelegateTaskEvent wrap(final DelegateTask delegateTask) {
     return new DelegateTaskEvent(delegateTask);
   }
-  public static DelegateExecutionEvent wrap(DelegateExecution delegateExecution) {
+
+  public static DelegateExecutionEvent wrap(final DelegateExecution delegateExecution) {
     return new DelegateExecutionEvent(delegateExecution);
   }
-  public static DelegateCaseExecutionEvent wrap(DelegateCaseExecution delegateCaseExecution) {
+
+  public static DelegateCaseExecutionEvent wrap(final DelegateCaseExecution delegateCaseExecution) {
     return new DelegateCaseExecutionEvent(delegateCaseExecution);
   }
 

@@ -8,18 +8,14 @@ import reactor.fn.Consumer;
 public class DelegateCaseExecutionEvent extends DelegateEvent<DelegateCaseExecution> {
 
   public static Consumer<DelegateCaseExecutionEvent> consumer(final CaseExecutionListener listener) {
-    return new Consumer<DelegateCaseExecutionEvent>() {
-      @Override
-      public void accept(DelegateCaseExecutionEvent event) {
-        try {
-          listener.notify(event.getData());
-        } catch (Exception e) {
-          throw new ProcessEngineException(e);
-        }
+    return event -> {
+      try {
+        listener.notify(event.getData());
+      } catch (Exception e) {
+        throw new ProcessEngineException(e);
       }
     };
   }
-
 
   private static final long serialVersionUID = 1L;
 

@@ -1,6 +1,7 @@
 package org.camunda.bpm.extension.reactor.spring;
 
 import org.camunda.bpm.extension.reactor.bus.CamundaEventBus;
+import org.camunda.bpm.extension.reactor.bus.SynchronousEventBus;
 import org.camunda.bpm.extension.reactor.plugin.ReactorProcessEnginePlugin;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -11,14 +12,19 @@ import reactor.bus.EventBus;
 public class CamundaReactorConfiguration {
 
   @Bean
-  public CamundaEventBus camundaEventBus() {
-    return new CamundaEventBus();
+  public SynchronousEventBus synchronousEventBus() {
+    return new SynchronousEventBus();
+  }
+
+  @Bean
+  public CamundaEventBus camundaEventBus(final SynchronousEventBus eventBus) {
+    return new CamundaEventBus(eventBus);
   }
 
   @Bean
   @Qualifier("camunda")
-  public EventBus eventBus(final CamundaEventBus camundaEventBus) {
-    return camundaEventBus.get();
+  public EventBus eventBus(final SynchronousEventBus eventBus) {
+    return eventBus;
   }
 
   @Bean

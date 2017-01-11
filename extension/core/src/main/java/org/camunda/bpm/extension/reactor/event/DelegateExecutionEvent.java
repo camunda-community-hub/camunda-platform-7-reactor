@@ -8,14 +8,11 @@ import reactor.fn.Consumer;
 public class DelegateExecutionEvent extends DelegateEvent<DelegateExecution> {
 
   public static Consumer<DelegateExecutionEvent> consumer(final ExecutionListener listener) {
-    return new Consumer<DelegateExecutionEvent>() {
-      @Override
-      public void accept(DelegateExecutionEvent event) {
-        try {
-          listener.notify(event.getData());
-        } catch (Exception e) {
-          throw new ProcessEngineException(e);
-        }
+    return event -> {
+      try {
+        listener.notify(event.getData());
+      } catch (final Exception e) {
+        throw new ProcessEngineException(e);
       }
     };
   }

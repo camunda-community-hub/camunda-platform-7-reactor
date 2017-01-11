@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class ReactorCaseExecutionListener implements CaseExecutionListener {
 
   @Autowired
-  public void register(CamundaEventBus camundaEventBus) {
+  public void register(final CamundaEventBus camundaEventBus) {
     camundaEventBus.register(this);
   }
 

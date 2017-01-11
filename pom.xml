@@ -22,17 +22,19 @@
   </modules>
 
   <properties>
-    <version.java>1.7</version.java>
+    <version.java>1.8</version.java>
 
     <encoding>UTF-8</encoding>
     <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
     <project.build.resourceEncoding>${encoding}</project.build.resourceEncoding>
 
     <extension.groupId>org.camunda.bpm.extension.reactor</extension.groupId>
+    <example.groupId>org.camunda.bpm.extension.reactor.example</example.groupId>
 
-    <camunda.version>7.4.0</camunda.version>
+    <camunda.version>7.6.0</camunda.version>
     <reactor.version>2.0.8.RELEASE</reactor.version>
     <slf4j.version>1.7.12</slf4j.version>
+
     <surefire.runOrder>reversealphabetical</surefire.runOrder>
   </properties>
 
@@ -40,6 +42,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.19.1</version>
         <configuration>
           <runOrder>${surefire.runOrder}</runOrder>
         </configuration>

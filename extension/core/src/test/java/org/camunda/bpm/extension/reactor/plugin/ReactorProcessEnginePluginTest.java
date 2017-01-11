@@ -19,8 +19,6 @@ import java.util.Map;
 
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.assertThat;
 import static org.camunda.bpm.extension.reactor.CamundaReactor.selector;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -99,15 +97,13 @@ public class ReactorProcessEnginePluginTest {
 
   @Test
   public void verify_config_activateTransaction() throws Exception {
-    ReactorProcessEnginePlugin.Configuration configuration = spy(new ReactorProcessEnginePlugin.Configuration());
-
-    doReturn("7.4.0").when(configuration).getImplementationVersion();
+    ReactorProcessEnginePlugin.Configuration configuration = new ReactorProcessEnginePlugin.Configuration("7.4.0");
     assertThat(configuration.isActivateTransaction()).isFalse();
 
-    doReturn("7.5.0").when(configuration).getImplementationVersion();
+    configuration = new ReactorProcessEnginePlugin.Configuration("7.5.0");
     assertThat(configuration.isActivateTransaction()).isTrue();
 
-    doReturn("7.6.0-alpha1").when(configuration).getImplementationVersion();
+    configuration = new ReactorProcessEnginePlugin.Configuration("7.6.0");
     assertThat(configuration.isActivateTransaction()).isTrue();
   }
 

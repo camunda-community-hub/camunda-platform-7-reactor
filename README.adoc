@@ -3,7 +3,7 @@
 
 Event-based listeners and delegates for camunda.
 
-## What is this about? 
+## What is this about?
 
 This extension provides a process engine plugin that registers Execution- and TaskListeners to all possible elements and all possible events. These listeners then publish their delegates (DelegateTask, DelegateExcution) to an event bus.
 
@@ -11,7 +11,7 @@ Custom implementations that are interested in certain events may register on tha
 
 Publishing and subscribing uses a topic pattern `/camunda/{context}/{type}/{process}/{element}/{event}` so it is possible to register on all that happens on the engine or the assignement event of a concrete userTask in a concrete process.
 
-Reference: a similar approach was already done in the engine-cdi module using CDI observers and qualifiers. 
+Reference: a similar approach was already done in the engine-cdi module using CDI observers and qualifiers.
 
 ## Why do I need this?
 
@@ -32,12 +32,12 @@ Using the extension is straight forward, you need to:
 
 ### Examples
 
-Register a listener that is fired for all "create" events on any user task in the system. 
+Register a listener that is fired for all "create" events on any user task in the system.
 
 ```java
 @CamundaSelector(type = "userTask", event = TaskListener.EVENTNAME_CREATE)
 public class TaskCreateListener implements TaskListener {
-  
+
   public TaskCreateListener(EventBus eventBus) {
     eventBus.register(this);
   }
@@ -53,7 +53,11 @@ More examples can be found in the sub-module [examples](examples).
 
 ## Noteworthy
 
-This extensions works with delegateTasks and delegateEvents directly. These cannot be used outside the current thread, so the eventBus used is synchronous. 
+This extensions works with delegateTasks and delegateEvents directly. These cannot be used outside the current thread, so the eventBus used is synchronous.
+
+### Spring Boot
+
+* the reactor-spring-starter was removed with 1.5.0, in favor of introducing the new @EnableCamundaReactor annotation. Just use it on your spring boot application to activate bus and plugin.
 
 ## Next Steps
 

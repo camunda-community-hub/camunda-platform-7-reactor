@@ -17,14 +17,28 @@ public class ReactorProcessEnginePlugin extends AbstractProcessEnginePlugin {
 
   public static class Configuration {
 
+    private final String implementationVersion;
+    private final int majorMinorVersion;
+    private final boolean isActivateTransaction;
+
+    public Configuration() {
+      this(ProcessEngine.class.getPackage().getImplementationVersion());
+    }
+
+    public Configuration(String implementationVersion) {
+      this.implementationVersion = implementationVersion;
+      this.majorMinorVersion = Integer.valueOf(getImplementationVersion()
+        .replaceAll("\\.", "")
+        .substring(0, 2));
+      this.isActivateTransaction = majorMinorVersion >= 75;
+    }
+
     public String getImplementationVersion() {
-      return ProcessEngine.class.getPackage().getImplementationVersion();
+      return implementationVersion;
     }
 
     public int getMajorMinorVersion() {
-      return Integer.valueOf(getImplementationVersion()
-        .replaceAll("\\.","")
-        .substring(0,2));
+      return majorMinorVersion;
     }
 
     /**
@@ -33,13 +47,22 @@ public class ReactorProcessEnginePlugin extends AbstractProcessEnginePlugin {
      * @return <code>true</code>  if eventbus should be registered on transaction element.
      */
     public boolean isActivateTransaction() {
-      return getMajorMinorVersion() >= 75;
+      return isActivateTransaction;
+    }
+
+    @Override
+    public String toString() {
+      return "Configuration{" +
+        "implementationVersion='" + implementationVersion + '\'' +
+        ", majorMinorVersion=" + majorMinorVersion +
+        ", isActivateTransaction=" + isActivateTransaction +
+        '}';
     }
   }
 
   private final CamundaEventBus eventBus;
 
-  private Configuration configuration = new Configuration();
+  public static final Configuration CONFIGURATION = new Configuration();
 
   /**
    * Default constructor for bean initialization. Uses <code>new CamundaEventBus()</code>.
@@ -58,7 +81,7 @@ public class ReactorProcessEnginePlugin extends AbstractProcessEnginePlugin {
   public void preInit(final ProcessEngineConfigurationImpl processEngineConfiguration) {
 
     customPreBPMNParseListeners(processEngineConfiguration)
-      .add(new RegisterAllBpmnParseListener(eventBus.getTaskListener(), eventBus.getExecutionListener(), configuration));
+      .add(new RegisterAllBpmnParseListener(eventBus.getTaskListener(), eventBus.getExecutionListener(), CONFIGURATION));
 
     customPreCMMNTransformListeners(processEngineConfiguration).add(
       new RegisterAllCmmnTransformListener(eventBus.getTaskListener(), eventBus.getCaseExecutionListener()));
@@ -82,14 +105,14 @@ public class ReactorProcessEnginePlugin extends AbstractProcessEnginePlugin {
 
   private static List<BpmnParseListener> customPreBPMNParseListeners(final ProcessEngineConfigurationImpl processEngineConfiguration) {
     if (processEngineConfiguration.getCustomPreBPMNParseListeners() == null) {
-      processEngineConfiguration.setCustomPreBPMNParseListeners(new ArrayList<BpmnParseListener>());
+      processEngineConfiguration.setCustomPreBPMNParseListeners(new ArrayList<>());
     }
     return processEngineConfiguration.getCustomPreBPMNParseListeners();
   }
 
   private static List<CmmnTransformListener> customPreCMMNTransformListeners(final ProcessEngineConfigurationImpl processEngineConfiguration) {
     if (processEngineConfiguration.getCustomPreCmmnTransformListeners() == null) {
-      processEngineConfiguration.setCustomPreCmmnTransformListeners(new ArrayList<CmmnTransformListener>());
+      processEngineConfiguration.setCustomPreCmmnTransformListeners(new ArrayList<>());
     }
     return processEngineConfiguration.getCustomPreCmmnTransformListeners();
   }

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class ReactorExecutionListener implements ExecutionListener {
 
   @Autowired
-  public void register(CamundaEventBus camundaEventBus) {
+  public void register(final CamundaEventBus camundaEventBus) {
     camundaEventBus.register(this);
   }
 
