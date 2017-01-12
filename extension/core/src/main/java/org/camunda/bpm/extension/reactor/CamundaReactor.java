@@ -1,6 +1,5 @@
 package org.camunda.bpm.extension.reactor;
 
-import org.camunda.bpm.container.RuntimeContainerDelegate;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.delegate.DelegateCaseExecution;

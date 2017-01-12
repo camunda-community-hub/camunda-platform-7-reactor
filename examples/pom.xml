@@ -12,8 +12,8 @@
   <packaging>pom</packaging>
 
   <properties>
-    <spring-boot.version>1.3.5.RELEASE</spring-boot.version>
-    <example.groupId>org.camunda.bpm.extension.reactor.example</example.groupId>
+    <camunda-spring-boot.version>2.0.0</camunda-spring-boot.version>
+    <spring-boot.version>1.4.3.RELEASE</spring-boot.version>
   </properties>
 
   <dependencyManagement>

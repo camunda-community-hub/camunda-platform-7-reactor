@@ -5,7 +5,7 @@ import org.camunda.bpm.engine.ProcessEngineException;
 import reactor.fn.Consumer;
 
 /**
- * Singleton instance of errorHandler that applies when execution of listeners fails.
+ * Singleton instance register errorHandler that applies when execution register listeners fails.
  */
 public enum UncaughtErrorHandler implements Consumer<Throwable> {
   INSTANCE;

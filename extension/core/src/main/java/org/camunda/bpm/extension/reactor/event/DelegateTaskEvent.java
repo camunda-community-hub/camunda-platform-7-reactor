@@ -7,12 +7,7 @@ import reactor.fn.Consumer;
 public class DelegateTaskEvent extends DelegateEvent<DelegateTask> {
 
   public static Consumer<DelegateTaskEvent> consumer(final TaskListener listener) {
-    return new Consumer<DelegateTaskEvent>() {
-      @Override
-      public void accept(DelegateTaskEvent event) {
-        listener.notify(event.getData());
-      }
-    };
+    return event -> listener.notify(event.getData());
   }
 
   private static final long serialVersionUID = 1L;

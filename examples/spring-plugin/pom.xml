@@ -26,15 +26,15 @@
   <dependencies>
 
     <dependency>
-      <artifactId>camunda-bpm-reactor-spring-starter</artifactId>
+      <artifactId>camunda-bpm-reactor-spring</artifactId>
       <groupId>${extension.groupId}</groupId>
       <version>${project.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.camunda.bpm.extension</groupId>
+      <groupId>org.camunda.bpm.extension.springboot</groupId>
       <artifactId>camunda-bpm-spring-boot-starter</artifactId>
-      <version>1.2.0</version>
+      <version>${camunda-spring-boot.version}</version>
     </dependency>
 
     <dependency>
