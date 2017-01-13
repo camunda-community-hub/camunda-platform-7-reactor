@@ -7,8 +7,8 @@ import reactor.bus.Event;
 import reactor.bus.EventBus;
 
 /**
- * @param <T> the type of the event value (configuration or engine)
- * @param <S> the type of the event itself, used for notify by type.
+ * @param <T> the type on the event value (configuration or engine)
+ * @param <S> the type on the event itself, used for notify by type.
  */
 public abstract class ProcessEnginePluginEvent<T, S> extends Event<T> {
 
