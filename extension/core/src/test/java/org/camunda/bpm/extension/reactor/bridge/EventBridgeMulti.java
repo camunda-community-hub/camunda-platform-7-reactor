@@ -5,13 +5,11 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.camunda.bpm.extension.reactor.bus.SynchronousEventBus;
-
 import reactor.bus.Event;
 import reactor.fn.Consumer;
 
 
-public interface EventBridgeMulti<T,V> extends Function<T, List<V>>, GetEventType<T>{
+interface EventBridgeMulti<T,V> extends SendAndReceive<T,V>, Function<T, List<V>> {
 
   default List<Event<V>> sendAndReceive(final T input) {
     final List<Event<V>> result = new ArrayList<>();
@@ -22,11 +20,6 @@ public interface EventBridgeMulti<T,V> extends Function<T, List<V>>, GetEventTyp
     );
     return result;
   }
-
-  @Override
-  Class<T> eventType();
-
-  SynchronousEventBus eventBus();
 
   @Override
   default List<V> apply(final T input) {

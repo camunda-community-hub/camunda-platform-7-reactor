@@ -3,9 +3,13 @@ package org.camunda.bpm.extension.reactor.bridge;
 
 import org.camunda.bpm.extension.reactor.bus.CamundaEventBus;
 import org.camunda.bpm.extension.reactor.bus.SynchronousEventBus;
+import org.junit.Ignore;
 import org.junit.Test;
+import reactor.bus.Event;
+import reactor.bus.selector.Selectors;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -13,55 +17,43 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SendAndReceiveTest {
 
-  private final SynchronousEventBus eventBus = new CamundaEventBus().get();
+  private final SynchronousEventBus eventBus = new SynchronousEventBus();
 
-  public class Command {
-    final String name;
-
-    public Command(String name) {
-      this.name = name;
+  final SendAndReceive<String,String> bridge = new SendAndReceive<String, String>() {
+    @Override
+    public SynchronousEventBus eventBus() {
+      return eventBus;
     }
 
+    @Override
+    public Class<String> eventType() {
+      return String.class;
+    }
+  };
+
+  @Test
+  public void sendAndReceive_single_result() throws Exception {
+    eventBus.receive(Selectors.T(String.class), (reactor.fn.Function<Event<String>, String>) stringEvent -> stringEvent.getData() + "-A");
+    eventBus.receive(Selectors.T(String.class), (reactor.fn.Function<Event<String>, String>) stringEvent -> stringEvent.getData() + "-B");
+
+    List<Event<String>> events = bridge.sendAndReceive("foo");
+
+    assertThat(events).hasSize(1);
+    assertThat(events.get(0).getData()).isEqualTo("foo-A");
   }
 
   @Test
-  public void sendAndReceive() throws Exception {
-    EventBridgeSource.register(
-      eventBus,
-      command -> Optional.ofNullable(command.name).map(String::toUpperCase),
-      Command.class
-    );
+  @Ignore
+  public void sendAndReceive_collect_multiple() throws Exception {
 
-    Function<Command, Collection<Optional<String>>> function = EventBridgeSingle.on(eventBus, Command.class);
+    eventBus.receive(Selectors.T(String.class), (reactor.fn.Function<Event<String>, String>) stringEvent -> stringEvent.getData() + "-B");
+    eventBus.receive(Selectors.T(String.class), (reactor.fn.Function<Event<String>, String>) stringEvent -> stringEvent.getData() + "-A");
 
-    assertThat(function.apply(new Command("foo")).stream().findFirst().get()).isEqualTo("FOO");
+    List<Event<String>> events = bridge.sendAndReceive("foo");
+
+    assertThat(events).hasSize(2);
+    assertThat(events.get(0).getData()).isEqualTo("foo-B");
+    assertThat(events.get(1).getData()).isEqualTo("foo-A");
   }
 
-  @Test
-  public void what_happens_with_multiple_senders() throws Exception {
-
-    EventBridgeSource.register(
-      eventBus,
-      command -> Optional.ofNullable(command.name).map(String::toLowerCase),
-      Command.class
-    );
-    EventBridgeSource.register(
-      eventBus,
-      command -> Optional.ofNullable(command.name).map(String::toUpperCase),
-      Command.class
-    );
-
-
-    Function<Command, Collection<Optional<String>>> function = EventBridgeSingle.on(eventBus, Command.class);
-
-    assertThat(function.apply(new Command("foo")).stream().findFirst().get()).isEqualTo("FOO");
-
-  }
-
-  @Test
-  public void empty_list_when_no_supplier_is_registered() throws Exception {
-    Function<Command, Collection<Optional<String>>> function = EventBridgeSingle.on(eventBus, Command.class);
-
-    assertThat(function.apply(new Command("foo"))).isEmpty();
-  }
 }

@@ -1,32 +1,46 @@
 package org.camunda.bpm.extension.reactor.bridge;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
 import org.camunda.bpm.extension.reactor.bus.SynchronousEventBus;
-
 import reactor.bus.Event;
-import reactor.fn.Consumer;
 
-interface EventBridge<T,V> extends GetEventType<T> {
-
-  SynchronousEventBus eventBus();
-
-  @Override
-  Class<T> eventType();
+public interface EventBridge<T, V> extends SendAndReceive<T, V>, Function<T, V> {
 
   /**
-   * Performs a sendAndReceive on a synchronous bus and collects all results.
-   * @param input the command to send
-   * @return list off all response events received. Empty when no one is subscribed.
+   * Creates a function that does a synchronous sendAndReceive on the given bus with the topic eventType.
+   * It then returns the return value of the sender function that listens on the given topic.
+   *
+   * @param eventBus  a synchronous event bus. This only works with the sync dispatcher!
+   * @param eventType the type of the input parameter of the function, used as a topic/selector.
+   * @param <T>       input type of the function
+   * @param <V>       output type of the function
+   * @return function that uses sendAndReceive to access registered sender
    */
-  default List<Event<V>> sendAndReceive(final T input) {
-    final List<Event<V>> result = new ArrayList<>();
-    eventBus().sendAndReceive(
-      eventType(),
-      Event.wrap(input),
-      (Consumer<Event<V>>) event -> result.add(event)
-    );
-    return result;
+  static <T, V> EventBridge<T, V> on(final SynchronousEventBus eventBus, final Class<T> eventType) {
+    return new EventBridge<T, V>() {
+      @Override
+      public SynchronousEventBus eventBus() {
+        return eventBus;
+      }
+
+      @Override
+      public Class<T> eventType() {
+        return eventType;
+      }
+    };
+  }
+
+
+  @Override
+  default V apply(final T input) {
+    final List<Event<V>> responses = sendAndReceive(input);
+    Optional<V> response = responses.stream().map(Event::getData).reduce((x, y) -> {
+      throw new IllegalStateException("received more than on result!");
+    });
+
+    return response.orElse(null);
   }
 }
