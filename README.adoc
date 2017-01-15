@@ -1,7 +1,14 @@
-# ![camunda logo](http://camunda.github.io/camunda-bpm-assert/resources/images/camunda.png)&nbsp;camunda-bpm-reactor&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension/camunda-bpm-reactor-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension/camunda-bpm-reactor-core)&nbsp;[![Travis Build](https://travis-ci.org/camunda/camunda-bpm-spring-boot-starter.svg?branch=master)](https://travis-ci.org/camunda/camunda-bpm-spring-boot-starter)
-
+# camunda-bpm-reactor
 
 Event-based listeners and delegates for camunda.
+
+image::http://camunda.github.io/camunda-bpm-assert/resources/images/camunda.png[alt="Logo", width="150", float="right"]
+
+|====
+a| image::https://img.shields.io/badge/License-Apache%202.0-blue.svg[link="./LICENSE"] a| image::https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension.reactor/camunda-bpm-reactor-core/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension.reactor"] a|image::https://www.openhub.net/p/camunda-bpm-reactor/widgets/project_thin_badge.gif[link="https://www.openhub.net/p/camunda-bpm-reactor"] a|image::https://travis-ci.org/camunda/camunda-bpm-reactor.svg?branch=master[link=https://travis-ci.org/camunda/camunda-bpm-reactor"]
+|====
+
+
 
 ## What is this about?
 
