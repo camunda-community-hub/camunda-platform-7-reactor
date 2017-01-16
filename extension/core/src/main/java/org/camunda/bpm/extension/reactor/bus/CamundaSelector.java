@@ -15,6 +15,8 @@ import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.EMPTY;
 @Target(ElementType.TYPE)
 public @interface CamundaSelector {
 
+  String CAMUNDA_TOPIC = "/camunda/{context}/{type}/{process}/{element}/{event}";
+
   String type() default EMPTY;
   String element() default EMPTY;
   String process() default EMPTY;

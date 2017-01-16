@@ -1,17 +1,13 @@
 package org.camunda.bpm.extension.reactor.bridge;
 
 
-import org.camunda.bpm.extension.reactor.bus.CamundaEventBus;
 import org.camunda.bpm.extension.reactor.bus.SynchronousEventBus;
 import org.junit.Ignore;
 import org.junit.Test;
 import reactor.bus.Event;
 import reactor.bus.selector.Selectors;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -22,8 +22,6 @@ public class CamundaReactorTest {
   @Rule
   public final ExpectedException thrown = ExpectedException.none();
 
-
-
   @Test
   public void get_eventBus_from_engine() {
     final CamundaEventBus eventBus = new CamundaEventBus();

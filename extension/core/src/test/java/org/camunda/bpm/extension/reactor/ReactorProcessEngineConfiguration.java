@@ -27,6 +27,7 @@ public class ReactorProcessEngineConfiguration extends StandaloneInMemProcessEng
     this.history = HISTORY_FULL;
     this.databaseSchemaUpdate = DB_SCHEMA_UPDATE_DROP_CREATE;
 
+    this.isMetricsEnabled = false;
     this.jobExecutorActivate = false;
     this.expressionManager = new MockExpressionManager();
 

@@ -1,6 +1,5 @@
 package org.camunda.bpm.extension.reactor.plugin.parse;
 
-
 import org.camunda.bpm.dmn.engine.DmnDecision;
 import org.camunda.bpm.dmn.engine.DmnDecisionRequirementsGraph;
 import org.camunda.bpm.dmn.engine.impl.DmnDecisionTableInputImpl;
@@ -21,22 +20,22 @@ public class RegisterAllDmnTransformListener implements DmnTransformListener {
   }
 
   @Override
-  public void transformDecisionTableInput(Input input, DmnDecisionTableInputImpl dmnDecisionTableInput) {
+  public void transformDecisionTableInput(Input input, DmnDecisionTableInputImpl tableInput) {
 
   }
 
   @Override
-  public void transformDecisionTableOutput(Output output, DmnDecisionTableOutputImpl dmnDecisionTableOutput) {
+  public void transformDecisionTableOutput(Output output, DmnDecisionTableOutputImpl tableOutput) {
 
   }
 
   @Override
-  public void transformDecisionTableRule(Rule rule, DmnDecisionTableRuleImpl dmnDecisionTableRule) {
+  public void transformDecisionTableRule(Rule rule, DmnDecisionTableRuleImpl tableRule) {
 
   }
 
   @Override
-  public void transformDecisionRequirementsGraph(Definitions definitions, DmnDecisionRequirementsGraph dmnDecisionRequirementsGraph) {
+  public void transformDecisionRequirementsGraph(Definitions definitions, DmnDecisionRequirementsGraph graph) {
 
   }
 }

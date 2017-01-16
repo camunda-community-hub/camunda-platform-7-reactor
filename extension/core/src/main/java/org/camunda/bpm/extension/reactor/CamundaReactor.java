@@ -8,6 +8,7 @@ import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.camunda.bpm.engine.impl.cfg.ProcessEnginePlugin;
 import org.camunda.bpm.extension.reactor.bus.CamundaEventBus;
+import org.camunda.bpm.extension.reactor.bus.CamundaSelector;
 import org.camunda.bpm.extension.reactor.bus.SelectorBuilder;
 import org.camunda.bpm.extension.reactor.event.DelegateCaseExecutionEvent;
 import org.camunda.bpm.extension.reactor.event.DelegateExecutionEvent;
@@ -18,7 +19,7 @@ import java.util.List;
 
 public final class CamundaReactor {
 
-  public static final String CAMUNDA_TOPIC = "/camunda/{context}/{type}/{process}/{element}/{event}";
+  public static final String CAMUNDA_TOPIC = CamundaSelector.CAMUNDA_TOPIC;
 
   public static DelegateTaskEvent wrap(final DelegateTask delegateTask) {
     return new DelegateTaskEvent(delegateTask);

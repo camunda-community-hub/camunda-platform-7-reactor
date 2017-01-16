@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/1.0" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="fooBar" name="Decision" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="decision_a" name="A">
+    <extensionElements>
+      <biodi:bounds x="256" y="263" width="180" height="80" />
+    </extensionElements>
+    <decisionTable>
+      <input id="InputClause_1e9j4se" label="name" camunda:inputVariable="">
+        <inputExpression id="LiteralExpression_0j5g79t" typeRef="string">        <text>name</text>
+</inputExpression>
+      </input>
+      <output id="output_1" label="a" typeRef="string" />
+      <rule id="row-317789096-1">
+        <inputEntry id="UnaryTests_05dl3qo">        <text><![CDATA["foo"]]></text>
+</inputEntry>
+        <outputEntry id="LiteralExpression_03743r4">        <text><![CDATA["bar"]]></text>
+</outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="decision_b" name="B">
+    <extensionElements>
+      <biodi:bounds x="499" y="134" width="180" height="80" />
+      <biodi:edge source="decision_a">
+        <biodi:waypoints x="421" y="263" />
+        <biodi:waypoints x="514" y="214" />
+      </biodi:edge>
+    </extensionElements>
+    <informationRequirement>
+      <requiredDecision href="#decision_a" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_14ji993">
+      <input id="InputClause_0qfez2c" label="a">
+        <inputExpression id="LiteralExpression_1hd5gul" typeRef="string" />
+      </input>
+      <output id="OutputClause_11qfjgf" label="b" typeRef="string" />
+      <rule id="row-317789096-2">
+        <inputEntry id="UnaryTests_1ufrvmb">        <text><![CDATA["bar"]]></text>
+</inputEntry>
+        <outputEntry id="LiteralExpression_1da7jli">        <text><![CDATA["Result"]]></text>
+</outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>
