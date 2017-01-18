@@ -6,10 +6,7 @@ import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import reactor.bus.Event;
 import reactor.bus.EventBus;
 
-/**
- * @param <T> the type on the event value (configuration or engine)
- * @param <S> the type on the event itself, used for notify by type.
- */
+
 public abstract class ProcessEnginePluginEvent<T, S> extends Event<T> {
 
   /**

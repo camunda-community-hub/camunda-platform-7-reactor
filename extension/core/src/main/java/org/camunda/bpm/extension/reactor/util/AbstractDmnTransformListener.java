@@ -1,4 +1,4 @@
-package org.camunda.bpm.extension.reactor.plugin.parse;
+package org.camunda.bpm.extension.reactor.util;
 
 import org.camunda.bpm.dmn.engine.DmnDecision;
 import org.camunda.bpm.dmn.engine.DmnDecisionRequirementsGraph;
@@ -12,30 +12,32 @@ import org.camunda.bpm.model.dmn.instance.Input;
 import org.camunda.bpm.model.dmn.instance.Output;
 import org.camunda.bpm.model.dmn.instance.Rule;
 
-public class RegisterAllDmnTransformListener implements DmnTransformListener {
-
+/**
+ * TODO: should be part of the platform, remove with 7.7.
+ */
+public class AbstractDmnTransformListener implements DmnTransformListener {
   @Override
   public void transformDecision(Decision decision, DmnDecision dmnDecision) {
 
   }
 
   @Override
-  public void transformDecisionTableInput(Input input, DmnDecisionTableInputImpl tableInput) {
+  public void transformDecisionTableInput(Input input, DmnDecisionTableInputImpl dmnDecisionTableInput) {
 
   }
 
   @Override
-  public void transformDecisionTableOutput(Output output, DmnDecisionTableOutputImpl tableOutput) {
+  public void transformDecisionTableOutput(Output output, DmnDecisionTableOutputImpl dmnDecisionTableOutput) {
 
   }
 
   @Override
-  public void transformDecisionTableRule(Rule rule, DmnDecisionTableRuleImpl tableRule) {
+  public void transformDecisionTableRule(Rule rule, DmnDecisionTableRuleImpl dmnDecisionTableRule) {
 
   }
 
   @Override
-  public void transformDecisionRequirementsGraph(Definitions definitions, DmnDecisionRequirementsGraph graph) {
+  public void transformDecisionRequirementsGraph(Definitions definitions, DmnDecisionRequirementsGraph dmnDecisionRequirementsGraph) {
 
   }
 }

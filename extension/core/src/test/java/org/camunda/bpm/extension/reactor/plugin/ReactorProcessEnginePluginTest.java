@@ -92,7 +92,6 @@ public class ReactorProcessEnginePluginTest {
     verify(task).setAssignee("foo");
     verify(task).addCandidateGroup("bar");
     verify(task).setName("my task");
-
   }
 
   @Test

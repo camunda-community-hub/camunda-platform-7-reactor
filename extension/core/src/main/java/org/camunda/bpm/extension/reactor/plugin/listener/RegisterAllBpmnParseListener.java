@@ -1,19 +1,4 @@
-package org.camunda.bpm.extension.reactor.plugin.parse;
-
-import org.camunda.bpm.engine.delegate.ExecutionListener;
-import org.camunda.bpm.engine.delegate.TaskListener;
-import org.camunda.bpm.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
-import org.camunda.bpm.engine.impl.bpmn.parser.AbstractBpmnParseListener;
-import org.camunda.bpm.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.camunda.bpm.engine.impl.pvm.process.ActivityImpl;
-import org.camunda.bpm.engine.impl.pvm.process.ScopeImpl;
-import org.camunda.bpm.engine.impl.pvm.process.TransitionImpl;
-import org.camunda.bpm.engine.impl.task.TaskDefinition;
-import org.camunda.bpm.engine.impl.util.xml.Element;
-import org.camunda.bpm.extension.reactor.plugin.ReactorProcessEnginePlugin;
-
-import java.util.Arrays;
-import java.util.List;
+package org.camunda.bpm.extension.reactor.plugin.listener;
 
 import static org.camunda.bpm.engine.delegate.ExecutionListener.EVENTNAME_END;
 import static org.camunda.bpm.engine.delegate.ExecutionListener.EVENTNAME_START;
@@ -22,6 +7,20 @@ import static org.camunda.bpm.engine.delegate.TaskListener.EVENTNAME_ASSIGNMENT;
 import static org.camunda.bpm.engine.delegate.TaskListener.EVENTNAME_COMPLETE;
 import static org.camunda.bpm.engine.delegate.TaskListener.EVENTNAME_CREATE;
 import static org.camunda.bpm.engine.delegate.TaskListener.EVENTNAME_DELETE;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.camunda.bpm.engine.delegate.ExecutionListener;
+import org.camunda.bpm.engine.delegate.TaskListener;
+import org.camunda.bpm.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
+import org.camunda.bpm.engine.impl.bpmn.parser.AbstractBpmnParseListener;
+import org.camunda.bpm.engine.impl.pvm.process.ActivityImpl;
+import org.camunda.bpm.engine.impl.pvm.process.ScopeImpl;
+import org.camunda.bpm.engine.impl.pvm.process.TransitionImpl;
+import org.camunda.bpm.engine.impl.task.TaskDefinition;
+import org.camunda.bpm.engine.impl.util.xml.Element;
+import org.camunda.bpm.extension.reactor.plugin.ReactorProcessEnginePlugin;
 
 public class RegisterAllBpmnParseListener extends AbstractBpmnParseListener {
 
@@ -151,11 +150,6 @@ public class RegisterAllBpmnParseListener extends AbstractBpmnParseListener {
   @Override
   public void parseParallelGateway(Element parallelGwElement, ScopeImpl scope, ActivityImpl activity) {
     addExecutionListener(activity);
-  }
-
-  @Override
-  public void parseProcess(Element processElement, ProcessDefinitionEntity processDefinition) {
-    // FIXME: is it a good idea to implement genenric global process listeners?
   }
 
   @Override
