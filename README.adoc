@@ -5,7 +5,7 @@ Event-based listeners and delegates for camunda.
 image::http://camunda.github.io/camunda-bpm-assert/resources/images/camunda.png[alt="Logo", width="150", float="right"]
 
 |====
-a| image::https://img.shields.io/badge/License-Apache%202.0-blue.svg[link="./LICENSE"] a| image::https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension.reactor/camunda-bpm-reactor-core/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension.reactor"] a|image::https://www.openhub.net/p/camunda-bpm-reactor/widgets/project_thin_badge.gif[link="https://www.openhub.net/p/camunda-bpm-reactor"] a|image::https://travis-ci.org/camunda/camunda-bpm-reactor.svg?branch=master[link=https://travis-ci.org/camunda/camunda-bpm-reactor"]
+a| image::https://img.shields.io/badge/License-Apache%202.0-blue.svg[link="./LICENSE"] a| image::https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension/camunda-bpm-reactor-core/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension.reactor"]  a| image::https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension.reactor/camunda-bpm-reactor-core/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension.reactor"] a|image::https://www.openhub.net/p/camunda-bpm-reactor/widgets/project_thin_badge.gif[link="https://www.openhub.net/p/camunda-bpm-reactor"] a|image::https://travis-ci.org/camunda/camunda-bpm-reactor.svg?branch=master[link=https://travis-ci.org/camunda/camunda-bpm-reactor"]
 |====
 
 
@@ -65,6 +65,38 @@ This extensions works with delegateTasks and delegateEvents directly. These cann
 ### Spring Boot
 
 * the reactor-spring-starter was removed with 1.5.0, in favor of introducing the new @EnableCamundaReactor annotation. Just use it on your spring boot application to activate bus and plugin.
+
+## Maven Coordinates
+
+### Latest released version on maven central
+
+```xml
+<dependency>
+  <groupId>org.camunda.bpm.extension</groupId>
+  <artifactId>camunda-bpm-reactor-core</artifactId>
+  <version>1.2</version>
+</dependency>
+```
+
+### Latest snapshot
+
+```xml
+<dependency>
+  <groupId>org.camunda.bpm.extension.reactor</groupId>
+  <artifactId>camunda-bpm-reactor-core</artifactId>
+  <version>1.5-SNAPSHOT</version>
+</dependency>
+
+<repository>
+  <!-- you have to add the snapshot repository -->
+  <id>maven-central-snapshots</id>
+  <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+  <snapshots>
+    <enabled>true</enabled>
+  </snapshots>
+</repository>
+```
+
 
 ## Next Steps
 
