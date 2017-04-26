@@ -10,9 +10,9 @@ image::https://travis-ci.org/camunda/camunda-bpm-reactor.svg?branch=master[link=
 // license
 image::https://img.shields.io/badge/License-Apache%202.0-blue.svg[link="./LICENSE"]
 // mvn 1.2
-image::https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension/camunda-bpm-reactor-core/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension.reactor"]
+image::https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension/camunda-bpm-reactor-core/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension/camunda-bpm-reactor-core"]
 // mvn 1.5+
-image::https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension.reactor/camunda-bpm-reactor-core/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension.reactor"]
+image::https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension.reactor/camunda-bpm-reactor-core/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension.reactor/camunda-bpm-reactor-core"]
 // openhub
 image::https://www.openhub.net/p/camunda-bpm-reactor/widgets/project_thin_badge.gif[link="https://www.openhub.net/p/camunda-bpm-reactor"]
 ,====
