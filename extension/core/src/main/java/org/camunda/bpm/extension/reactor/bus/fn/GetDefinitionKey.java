@@ -7,7 +7,7 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ProcessEngineServicesAware;
 
-public class GetDefinitionKey {
+public final class GetDefinitionKey {
 
   public static String fromCaseExecution(DelegateCaseExecution execution) {
     return repositoryService(execution).getCaseDefinition(execution.getCaseDefinitionId()).getKey();
@@ -29,5 +29,7 @@ public class GetDefinitionKey {
     return processEngineServicesAware.getProcessEngineServices().getRepositoryService();
   }
 
-
+  private GetDefinitionKey() {
+    // util class, do not instantiate
+  }
 }
