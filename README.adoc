@@ -17,6 +17,9 @@ image::https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extensio
 image::https://www.openhub.net/p/camunda-bpm-reactor/widgets/project_thin_badge.gif[link="https://www.openhub.net/p/camunda-bpm-reactor"]
 ,====
 
+ATTENTION: The master branch holds the documentation for the upcoming (no date yet) 1.5 version. If you are using the 1.2 stable, check this documentation: https://github.com/camunda/camunda-bpm-reactor/blob/1.2/README.md
+
+
 ## What is this about?
 
 This extension provides a process engine plugin that registers Execution- and TaskListeners to all possible elements and all possible events. These listeners then publish their delegates (DelegateTask, DelegateExcution) to an event bus.
