@@ -19,10 +19,12 @@
   <modules>
     <module>extension</module>
     <module>examples</module>
+    <module>reactor3</module>
   </modules>
 
   <properties>
-    <version.java>1.8</version.java>
+    <java.version>1.8</java.version>
+    <version.java>${java.version}</version.java>
 
     <encoding>UTF-8</encoding>
     <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
@@ -34,6 +36,7 @@
     <camunda.version>7.7.0</camunda.version>
     <reactor.version>2.0.8.RELEASE</reactor.version>
     <slf4j.version>1.7.12</slf4j.version>
+
 
     <surefire.runOrder>reversealphabetical</surefire.runOrder>
   </properties>

@@ -8,11 +8,14 @@ import org.camunda.bpm.engine.test.mock.Mocks;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.repositoryService;
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.runtimeService;
 
+@Ignore
+@Deprecated
 public class InterruptingErrorEventTest extends AbstractProcessTest {
 
   public static final String KEY = "InterruptingErrorEventTest";
