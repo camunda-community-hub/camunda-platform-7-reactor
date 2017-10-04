@@ -16,10 +16,10 @@
 
 package org.camunda.bpm.extension.reactor.projectreactor.core.dispatch;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.camunda.bpm.extension.reactor.projectreactor.core.Dispatcher;
 import org.camunda.bpm.extension.reactor.projectreactor.core.support.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;

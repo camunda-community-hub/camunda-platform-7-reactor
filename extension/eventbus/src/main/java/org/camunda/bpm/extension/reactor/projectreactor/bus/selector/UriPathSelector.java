@@ -24,53 +24,50 @@ import java.util.Map;
  *
  * @author Jon Brisbin
  * @author Andy Wilkinson
- *
  * @see UriPathTemplate
  */
 public class UriPathSelector extends ObjectSelector<Object, UriPathTemplate> {
 
-	private final HeaderResolver headerResolver = new HeaderResolver() {
-		@Nullable
-		@Override
-		public Map<String, Object> resolve(Object key) {
-			Map<String, Object> headers = getObject().match(key.toString());
-			if (null != headers && !headers.isEmpty()) {
-				return headers;
-			}
-			return null;
-		}
-	};
+  private final HeaderResolver headerResolver = new HeaderResolver() {
+    @Nullable
+    @Override
+    public Map<String, Object> resolve(Object key) {
+      Map<String, Object> headers = getObject().match(key.toString());
+      if (null != headers && !headers.isEmpty()) {
+        return headers;
+      }
+      return null;
+    }
+  };
 
-	/**
-	 * Create a selector from the given uri template string.
-	 *
-	 * @param uriPathTmpl The string to compile into a {@link UriPathTemplate}.
-	 */
-	public UriPathSelector(String uriPathTmpl) {
-		super(new UriPathTemplate(uriPathTmpl));
-	}
+  /**
+   * Create a selector from the given uri template string.
+   *
+   * @param uriPathTmpl The string to compile into a {@link UriPathTemplate}.
+   */
+  public UriPathSelector(String uriPathTmpl) {
+    super(new UriPathTemplate(uriPathTmpl));
+  }
 
-	/**
-	 * Creates a {@link Selector} based on a URI template.
-	 *
-	 * @param uriTemplate The URI template to compile.
-	 *
-	 * @return The new {@link Selector}.
-	 *
-	 * @see UriPathTemplate
-	 */
-	public static Selector uriPathSelector(String uriTemplate) {
-		return new UriPathSelector(uriTemplate);
-	}
+  /**
+   * Creates a {@link Selector} based on a URI template.
+   *
+   * @param uriTemplate The URI template to compile.
+   * @return The new {@link Selector}.
+   * @see UriPathTemplate
+   */
+  public static Selector uriPathSelector(String uriTemplate) {
+    return new UriPathSelector(uriTemplate);
+  }
 
-	@Override
-	public boolean matches(Object path) {
-		return String.class.isAssignableFrom(path.getClass()) && getObject().matches((String)path);
-	}
+  @Override
+  public boolean matches(Object path) {
+    return String.class.isAssignableFrom(path.getClass()) && getObject().matches((String) path);
+  }
 
-	@Override
-	public HeaderResolver getHeaderResolver() {
-		return headerResolver;
-	}
+  @Override
+  public HeaderResolver getHeaderResolver() {
+    return headerResolver;
+  }
 
 }

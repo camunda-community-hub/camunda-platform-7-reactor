@@ -29,59 +29,59 @@ import java.util.concurrent.atomic.AtomicLongFieldUpdater;
  */
 public class SubscriptionWithContext<C> implements Subscription {
 
-	private volatile       long                                            pending         = 0;
-	protected static final AtomicLongFieldUpdater<SubscriptionWithContext> PENDING_UPDATER = AtomicLongFieldUpdater
-			.newUpdater(SubscriptionWithContext.class, "pending");
+  private volatile long pending = 0;
+  protected static final AtomicLongFieldUpdater<SubscriptionWithContext> PENDING_UPDATER = AtomicLongFieldUpdater
+    .newUpdater(SubscriptionWithContext.class, "pending");
 
-	private volatile       int                                                terminated      = 0;
-	protected static final AtomicIntegerFieldUpdater<SubscriptionWithContext> TERMINATED_UPDATER = AtomicIntegerFieldUpdater
-			.newUpdater(SubscriptionWithContext.class, "terminated");
+  private volatile int terminated = 0;
+  protected static final AtomicIntegerFieldUpdater<SubscriptionWithContext> TERMINATED_UPDATER = AtomicIntegerFieldUpdater
+    .newUpdater(SubscriptionWithContext.class, "terminated");
 
 
-	protected final C            context;
-	protected final Subscription subscription;
+  protected final C context;
+  protected final Subscription subscription;
 
-	/**
-	 * Attach a given arbitrary context (stateful information) to a {@link Subscription}, all Subscription methods
-	 * will delegate properly.
-	 *
-	 * @param subscription the delegate subscription to invoke on request/cancel
-	 * @param context    the contextual state of any type to bind for later use
-	 * @param <C>        Type of attached stateful context
-	 * @return a new Subscription with context information
-	 */
-	public static <C> SubscriptionWithContext<C> create(Subscription subscription, C context) {
-		return new SubscriptionWithContext<>(context, subscription);
-	}
+  /**
+   * Attach a given arbitrary context (stateful information) to a {@link Subscription}, all Subscription methods
+   * will delegate properly.
+   *
+   * @param subscription the delegate subscription to invoke on request/cancel
+   * @param context      the contextual state of any type to bind for later use
+   * @param <C>          Type of attached stateful context
+   * @return a new Subscription with context information
+   */
+  public static <C> SubscriptionWithContext<C> create(Subscription subscription, C context) {
+    return new SubscriptionWithContext<>(context, subscription);
+  }
 
-	protected SubscriptionWithContext(C context, Subscription subscription) {
-		this.context = context;
-		this.subscription = subscription;
-	}
+  protected SubscriptionWithContext(C context, Subscription subscription) {
+    this.context = context;
+    this.subscription = subscription;
+  }
 
-	/**
-	 * The stateful context C
-	 *
-	 * @return the bound context
-	 */
-	public C context() {
-		return context;
-	}
+  /**
+   * The stateful context C
+   *
+   * @return the bound context
+   */
+  public C context() {
+    return context;
+  }
 
-	@Override
-	public void request(long n) {
-		subscription.request(n);
-	}
+  @Override
+  public void request(long n) {
+    subscription.request(n);
+  }
 
-	@Override
-	public void cancel() {
-		if(TERMINATED_UPDATER.compareAndSet(this, 0, 1)) {
-			subscription.cancel();
-		}
-	}
+  @Override
+  public void cancel() {
+    if (TERMINATED_UPDATER.compareAndSet(this, 0, 1)) {
+      subscription.cancel();
+    }
+  }
 
-	public boolean isCancelled(){
-		return terminated == 1;
-	}
+  public boolean isCancelled() {
+    return terminated == 1;
+  }
 
 }

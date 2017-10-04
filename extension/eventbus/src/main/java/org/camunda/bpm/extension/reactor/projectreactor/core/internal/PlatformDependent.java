@@ -19,59 +19,59 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
 /**
  * Borrowed from Netty project which itself borrows from JCTools and various other projects.
- *
+ * <p>
  * Expose some runtime properties such as Unsafe access or Android environment.
- *
+ * <p>
  * The {@see github.com/netty/netty/blob/master/common/src/main/java/io/netty/util/internal/PlatformDependent.java}.
  */
 public class PlatformDependent {
 
-	private static final boolean HAS_UNSAFE = hasUnsafe0();
+  private static final boolean HAS_UNSAFE = hasUnsafe0();
 
-	public static <U, W> AtomicReferenceFieldUpdater<U, W> newAtomicReferenceFieldUpdater(
-			Class<U> tclass, String fieldName) {
-		if (hasUnsafe()) {
-			try {
-				return PlatformDependent0.newAtomicReferenceFieldUpdater(tclass, fieldName);
-			} catch (Throwable ignore) {
-				// ignore
-			}
-		}
-		return null;
-	}
+  public static <U, W> AtomicReferenceFieldUpdater<U, W> newAtomicReferenceFieldUpdater(
+    Class<U> tclass, String fieldName) {
+    if (hasUnsafe()) {
+      try {
+        return PlatformDependent0.newAtomicReferenceFieldUpdater(tclass, fieldName);
+      } catch (Throwable ignore) {
+        // ignore
+      }
+    }
+    return null;
+  }
 
-	/**
-	 * Return {@code true} if {@code sun.misc.Unsafe} was found on the classpath and can be used for acclerated
-	 * direct memory access.
-	 */
-	public static boolean hasUnsafe() {
-		return HAS_UNSAFE;
-	}
+  /**
+   * Return {@code true} if {@code sun.misc.Unsafe} was found on the classpath and can be used for acclerated
+   * direct memory access.
+   */
+  public static boolean hasUnsafe() {
+    return HAS_UNSAFE;
+  }
 
-	private static boolean isAndroid() {
-		boolean android;
-		try {
-			Class.forName("android.app.Application", false, PlatformDependent0.getSystemClassLoader());
-			android = true;
-		} catch (Exception e) {
-			// Failed to load the class uniquely available in Android.
-			android = false;
-		}
+  private static boolean isAndroid() {
+    boolean android;
+    try {
+      Class.forName("android.app.Application", false, PlatformDependent0.getSystemClassLoader());
+      android = true;
+    } catch (Exception e) {
+      // Failed to load the class uniquely available in Android.
+      android = false;
+    }
 
-		return android;
-	}
+    return android;
+  }
 
-	private static boolean hasUnsafe0() {
+  private static boolean hasUnsafe0() {
 
-		if (isAndroid()) {
-			return false;
-		}
+    if (isAndroid()) {
+      return false;
+    }
 
-		try {
-			return PlatformDependent0.hasUnsafe();
-		} catch (Throwable t) {
-			// Probably failed to initialize PlatformDependent0.
-			return false;
-		}
-	}
+    try {
+      return PlatformDependent0.hasUnsafe();
+    } catch (Throwable t) {
+      // Probably failed to initialize PlatformDependent0.
+      return false;
+    }
+  }
 }

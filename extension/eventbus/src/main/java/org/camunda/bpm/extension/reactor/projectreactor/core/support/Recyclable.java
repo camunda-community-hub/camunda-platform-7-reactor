@@ -24,9 +24,9 @@ package org.camunda.bpm.extension.reactor.projectreactor.core.support;
  */
 public interface Recyclable {
 
-	/**
-	 * Free any internal resources and reset the state of the object to enable reuse.
-	 */
-	void recycle();
+  /**
+   * Free any internal resources and reset the state of the object to enable reuse.
+   */
+  void recycle();
 
 }

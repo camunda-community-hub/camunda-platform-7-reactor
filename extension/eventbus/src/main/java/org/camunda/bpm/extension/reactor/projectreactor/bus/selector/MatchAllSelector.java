@@ -24,18 +24,18 @@ package org.camunda.bpm.extension.reactor.projectreactor.bus.selector;
  */
 public class MatchAllSelector implements Selector {
 
-    @Override
-    public Object getObject() {
-        return null;
-    }
+  @Override
+  public Object getObject() {
+    return null;
+  }
 
-    @Override
-    public boolean matches(Object key) {
-        return true;
-    }
+  @Override
+  public boolean matches(Object key) {
+    return true;
+  }
 
-    @Override
-    public HeaderResolver getHeaderResolver() {
-        return null;
-    }
+  @Override
+  public HeaderResolver getHeaderResolver() {
+    return null;
+  }
 }

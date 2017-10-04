@@ -22,18 +22,18 @@ package org.camunda.bpm.extension.reactor.projectreactor.core.support;
  * @since 2.0.2
  */
 public class ReactorFatalException extends RuntimeException {
-	public static final ReactorFatalException INSTANCE = new ReactorFatalException(null);
+  public static final ReactorFatalException INSTANCE = new ReactorFatalException(null);
 
-	public static ReactorFatalException instance() {
-		return INSTANCE;
-	}
+  public static ReactorFatalException instance() {
+    return INSTANCE;
+  }
 
-	public static ReactorFatalException create(Throwable root) {
-		return new ReactorFatalException(root);
-	}
+  public static ReactorFatalException create(Throwable root) {
+    return new ReactorFatalException(root);
+  }
 
-	private ReactorFatalException(Throwable root) {
-		super(root);
-	}
+  private ReactorFatalException(Throwable root) {
+    super(root);
+  }
 
 }

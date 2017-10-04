@@ -15,9 +15,6 @@
  */
 package org.camunda.bpm.extension.reactor.projectreactor.bus.publisher;
 
-import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 import org.camunda.bpm.extension.reactor.projectreactor.bus.Bus;
 import org.camunda.bpm.extension.reactor.projectreactor.bus.EventBus;
 import org.camunda.bpm.extension.reactor.projectreactor.bus.registry.Registration;
@@ -25,9 +22,12 @@ import org.camunda.bpm.extension.reactor.projectreactor.bus.selector.Selector;
 import org.camunda.bpm.extension.reactor.projectreactor.core.Dispatcher;
 import org.camunda.bpm.extension.reactor.projectreactor.core.dispatch.SynchronousDispatcher;
 import org.camunda.bpm.extension.reactor.projectreactor.core.reactivestreams.SerializedSubscriber;
-import java.util.function.Consumer;
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 
 import javax.annotation.Nonnull;
+import java.util.function.Consumer;
 
 /**
  * Emit signals whenever an Event arrives from the {@link org.camunda.bpm.extension.reactor.projectreactor.bus.selector.Selector} topic from the {@link
@@ -45,56 +45,56 @@ import javax.annotation.Nonnull;
  */
 public final class BusPublisher<T> implements Publisher<T> {
 
-	private final Selector      selector;
-	private final Bus<T> observable;
-	private final boolean    ordering;
+  private final Selector selector;
+  private final Bus<T> observable;
+  private final boolean ordering;
 
 
-	public BusPublisher(final @Nonnull Bus<T> observable,
-	                    final @Nonnull Selector selector) {
+  public BusPublisher(final @Nonnull Bus<T> observable,
+                      final @Nonnull Selector selector) {
 
-		this.selector = selector;
-		this.observable = observable;
-		Dispatcher dispatcher = EventBus.class.isAssignableFrom(observable.getClass()) ?
-				((EventBus)observable).getDispatcher() : SynchronousDispatcher.INSTANCE;
-		this.ordering = dispatcher.supportsOrdering();
-	}
+    this.selector = selector;
+    this.observable = observable;
+    Dispatcher dispatcher = EventBus.class.isAssignableFrom(observable.getClass()) ?
+      ((EventBus) observable).getDispatcher() : SynchronousDispatcher.INSTANCE;
+    this.ordering = dispatcher.supportsOrdering();
+  }
 
-	@Override
-	public void subscribe(Subscriber<? super T> s) {
-		final Subscriber<? super T> subscriber;
-		if(!ordering) {
-			subscriber = SerializedSubscriber.create(s);
-		}else{
-			subscriber = s;
-		}
+  @Override
+  public void subscribe(Subscriber<? super T> s) {
+    final Subscriber<? super T> subscriber;
+    if (!ordering) {
+      subscriber = SerializedSubscriber.create(s);
+    } else {
+      subscriber = s;
+    }
 
-		subscriber.onSubscribe(new Subscription() {
+    subscriber.onSubscribe(new Subscription() {
 
-			final Registration<Object, Consumer<? extends T>> registration = observable.on(selector, new Consumer<T>() {
-				@Override
-				public void accept(T event) {
-					subscriber.onNext(event);
-				}
-			});
+      final Registration<Object, Consumer<? extends T>> registration = observable.on(selector, new Consumer<T>() {
+        @Override
+        public void accept(T event) {
+          subscriber.onNext(event);
+        }
+      });
 
-			@Override
-			public void request(long n) {
-				//IGNORE
-			}
+      @Override
+      public void request(long n) {
+        //IGNORE
+      }
 
-			@Override
-			public void cancel() {
-				registration.cancel();
-			}
-		});
-	}
+      @Override
+      public void cancel() {
+        registration.cancel();
+      }
+    });
+  }
 
-	@Override
-	public String toString() {
-		return "BusPublisher{" +
-				"selector=" + selector +
-				", bus=" + observable +
-				'}';
-	}
+  @Override
+  public String toString() {
+    return "BusPublisher{" +
+      "selector=" + selector +
+      ", bus=" + observable +
+      '}';
+  }
 }

@@ -34,126 +34,124 @@ import java.util.concurrent.locks.LockSupport;
  */
 public final class MpscDispatcher extends SingleThreadDispatcher {
 
-	private static final int DEFAULT_BUFFER_SIZE = 1024;
+  private static final int DEFAULT_BUFFER_SIZE = 1024;
 
-	//private final Logger log = LoggerFactory.getLogger(getClass());
-	private final ExecutorService executor;
-	private final Queue<Task>     workQueue;
-	private final int             capacity;
+  //private final Logger log = LoggerFactory.getLogger(getClass());
+  private final ExecutorService executor;
+  private final Queue<Task> workQueue;
+  private final int capacity;
 
-	/**
-	 * Creates a new {@code MpscDispatcher} with the given {@code name}. It will use a MpscLinkedQueue and a virtual capacity of 1024 slots.
-	 *
-	 * @param name The name of the dispatcher.
-	 */
-	public MpscDispatcher(String name) {
-		this(name, DEFAULT_BUFFER_SIZE);
-	}
+  /**
+   * Creates a new {@code MpscDispatcher} with the given {@code name}. It will use a MpscLinkedQueue and a virtual capacity of 1024 slots.
+   *
+   * @param name The name of the dispatcher.
+   */
+  public MpscDispatcher(String name) {
+    this(name, DEFAULT_BUFFER_SIZE);
+  }
 
-	/**
-	 * Creates a new {@code MpscDispatcher} with the given {@code name}. It will use a MpscLinkedQueue and a virtual capacity of {code bufferSize}
-	 *
-	 * @param name       The name of the dispatcher
-	 * @param bufferSize The size to configure the ring buffer with
-	 */
-	@SuppressWarnings({"unchecked"})
-	public MpscDispatcher(String name,
-	                      int bufferSize) {
-		super(bufferSize);
+  /**
+   * Creates a new {@code MpscDispatcher} with the given {@code name}. It will use a MpscLinkedQueue and a virtual capacity of {code bufferSize}
+   *
+   * @param name       The name of the dispatcher
+   * @param bufferSize The size to configure the ring buffer with
+   */
+  @SuppressWarnings({"unchecked"})
+  public MpscDispatcher(String name,
+                        int bufferSize) {
+    super(bufferSize);
 
-		this.executor = Executors.newSingleThreadExecutor(new NamedDaemonThreadFactory(name, getContext()));
-		this.workQueue = MpscLinkedQueue.create();
-		this.capacity = bufferSize;
-		this.executor.execute(new Runnable() {
-			@Override
-			public void run() {
-				Task task;
-				try {
-					for (; ; ) {
-						task = workQueue.poll();
-						if (null != task) {
-							task.run();
-						} else {
-							LockSupport.parkNanos(1l); //TODO expose
-						}
-					}
-				}catch (EndException e){
-					//ignore
-				}
-			}
-		});
-	}
+    this.executor = Executors.newSingleThreadExecutor(new NamedDaemonThreadFactory(name, getContext()));
+    this.workQueue = MpscLinkedQueue.create();
+    this.capacity = bufferSize;
+    this.executor.execute(new Runnable() {
+      @Override
+      public void run() {
+        Task task;
+        try {
+          for (; ; ) {
+            task = workQueue.poll();
+            if (null != task) {
+              task.run();
+            } else {
+              LockSupport.parkNanos(1l); //TODO expose
+            }
+          }
+        } catch (EndException e) {
+          //ignore
+        }
+      }
+    });
+  }
 
-	@Override
-	public boolean awaitAndShutdown(long timeout, TimeUnit timeUnit) {
-		shutdown();
-		try {
-			executor.awaitTermination(timeout, timeUnit);
-		} catch (InterruptedException e) {
-			return false;
-		}
-		return true;
-	}
+  @Override
+  public boolean awaitAndShutdown(long timeout, TimeUnit timeUnit) {
+    shutdown();
+    try {
+      executor.awaitTermination(timeout, timeUnit);
+    } catch (InterruptedException e) {
+      return false;
+    }
+    return true;
+  }
 
-	@Override
-	public void shutdown() {
-		workQueue.add(new EndMpscTask());
-		executor.shutdown();
-		super.shutdown();
-	}
+  @Override
+  public void shutdown() {
+    workQueue.add(new EndMpscTask());
+    executor.shutdown();
+    super.shutdown();
+  }
 
-	@Override
-	public void forceShutdown() {
-		workQueue.add(new EndMpscTask());
-		executor.shutdownNow();
-		super.forceShutdown();
-	}
+  @Override
+  public void forceShutdown() {
+    workQueue.add(new EndMpscTask());
+    executor.shutdownNow();
+    super.forceShutdown();
+  }
 
-	@Override
-	public long remainingSlots() {
-		return workQueue.size();
-	}
+  @Override
+  public long remainingSlots() {
+    return workQueue.size();
+  }
 
 
-	@Override
-	protected Task tryAllocateTask() throws InsufficientCapacityException {
-		if (workQueue.size() > capacity) {
-			throw InsufficientCapacityException.get();
-		} else {
-			return allocateTask();
-		}
-	}
+  @Override
+  protected Task tryAllocateTask() throws InsufficientCapacityException {
+    if (workQueue.size() > capacity) {
+      throw InsufficientCapacityException.get();
+    } else {
+      return allocateTask();
+    }
+  }
 
-	@Override
-	protected Task allocateTask() {
-		return new SingleThreadTask();
-	}
+  @Override
+  protected Task allocateTask() {
+    return new SingleThreadTask();
+  }
 
-	protected void execute(Task task) {
-		workQueue.add(task);
-	}
+  protected void execute(Task task) {
+    workQueue.add(task);
+  }
 
-	private class EndMpscTask extends SingleThreadTask {
+  private class EndMpscTask extends SingleThreadTask {
 
-		@Override
-		public void run() {
-			throw EndException.INSTANCE;
-		}
-	}
+    @Override
+    public void run() {
+      throw EndException.INSTANCE;
+    }
+  }
 
-	private static final class EndException extends IllegalStateException{
-		public static final EndException INSTANCE = new EndException();
+  private static final class EndException extends IllegalStateException {
+    public static final EndException INSTANCE = new EndException();
 
-		private EndException()
-		{
-			// Singleton
-		}
+    private EndException() {
+      // Singleton
+    }
 
-		@Override
-		public synchronized Throwable fillInStackTrace()
-		{
-			return this;
-		}
-	}
+    @Override
+    public synchronized Throwable fillInStackTrace() {
+      return this;
+    }
+  }
 
 }

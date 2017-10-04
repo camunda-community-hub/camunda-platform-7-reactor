@@ -23,30 +23,29 @@ package org.camunda.bpm.extension.reactor.projectreactor.bus.selector;
  * @author Stephane Maldini
  * @author Andy Wilkinson
  */
-public interface Selector<T>  {
+public interface Selector<T> {
 
 
-	/**
-	 * Get the object being used for comparisons and equals checks.
-	 *
-	 * @return The internal object.
-	 */
-	Object getObject();
+  /**
+   * Get the object being used for comparisons and equals checks.
+   *
+   * @return The internal object.
+   */
+  Object getObject();
 
-	/**
-	 * Indicates whether this Selector matches the {@code key}.
-	 *
-	 * @param key The key to match
-	 *
-	 * @return {@code true} if there's a match, otherwise {@code false}.
-	 */
-	boolean matches(T key);
+  /**
+   * Indicates whether this Selector matches the {@code key}.
+   *
+   * @param key The key to match
+   * @return {@code true} if there's a match, otherwise {@code false}.
+   */
+  boolean matches(T key);
 
-	/**
-	 * Return a component that can resolve headers from a key
-	 *
-	 * @return A {@link HeaderResolver} applicable to this {@link Selector} type.
-	 */
-	HeaderResolver getHeaderResolver();
+  /**
+   * Return a component that can resolve headers from a key
+   *
+   * @return A {@link HeaderResolver} applicable to this {@link Selector} type.
+   */
+  HeaderResolver getHeaderResolver();
 
 }

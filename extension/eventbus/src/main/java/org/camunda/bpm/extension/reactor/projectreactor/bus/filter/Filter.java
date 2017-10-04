@@ -23,21 +23,18 @@ import java.util.List;
  * implementation.
  *
  * @author Andy Wilkinson
- *
  */
 public interface Filter {
 
-	/**
-	 * Filters the given {@code List} of {@code items}. The {@code key} may be used by an implementation to
-	 * influence the filtering.
-	 *
-	 * @param items The items to filter. Must not be {@code null}.
-	 * @param key The key
-	 *
-	 * @return The filtered items, never {@code null}.
-	 *
-	 * @throws IllegalArgumentException if {@code items} is null
-	 */
-	<T> List<T> filter(List<T> items, Object key);
+  /**
+   * Filters the given {@code List} of {@code items}. The {@code key} may be used by an implementation to
+   * influence the filtering.
+   *
+   * @param items The items to filter. Must not be {@code null}.
+   * @param key   The key
+   * @return The filtered items, never {@code null}.
+   * @throws IllegalArgumentException if {@code items} is null
+   */
+  <T> List<T> filter(List<T> items, Object key);
 
 }

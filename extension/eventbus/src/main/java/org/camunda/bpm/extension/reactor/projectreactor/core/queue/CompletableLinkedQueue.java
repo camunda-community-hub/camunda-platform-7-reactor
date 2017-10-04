@@ -24,17 +24,17 @@ import java.util.concurrent.LinkedTransferQueue;
  * @author Stephane Maldini
  * @since 2.0
  */
-final public class CompletableLinkedQueue<T> extends LinkedTransferQueue<T> implements CompletableQueue<T>{
+final public class CompletableLinkedQueue<T> extends LinkedTransferQueue<T> implements CompletableQueue<T> {
 
-	boolean terminated = false;
+  boolean terminated = false;
 
-	@Override
-	public void complete() {
-		terminated = true;
-	}
+  @Override
+  public void complete() {
+    terminated = true;
+  }
 
-	@Override
-	public boolean isComplete() {
-		return terminated;
-	}
+  @Override
+  public boolean isComplete() {
+    return terminated;
+  }
 }

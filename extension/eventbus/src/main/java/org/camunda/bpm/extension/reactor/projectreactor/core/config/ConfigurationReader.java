@@ -21,14 +21,13 @@ package org.camunda.bpm.extension.reactor.projectreactor.core.config;
  * A {@code ConfigurationReader} is used to read Reactor configuration.
  *
  * @author Andy Wilkinson
- *
  */
 public interface ConfigurationReader {
 
-	/**
-	 * Reads the configuration
-	 *
-	 * @return The configuration. Never {@code null}.
-	 */
-	ReactorConfiguration read();
+  /**
+   * Reads the configuration
+   *
+   * @return The configuration. Never {@code null}.
+   */
+  ReactorConfiguration read();
 }

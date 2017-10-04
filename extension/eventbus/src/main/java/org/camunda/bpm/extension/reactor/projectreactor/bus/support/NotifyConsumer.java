@@ -32,29 +32,29 @@ import java.util.function.Consumer;
  */
 public class NotifyConsumer<T> implements Consumer<T> {
 
-	private final Object  notifyKey;
-	private final Bus     observable;
-	private final boolean wrapEvent;
+  private final Object notifyKey;
+  private final Bus observable;
+  private final boolean wrapEvent;
 
-	/**
-	 * Creates a new {@code NotifyConsumer} that will notify the given {@code observable} using
-	 * the given {@code notifyKey}. If {@code notifyKey} is {@code null}, {@code observable}
-	 * will be notified without a key.
-	 *
-	 * @param notifyKey  The notification key, may be {@code null}
-	 * @param observable The observable to notify. May not be {@code null}
-	 */
-	public NotifyConsumer(Object notifyKey, Bus<?> observable) {
-		Assert.notNull(observable, "Observable cannot be null.");
-		this.notifyKey = notifyKey;
-		this.observable = observable;
-		this.wrapEvent = EventBus.class.isAssignableFrom(observable.getClass());
-	}
+  /**
+   * Creates a new {@code NotifyConsumer} that will notify the given {@code observable} using
+   * the given {@code notifyKey}. If {@code notifyKey} is {@code null}, {@code observable}
+   * will be notified without a key.
+   *
+   * @param notifyKey  The notification key, may be {@code null}
+   * @param observable The observable to notify. May not be {@code null}
+   */
+  public NotifyConsumer(Object notifyKey, Bus<?> observable) {
+    Assert.notNull(observable, "Observable cannot be null.");
+    this.notifyKey = notifyKey;
+    this.observable = observable;
+    this.wrapEvent = EventBus.class.isAssignableFrom(observable.getClass());
+  }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public void accept(T t) {
-		observable.notify(notifyKey, (wrapEvent ? Event.wrap(t) : t));
-	}
+  @Override
+  @SuppressWarnings("unchecked")
+  public void accept(T t) {
+    observable.notify(notifyKey, (wrapEvent ? Event.wrap(t) : t));
+  }
 
 }

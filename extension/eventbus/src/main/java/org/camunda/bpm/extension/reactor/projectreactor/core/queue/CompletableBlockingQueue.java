@@ -25,39 +25,39 @@ import java.util.concurrent.TimeUnit;
  * @author Stephane Maldini
  * @since 2.0
  */
-final public class CompletableBlockingQueue<T> extends ArrayBlockingQueue<T> implements CompletableQueue<T>{
+final public class CompletableBlockingQueue<T> extends ArrayBlockingQueue<T> implements CompletableQueue<T> {
 
-	boolean terminated = false;
+  boolean terminated = false;
 
-	public CompletableBlockingQueue(int capacity) {
-		super(capacity);
-	}
+  public CompletableBlockingQueue(int capacity) {
+    super(capacity);
+  }
 
-	@Override
-	public void complete() {
-		terminated = true;
-	}
+  @Override
+  public void complete() {
+    terminated = true;
+  }
 
-	@Override
-	public boolean isComplete() {
-		return terminated;
-	}
+  @Override
+  public boolean isComplete() {
+    return terminated;
+  }
 
-	@Override
-	public T take() throws InterruptedException {
-		if(terminated && isEmpty()) return null;
-		return super.take();
-	}
+  @Override
+  public T take() throws InterruptedException {
+    if (terminated && isEmpty()) return null;
+    return super.take();
+  }
 
-	@Override
-	public T poll() {
-		if(terminated && isEmpty()) return null;
-		return super.poll();
-	}
+  @Override
+  public T poll() {
+    if (terminated && isEmpty()) return null;
+    return super.poll();
+  }
 
-	@Override
-	public T poll(long timeout, TimeUnit unit) throws InterruptedException {
-		if(terminated && isEmpty()) return null;
-		return super.poll(timeout, unit);
-	}
+  @Override
+  public T poll(long timeout, TimeUnit unit) throws InterruptedException {
+    if (terminated && isEmpty()) return null;
+    return super.poll(timeout, unit);
+  }
 }

@@ -27,34 +27,33 @@ import java.util.function.Supplier;
  * return the last value seen by the event stream.
  *
  * @param <T> the type of values that this Tap can consume and supply
- *
  * @author Stephane Maldini
  * @author Jon Brisbin
  */
 public class Tap<T> implements Consumer<T>, Supplier<T> {
 
-	private final AtomicReference<T> value = new AtomicReference<T>();
+  private final AtomicReference<T> value = new AtomicReference<T>();
 
-	/**
-	 * Create a {@code Tap}.
-	 */
-	public Tap() {
-	}
+  /**
+   * Create a {@code Tap}.
+   */
+  public Tap() {
+  }
 
-	/**
-	 * Get the value of this {@code Tap}, which is the current value of the event stream this
-	 * tap is consuming.
-	 *
-	 * @return the value
-	 */
-	@Override
-	public T get() {
-		return value.get();
-	}
+  /**
+   * Get the value of this {@code Tap}, which is the current value of the event stream this
+   * tap is consuming.
+   *
+   * @return the value
+   */
+  @Override
+  public T get() {
+    return value.get();
+  }
 
-	@Override
-	public void accept(T value) {
-		this.value.set(value);
-	}
+  @Override
+  public void accept(T value) {
+    this.value.set(value);
+  }
 
 }

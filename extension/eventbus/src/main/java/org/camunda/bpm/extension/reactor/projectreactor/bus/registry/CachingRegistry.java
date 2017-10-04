@@ -22,12 +22,12 @@ import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.collections.impl.list.mutable.MultiReaderFastList;
 import com.gs.collections.impl.map.mutable.UnifiedMap;
 import org.camunda.bpm.extension.reactor.projectreactor.bus.selector.Selector;
-import java.util.function.Consumer;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 /**
  * Implementation of {@link Registry} that uses a partitioned cache that partitions on thread
@@ -38,133 +38,133 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class CachingRegistry<K, V> implements Registry<K, V> {
 
-	private final boolean                                                                        useCache;
-	private final boolean                                                                        cacheNotFound;
-	private final Consumer<K>                                                               onNotFound;
-	private final MultiReaderFastList<Registration<K, ? extends V>>                                 registrations;
-	private final ConcurrentHashMap<Long, UnifiedMap<Object, List<Registration<K, ? extends V>>>> threadLocalCache;
+  private final boolean useCache;
+  private final boolean cacheNotFound;
+  private final Consumer<K> onNotFound;
+  private final MultiReaderFastList<Registration<K, ? extends V>> registrations;
+  private final ConcurrentHashMap<Long, UnifiedMap<Object, List<Registration<K, ? extends V>>>> threadLocalCache;
 
-	 CachingRegistry(boolean useCache, boolean cacheNotFound, Consumer<K> onNotFound) {
-		this.useCache = useCache;
-		this.cacheNotFound = cacheNotFound;
-		this.onNotFound = onNotFound;
-		this.registrations = MultiReaderFastList.newList();
-		this.threadLocalCache = new ConcurrentHashMap<Long, UnifiedMap<Object, List<Registration<K, ? extends V>>>>();
-	}
+  CachingRegistry(boolean useCache, boolean cacheNotFound, Consumer<K> onNotFound) {
+    this.useCache = useCache;
+    this.cacheNotFound = cacheNotFound;
+    this.onNotFound = onNotFound;
+    this.registrations = MultiReaderFastList.newList();
+    this.threadLocalCache = new ConcurrentHashMap<Long, UnifiedMap<Object, List<Registration<K, ? extends V>>>>();
+  }
 
-	@Override
-	public Registration<K, V> register(Selector<K> sel, V obj) {
-		RemoveRegistration removeFn = new RemoveRegistration();
-		final Registration<K, V> reg = new CachableRegistration<>(sel, obj, removeFn);
-		removeFn.reg = reg;
+  @Override
+  public Registration<K, V> register(Selector<K> sel, V obj) {
+    RemoveRegistration removeFn = new RemoveRegistration();
+    final Registration<K, V> reg = new CachableRegistration<>(sel, obj, removeFn);
+    removeFn.reg = reg;
 
-		registrations.withWriteLockAndDelegate(new Procedure<MutableList<Registration<K, ? extends V>>>() {
-			@Override
-			public void value(MutableList<Registration<K, ? extends V>> regs) {
-				regs.add(reg);
-			}
-		});
-		if (useCache) {
-			threadLocalCache.clear();
-		}
+    registrations.withWriteLockAndDelegate(new Procedure<MutableList<Registration<K, ? extends V>>>() {
+      @Override
+      public void value(MutableList<Registration<K, ? extends V>> regs) {
+        regs.add(reg);
+      }
+    });
+    if (useCache) {
+      threadLocalCache.clear();
+    }
 
-		return reg;
-	}
+    return reg;
+  }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public boolean unregister(final K key) {
-		final AtomicBoolean modified = new AtomicBoolean(false);
-		registrations.withWriteLockAndDelegate(new Procedure<MutableList<Registration<K, ? extends V>>>() {
-			@Override
-			public void value(final MutableList<Registration<K, ? extends V>> regs) {
-				Iterator<Registration<K, ? extends V>> registrationIterator = regs.iterator();
-				Registration<K, ? extends V> reg;
-				while (registrationIterator.hasNext()) {
-					reg = registrationIterator.next();
-					if (reg.getSelector().matches(key)) {
-						registrationIterator.remove();
-						modified.compareAndSet(false, true);
-					}
-				}
-				if (useCache && modified.get()) {
-					threadLocalCache.clear();
-				}
-			}
-		});
-		return modified.get();
-	}
+  @Override
+  @SuppressWarnings("unchecked")
+  public boolean unregister(final K key) {
+    final AtomicBoolean modified = new AtomicBoolean(false);
+    registrations.withWriteLockAndDelegate(new Procedure<MutableList<Registration<K, ? extends V>>>() {
+      @Override
+      public void value(final MutableList<Registration<K, ? extends V>> regs) {
+        Iterator<Registration<K, ? extends V>> registrationIterator = regs.iterator();
+        Registration<K, ? extends V> reg;
+        while (registrationIterator.hasNext()) {
+          reg = registrationIterator.next();
+          if (reg.getSelector().matches(key)) {
+            registrationIterator.remove();
+            modified.compareAndSet(false, true);
+          }
+        }
+        if (useCache && modified.get()) {
+          threadLocalCache.clear();
+        }
+      }
+    });
+    return modified.get();
+  }
 
-	@Override
-	public List<Registration<K, ? extends V>> select(K key) {
-		// use a thread-local cache
-		UnifiedMap<Object, List<Registration<K, ? extends V>>> allRegs = threadLocalRegs();
+  @Override
+  public List<Registration<K, ? extends V>> select(K key) {
+    // use a thread-local cache
+    UnifiedMap<Object, List<Registration<K, ? extends V>>> allRegs = threadLocalRegs();
 
-		// maybe pull Registrations from cache for this key
-		List<Registration<K, ? extends V>> selectedRegs = null;
-		if (useCache && (null != (selectedRegs = allRegs.get(key)))) {
-			return selectedRegs;
-		}
+    // maybe pull Registrations from cache for this key
+    List<Registration<K, ? extends V>> selectedRegs = null;
+    if (useCache && (null != (selectedRegs = allRegs.get(key)))) {
+      return selectedRegs;
+    }
 
-		// cache not used or cache miss
-		cacheMiss(key);
-		selectedRegs = FastList.newList();
+    // cache not used or cache miss
+    cacheMiss(key);
+    selectedRegs = FastList.newList();
 
-		// find Registrations based on Selector
-		for (Registration<K, ? extends V> reg : this) {
-			if (reg.getSelector().matches(key)) {
-				selectedRegs.add(reg);
-			}
-		}
-		if (useCache && (!selectedRegs.isEmpty() || cacheNotFound)) {
-			allRegs.put(key, selectedRegs);
-		}
+    // find Registrations based on Selector
+    for (Registration<K, ? extends V> reg : this) {
+      if (reg.getSelector().matches(key)) {
+        selectedRegs.add(reg);
+      }
+    }
+    if (useCache && (!selectedRegs.isEmpty() || cacheNotFound)) {
+      allRegs.put(key, selectedRegs);
+    }
 
-		// nothing found, maybe invoke handler
-		if (selectedRegs.isEmpty() && (null != onNotFound)) {
-			onNotFound.accept(key);
-		}
+    // nothing found, maybe invoke handler
+    if (selectedRegs.isEmpty() && (null != onNotFound)) {
+      onNotFound.accept(key);
+    }
 
-		// return
-		return selectedRegs;
-	}
+    // return
+    return selectedRegs;
+  }
 
-	@Override
-	public void clear() {
-		registrations.clear();
-		threadLocalCache.clear();
-	}
+  @Override
+  public void clear() {
+    registrations.clear();
+    threadLocalCache.clear();
+  }
 
-	@Override
-	public Iterator<Registration<K, ? extends V>> iterator() {
-		return FastList.newList(registrations).iterator();
-	}
+  @Override
+  public Iterator<Registration<K, ? extends V>> iterator() {
+    return FastList.newList(registrations).iterator();
+  }
 
-	protected void cacheMiss(Object key) {
-	}
+  protected void cacheMiss(Object key) {
+  }
 
-	private UnifiedMap<Object, List<Registration<K, ? extends V>>> threadLocalRegs() {
-		Long threadId = Thread.currentThread().getId();
-		UnifiedMap<Object, List<Registration<K, ? extends V>>> regs;
-		if (null == (regs = threadLocalCache.get(threadId))) {
-			regs = threadLocalCache.computeIfAbsent(threadId, t -> UnifiedMap.newMap());
-		}
-		return regs;
-	}
+  private UnifiedMap<Object, List<Registration<K, ? extends V>>> threadLocalRegs() {
+    Long threadId = Thread.currentThread().getId();
+    UnifiedMap<Object, List<Registration<K, ? extends V>>> regs;
+    if (null == (regs = threadLocalCache.get(threadId))) {
+      regs = threadLocalCache.computeIfAbsent(threadId, t -> UnifiedMap.newMap());
+    }
+    return regs;
+  }
 
-	private final class RemoveRegistration implements Runnable {
-		Registration<K, ? extends V> reg;
+  private final class RemoveRegistration implements Runnable {
+    Registration<K, ? extends V> reg;
 
-		@Override
-		public void run() {
-			registrations.withWriteLockAndDelegate(new Procedure<MutableList<Registration<K, ? extends V>>>() {
-				@Override
-				public void value(MutableList<Registration<K, ? extends V>> regs) {
-					regs.remove(reg);
-					threadLocalCache.clear();
-				}
-			});
-		}
-	}
+    @Override
+    public void run() {
+      registrations.withWriteLockAndDelegate(new Procedure<MutableList<Registration<K, ? extends V>>>() {
+        @Override
+        public void value(MutableList<Registration<K, ? extends V>> regs) {
+          regs.remove(reg);
+          threadLocalCache.clear();
+        }
+      });
+    }
+  }
 
 }

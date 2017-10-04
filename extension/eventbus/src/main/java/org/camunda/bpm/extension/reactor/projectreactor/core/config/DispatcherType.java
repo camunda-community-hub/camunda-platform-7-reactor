@@ -28,34 +28,34 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public enum DispatcherType {
 
-	/**
-	 * A grouped {@link Dispatcher}
-	 */
-	DISPATCHER_GROUP,
+  /**
+   * A grouped {@link Dispatcher}
+   */
+  DISPATCHER_GROUP,
 
-	/**
-	 * A {@link Dispatcher} which uses a {@link com.lmax.disruptor.RingBuffer} for dispatching
-	 */
-	RING_BUFFER,
+  /**
+   * A {@link Dispatcher} which uses a {@link com.lmax.disruptor.RingBuffer} for dispatching
+   */
+  RING_BUFFER,
 
-	/**
-	 * A {@link Dispatcher} which uses a simple lock-free queue based message passing
-	 */
-	MPSC,
+  /**
+   * A {@link Dispatcher} which uses a simple lock-free queue based message passing
+   */
+  MPSC,
 
-	/**
-	 * A {@link Dispatcher} which uses the current thread for dispatching
-	 */
-	SYNCHRONOUS,
+  /**
+   * A {@link Dispatcher} which uses the current thread for dispatching
+   */
+  SYNCHRONOUS,
 
-	/**
-	 * A {@link Dispatcher} which uses a {@link ThreadPoolExecutor} for dispatching
-	 */
-	THREAD_POOL_EXECUTOR,
+  /**
+   * A {@link Dispatcher} which uses a {@link ThreadPoolExecutor} for dispatching
+   */
+  THREAD_POOL_EXECUTOR,
 
-	/**
-	 * A {@link Dispatcher} which uses a multi-threaded {@literal RingBuffer} for dispatching
-	 */
-	WORK_QUEUE
+  /**
+   * A {@link Dispatcher} which uses a multi-threaded {@literal RingBuffer} for dispatching
+   */
+  WORK_QUEUE
 
 }

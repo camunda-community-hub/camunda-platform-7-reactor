@@ -21,10 +21,10 @@ import org.camunda.bpm.extension.reactor.projectreactor.core.Dispatcher;
 import org.camunda.bpm.extension.reactor.projectreactor.core.processor.InsufficientCapacityException;
 import org.camunda.bpm.extension.reactor.projectreactor.core.support.Assert;
 import org.camunda.bpm.extension.reactor.projectreactor.core.support.Recyclable;
-import java.util.function.Consumer;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 /**
  * A {@code Dispatcher} that has a lifecycle.
@@ -34,179 +34,179 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public abstract class AbstractLifecycleDispatcher implements Dispatcher {
 
-	protected static final int DEFAULT_BUFFER_SIZE = 1024;
+  protected static final int DEFAULT_BUFFER_SIZE = 1024;
 
-	private final AtomicBoolean alive   = new AtomicBoolean(true);
-	public final  ClassLoader   context = new ClassLoader(Thread.currentThread()
-			.getContextClassLoader()) {
-	};
+  private final AtomicBoolean alive = new AtomicBoolean(true);
+  public final ClassLoader context = new ClassLoader(Thread.currentThread()
+    .getContextClassLoader()) {
+  };
 
-	protected AbstractLifecycleDispatcher() {
-		super();
-	}
+  protected AbstractLifecycleDispatcher() {
+    super();
+  }
 
-	@Override
-	public boolean alive() {
-		return alive.get();
-	}
+  @Override
+  public boolean alive() {
+    return alive.get();
+  }
 
-	@Override
-	public boolean awaitAndShutdown() {
-		return awaitAndShutdown(Integer.MAX_VALUE, TimeUnit.SECONDS);
-	}
+  @Override
+  public boolean awaitAndShutdown() {
+    return awaitAndShutdown(Integer.MAX_VALUE, TimeUnit.SECONDS);
+  }
 
-	@Override
-	public void shutdown() {
-		alive.compareAndSet(true, false);
-	}
+  @Override
+  public void shutdown() {
+    alive.compareAndSet(true, false);
+  }
 
-	@Override
-	public void forceShutdown() {
-		alive.compareAndSet(true, false);
-	}
+  @Override
+  public void forceShutdown() {
+    alive.compareAndSet(true, false);
+  }
 
-	/**
-	 * Dispatchers can be traced through a {@code contextClassLoader} to let producers adapting their dispatching
-	 * strategy
-	 *
-	 * @return boolean true if the programs is already run by this dispatcher
-	 */
-	@Override
-	public boolean inContext() {
-		return context == Thread.currentThread().getContextClassLoader();
-	}
+  /**
+   * Dispatchers can be traced through a {@code contextClassLoader} to let producers adapting their dispatching
+   * strategy
+   *
+   * @return boolean true if the programs is already run by this dispatcher
+   */
+  @Override
+  public boolean inContext() {
+    return context == Thread.currentThread().getContextClassLoader();
+  }
 
-	protected final ClassLoader getContext() {
-		return context;
-	}
+  protected final ClassLoader getContext() {
+    return context;
+  }
 
-	@Override
-	public final <E> void tryDispatch(E event, Consumer<E> eventConsumer, Consumer<Throwable> errorConsumer)
-			throws InsufficientCapacityException {
-		Assert.isTrue(alive(), "This Dispatcher has been shut down.");
-		boolean isInContext = inContext();
-		Task task;
-		if (isInContext) {
-			task = allocateRecursiveTask();
-		} else {
-			task = tryAllocateTask();
-		}
+  @Override
+  public final <E> void tryDispatch(E event, Consumer<E> eventConsumer, Consumer<Throwable> errorConsumer)
+    throws InsufficientCapacityException {
+    Assert.isTrue(alive(), "This Dispatcher has been shut down.");
+    boolean isInContext = inContext();
+    Task task;
+    if (isInContext) {
+      task = allocateRecursiveTask();
+    } else {
+      task = tryAllocateTask();
+    }
 
-		task.setData(event)
-				.setErrorConsumer(errorConsumer)
-				.setEventConsumer(eventConsumer);
+    task.setData(event)
+      .setErrorConsumer(errorConsumer)
+      .setEventConsumer(eventConsumer);
 
-		if (!isInContext) {
-			execute(task);
-		} else {
-			scheduleLater(task);
-		}
-	}
+    if (!isInContext) {
+      execute(task);
+    } else {
+      scheduleLater(task);
+    }
+  }
 
-	@Override
-	public final <E> void dispatch(E event,
-	                               Consumer<E> eventConsumer,
-	                               Consumer<Throwable> errorConsumer) {
+  @Override
+  public final <E> void dispatch(E event,
+                                 Consumer<E> eventConsumer,
+                                 Consumer<Throwable> errorConsumer) {
 
-		Assert.isTrue(alive(), "This Dispatcher has been shut down.");
-		Assert.isTrue(eventConsumer != null, "The signal consumer has not been passed.");
-		boolean isInContext = inContext();
-		Task task;
-		if (isInContext) {
-			task = allocateRecursiveTask();
-		} else {
-			task = allocateTask();
-		}
+    Assert.isTrue(alive(), "This Dispatcher has been shut down.");
+    Assert.isTrue(eventConsumer != null, "The signal consumer has not been passed.");
+    boolean isInContext = inContext();
+    Task task;
+    if (isInContext) {
+      task = allocateRecursiveTask();
+    } else {
+      task = allocateTask();
+    }
 
-		task.setData(event)
-				.setErrorConsumer(errorConsumer)
-				.setEventConsumer(eventConsumer);
+    task.setData(event)
+      .setErrorConsumer(errorConsumer)
+      .setEventConsumer(eventConsumer);
 
-		if (!isInContext) {
-			execute(task);
-		} else {
-			scheduleLater(task);
-		}
-	}
+    if (!isInContext) {
+      execute(task);
+    } else {
+      scheduleLater(task);
+    }
+  }
 
-	@Override
-	public void execute(final Runnable command) {
-		dispatch(null, new Consumer<Object>() {
-			@Override
-			public void accept(Object ev) {
-				command.run();
-			}
-		}, null);
-	}
+  @Override
+  public void execute(final Runnable command) {
+    dispatch(null, new Consumer<Object>() {
+      @Override
+      public void accept(Object ev) {
+        command.run();
+      }
+    }, null);
+  }
 
-	protected void scheduleLater(final Task task){
-	}
+  protected void scheduleLater(final Task task) {
+  }
 
-	protected Task tryAllocateTask() throws InsufficientCapacityException {
-		return allocateTask();
-	}
+  protected Task tryAllocateTask() throws InsufficientCapacityException {
+    return allocateTask();
+  }
 
-	protected abstract Task allocateTask();
+  protected abstract Task allocateTask();
 
-	protected abstract Task allocateRecursiveTask();
+  protected abstract Task allocateRecursiveTask();
 
-	protected abstract void execute(Task task);
+  protected abstract void execute(Task task);
 
-	@SuppressWarnings("unchecked")
-	protected static void route(Task task) {
-		try {
-			if (task.eventConsumer == null) return;
+  @SuppressWarnings("unchecked")
+  protected static void route(Task task) {
+    try {
+      if (task.eventConsumer == null) return;
 
-			task.eventConsumer.accept(task.data);
+      task.eventConsumer.accept(task.data);
 
-		} catch (Exception e) {
-			if (task.errorConsumer != null) {
+    } catch (Exception e) {
+      if (task.errorConsumer != null) {
 
-				task.errorConsumer.accept(e);
+        task.errorConsumer.accept(e);
 
-			} else if (Environment.alive()) {
+      } else if (Environment.alive()) {
 
-				Environment.get().routeError(e);
+        Environment.get().routeError(e);
 
-			}
-		} finally {
-			task.recycle();
-		}
-	}
+      }
+    } finally {
+      task.recycle();
+    }
+  }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName().replaceAll("Dispatcher", "");
-	}
+  @Override
+  public String toString() {
+    return getClass().getSimpleName().replaceAll("Dispatcher", "");
+  }
 
-	public abstract class Task implements Runnable, Recyclable {
+  public abstract class Task implements Runnable, Recyclable {
 
-		protected volatile Object              data;
-		protected volatile Consumer            eventConsumer;
-		protected volatile Consumer<Throwable> errorConsumer;
+    protected volatile Object data;
+    protected volatile Consumer eventConsumer;
+    protected volatile Consumer<Throwable> errorConsumer;
 
-		public Task setData(Object data) {
-			this.data = data;
-			return this;
-		}
+    public Task setData(Object data) {
+      this.data = data;
+      return this;
+    }
 
-		public Task setEventConsumer(Consumer<?> eventConsumer) {
-			this.eventConsumer = eventConsumer;
-			return this;
-		}
+    public Task setEventConsumer(Consumer<?> eventConsumer) {
+      this.eventConsumer = eventConsumer;
+      return this;
+    }
 
-		public Task setErrorConsumer(Consumer<Throwable> errorConsumer) {
-			this.errorConsumer = errorConsumer;
-			return this;
-		}
+    public Task setErrorConsumer(Consumer<Throwable> errorConsumer) {
+      this.errorConsumer = errorConsumer;
+      return this;
+    }
 
-		@Override
-		public void recycle() {
-			data = null;
-			errorConsumer = null;
-			eventConsumer = null;
-		}
+    @Override
+    public void recycle() {
+      data = null;
+      errorConsumer = null;
+      eventConsumer = null;
+    }
 
-	}
+  }
 
 }

@@ -29,64 +29,62 @@ import java.util.Collection;
  */
 public interface QueuePersistor<T> extends Iterable<T> {
 
-	/**
-	 * Get the value of the last item to have been persisted.
-	 *
-	 * @return last ID persisted
-	 */
-	long lastId();
+  /**
+   * Get the value of the last item to have been persisted.
+   *
+   * @return last ID persisted
+   */
+  long lastId();
 
-	/**
-	 * Get the number of items persisted right now.
-	 *
-	 * @return number of items persisted
-	 */
-	long size();
+  /**
+   * Get the number of items persisted right now.
+   *
+   * @return number of items persisted
+   */
+  long size();
 
-	/**
-	 * Are there more items waiting to be returned?
-	 *
-	 * @return {@code true} if items can be retrieved from this persistor, {@code false} otherwise
-	 */
-	boolean hasNext();
+  /**
+   * Are there more items waiting to be returned?
+   *
+   * @return {@code true} if items can be retrieved from this persistor, {@code false} otherwise
+   */
+  boolean hasNext();
 
-	/**
-	 * Persist  and return the last Long id of the item.
-	 *
-	 * @param t element to persist
-	 *
-	 * @return id of the item just persisted
-	 */
-	Long offer(@Nonnull T t);
-		/**
-	 * Persist N items in batch and return a Long id of the last item.
-	 *
-	 * @param t element to persist
-	 *
-	 * @return id of the item just persisted
-	 */
-	Long offerAll(@Nonnull Collection<T> t);
+  /**
+   * Persist  and return the last Long id of the item.
+   *
+   * @param t element to persist
+   * @return id of the item just persisted
+   */
+  Long offer(@Nonnull T t);
+
+  /**
+   * Persist N items in batch and return a Long id of the last item.
+   *
+   * @param t element to persist
+   * @return id of the item just persisted
+   */
+  Long offerAll(@Nonnull Collection<T> t);
 
 
-	/**
-	 * Return the item with the given id.
-	 *
-	 * @param idx the given index to lookup
-	 *
-	 * @return item persisted under the given id
-	 */
-	T get(Long idx);
+  /**
+   * Return the item with the given id.
+   *
+   * @param idx the given index to lookup
+   * @return item persisted under the given id
+   */
+  T get(Long idx);
 
-	/**
-	 * Remove the oldest item from the persistence queue.
-	 *
-	 * @return the oldest item in the queue
-	 */
-	T remove();
+  /**
+   * Remove the oldest item from the persistence queue.
+   *
+   * @return the oldest item in the queue
+   */
+  T remove();
 
-	/**
-	 * Release any internal resources used by the persistence mechanism.
-	 */
-	void close();
+  /**
+   * Release any internal resources used by the persistence mechanism.
+   */
+  void close();
 
 }

@@ -16,22 +16,26 @@
 
 package org.camunda.bpm.extension.reactor.projectreactor.bus;
 
+import io.vavr.Tuple;
+import io.vavr.Tuple2;
 import org.camunda.bpm.extension.reactor.projectreactor.core.support.Assert;
 import org.camunda.bpm.extension.reactor.projectreactor.core.support.Recyclable;
 import org.camunda.bpm.extension.reactor.projectreactor.core.support.UUIDUtils;
-import org.camunda.bpm.extension.reactor.projectreactor.fn.tuple.Tuple;
-import org.camunda.bpm.extension.reactor.projectreactor.fn.tuple.Tuple2;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 /**
  * Wrapper for an object that needs to be processed by {@link Consumer}s.
  *
- * @param <T>
- *     The type of the wrapped object
- *
+ * @param <T> The type of the wrapped object
  * @author Jon Brisbin
  * @author Stephane Maldini
  * @author Andy Wilkinson
@@ -40,11 +44,11 @@ public class Event<T> implements Serializable, Recyclable {
 
   private static final long serialVersionUID = -2476263092040373361L;
   private final transient Consumer<Throwable> errorConsumer;
-  private volatile        UUID                id;
-  private volatile        Headers             headers;
-  private volatile        Object              replyTo;
-  private volatile        Object              key;
-  private volatile        T                   data;
+  private volatile UUID id;
+  private volatile Headers headers;
+  private volatile Object replyTo;
+  private volatile Object key;
+  private volatile T data;
 
   /**
    * Creates a new Event based on the type T of {@data data}
@@ -60,10 +64,8 @@ public class Event<T> implements Serializable, Recyclable {
   /**
    * Creates a new Event with the given {@code headers} and {@code data}.
    *
-   * @param headers
-   *     The headers
-   * @param data
-   *     The data
+   * @param headers The headers
+   * @param data    The data
    */
   public Event(Headers headers, T data) {
     this.headers = headers;
@@ -74,12 +76,9 @@ public class Event<T> implements Serializable, Recyclable {
   /**
    * Creates a new Event with the given {@code headers}, {@code data} and {@link Consumer <java.lang.Throwable>}.
    *
-   * @param headers
-   *     The headers
-   * @param data
-   *     The data
-   * @param errorConsumer
-   *     error consumer callback
+   * @param headers       The headers
+   * @param data          The data
+   * @param errorConsumer error consumer callback
    */
   public Event(Headers headers, T data, Consumer<Throwable> errorConsumer) {
     this.headers = headers;
@@ -90,8 +89,7 @@ public class Event<T> implements Serializable, Recyclable {
   /**
    * Creates a new Event with the given {@code data}. The event will have empty headers.
    *
-   * @param data
-   *     The data
+   * @param data The data
    */
   public Event(T data) {
     this.data = data;
@@ -101,9 +99,7 @@ public class Event<T> implements Serializable, Recyclable {
   /**
    * Wrap the given object with an {@link Event}.
    *
-   * @param obj
-   *     The object to wrap.
-   *
+   * @param obj The object to wrap.
    * @return The new {@link Event}.
    */
   public static <T> Event<T> wrap(T obj) {
@@ -114,13 +110,9 @@ public class Event<T> implements Serializable, Recyclable {
    * Wrap the given object with an {@link Event} and set the {@link Event#getReplyTo() replyTo} to the given {@code
    * replyToKey}.
    *
-   * @param obj
-   *     The object to wrap.
-   * @param replyToKey
-   *     The key to use as a {@literal replyTo}.
-   * @param <T>
-   *     The type of the given object.
-   *
+   * @param obj        The object to wrap.
+   * @param replyToKey The key to use as a {@literal replyTo}.
+   * @param <T>        The type of the given object.
    * @return The new {@link Event}.
    */
   public static <T> Event<T> wrap(T obj, Object replyToKey) {
@@ -163,9 +155,7 @@ public class Event<T> implements Serializable, Recyclable {
   /**
    * Set the {@code key} that interested parties should send replies to.
    *
-   * @param replyTo
-   *     The key to use to notify sender of replies.
-   *
+   * @param replyTo The key to use to notify sender of replies.
    * @return {@literal this}
    */
   public Event<T> setReplyTo(Object replyTo) {
@@ -186,9 +176,7 @@ public class Event<T> implements Serializable, Recyclable {
   /**
    * Set the key this event is being notified with.
    *
-   * @param key
-   *     The key used to notify consumers of this event.
-   *
+   * @param key The key used to notify consumers of this event.
    * @return {@literal this}
    */
   public Event<T> setKey(Object key) {
@@ -208,9 +196,7 @@ public class Event<T> implements Serializable, Recyclable {
   /**
    * Set the internal data to wrap.
    *
-   * @param data
-   *     Data to wrap.
-   *
+   * @param data Data to wrap.
    * @return {@literal this}
    */
   public Event<T> setData(T data) {
@@ -252,8 +238,7 @@ public class Event<T> implements Serializable, Recyclable {
   /**
    * Consumes error, using a producer defined callback
    *
-   * @param throwable
-   *     The error to consume
+   * @param throwable The error to consume
    */
   public void consumeError(Throwable throwable) {
     if (null != errorConsumer) {
@@ -282,12 +267,12 @@ public class Event<T> implements Serializable, Recyclable {
   @Override
   public String toString() {
     return "Event{" +
-        "id=" + id +
-        ", headers=" + headers +
-        ", replyTo=" + replyTo +
-        ", key=" + key +
-        ", data=" + data +
-        '}';
+      "id=" + id +
+      ", headers=" + headers +
+      ", replyTo=" + replyTo +
+      ", key=" + key +
+      ", data=" + data +
+      '}';
   }
 
   /**
@@ -324,8 +309,7 @@ public class Event<T> implements Serializable, Recyclable {
      * Creates a new Headers instance by copying the contents of the given {@code headers} Map. Note that, as the map is
      * copied, subsequent changes to its contents will have no effect upon the Headers.
      *
-     * @param headers
-     *     The map to copy.
+     * @param headers The map to copy.
      */
     public Headers(Map<String, Object> headers) {
       this(false, headers);
@@ -342,9 +326,7 @@ public class Event<T> implements Serializable, Recyclable {
      * Sets all of the headers represented by entries in the given {@code headers} Map. Any entry with a null value will
      * cause the header matching the entry's name to be removed.
      *
-     * @param headers
-     *     The map of headers to set.
-     *
+     * @param headers The map of headers to set.
      * @return {@code this}
      */
     public Headers setAll(Map<String, Object> headers) {
@@ -361,11 +343,8 @@ public class Event<T> implements Serializable, Recyclable {
     /**
      * Set the header value. If {@code value} is {@code null} the header with the given {@code name} will be removed.
      *
-     * @param name
-     *     The name of the header.
-     * @param value
-     *     The header's value.
-     *
+     * @param name  The name of the header.
+     * @param value The header's value.
      * @return {@code this}
      */
     public <V> Headers set(String name, V value) {
@@ -379,9 +358,7 @@ public class Event<T> implements Serializable, Recyclable {
      * Set the origin header. The origin is simply a unique id to indicate to consumers where it should send replies. If
      * {@code id} is {@code null} the origin header will be removed.
      *
-     * @param id
-     *     The id of the origin component.
-     *
+     * @param id The id of the origin component.
      * @return {@code this}
      */
     public Headers setOrigin(UUID id) {
@@ -404,9 +381,7 @@ public class Event<T> implements Serializable, Recyclable {
      * Set the origin header. The origin is simply a unique id to indicate to consumers where it should send replies. If
      * {@code id} is {@code null} this origin header will be removed.
      *
-     * @param id
-     *     The id of the origin component.
-     *
+     * @param id The id of the origin component.
      * @return {@code this}
      */
     public Headers setOrigin(String id) {
@@ -419,9 +394,7 @@ public class Event<T> implements Serializable, Recyclable {
     /**
      * Get the value for the given header.
      *
-     * @param name
-     *     The header name.
-     *
+     * @param name The header name.
      * @return The value of the header, or {@code null} if none exists.
      */
     @SuppressWarnings("unchecked")
@@ -434,9 +407,7 @@ public class Event<T> implements Serializable, Recyclable {
     /**
      * Determine whether the headers contain a value for the given name.
      *
-     * @param name
-     *     The header name.
-     *
+     * @param name The header name.
      * @return {@code true} if a value exists, {@code false} otherwise.
      */
     public boolean contains(String name) {

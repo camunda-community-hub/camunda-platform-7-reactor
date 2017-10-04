@@ -20,27 +20,27 @@ package org.camunda.bpm.extension.reactor.projectreactor.fn;
  */
 public interface Pausable {
 
-	/**
-	 * Cancel this {@literal Pausable}. The implementing component should never react to any stimulus,
-	 * closing resources if necessary.
-	 *
-	 * @return {@literal this}
-	 */
-	Pausable cancel();
+  /**
+   * Cancel this {@literal Pausable}. The implementing component should never react to any stimulus,
+   * closing resources if necessary.
+   *
+   * @return {@literal this}
+   */
+  Pausable cancel();
 
-	/**
-	 * Pause this {@literal Pausable}. The implementing component should stop reacting, pausing resources if necessary.
-	 *
-	 * @return {@literal this}
-	 */
-	Pausable pause();
+  /**
+   * Pause this {@literal Pausable}. The implementing component should stop reacting, pausing resources if necessary.
+   *
+   * @return {@literal this}
+   */
+  Pausable pause();
 
-	/**
-	 * Unpause this {@literal Pausable}. The implementing component should resume back from a previous pause,
-	 * re-activating resources if necessary.
-	 *
-	 * @return {@literal this}
-	 */
-	Pausable resume();
+  /**
+   * Unpause this {@literal Pausable}. The implementing component should resume back from a previous pause,
+   * re-activating resources if necessary.
+   *
+   * @return {@literal this}
+   */
+  Pausable resume();
 
 }

@@ -16,9 +16,9 @@
 
 package org.camunda.bpm.extension.reactor.projectreactor.bus.filter;
 
+import org.camunda.bpm.extension.reactor.projectreactor.core.support.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.camunda.bpm.extension.reactor.projectreactor.core.support.Assert;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,25 +28,25 @@ import java.util.List;
  */
 public class TraceableDelegatingFilter implements Filter {
 
-	private final Filter delegate;
-	private final Logger log;
+  private final Filter delegate;
+  private final Logger log;
 
-	public TraceableDelegatingFilter(Filter delegate) {
-		Assert.notNull(delegate, "Delegate Filter cannot be null.");
-		this.delegate = delegate;
-		this.log = LoggerFactory.getLogger(delegate.getClass());
-	}
+  public TraceableDelegatingFilter(Filter delegate) {
+    Assert.notNull(delegate, "Delegate Filter cannot be null.");
+    this.delegate = delegate;
+    this.log = LoggerFactory.getLogger(delegate.getClass());
+  }
 
-	@Override
-	public <T> List<T> filter(List<T> items, Object key) {
-		if(log.isTraceEnabled()) {
-			log.trace("filtering {} using key {}", items, key);
-		}
-		List<T> l = delegate.filter(items, key);
-		if(log.isTraceEnabled()) {
-			log.trace("items {} matched key {}", (null == items ? Collections.emptyList() : items), key);
-		}
-		return l;
-	}
+  @Override
+  public <T> List<T> filter(List<T> items, Object key) {
+    if (log.isTraceEnabled()) {
+      log.trace("filtering {} using key {}", items, key);
+    }
+    List<T> l = delegate.filter(items, key);
+    if (log.isTraceEnabled()) {
+      log.trace("items {} matched key {}", (null == items ? Collections.emptyList() : items), key);
+    }
+    return l;
+  }
 
 }

@@ -16,39 +16,39 @@
 
 package org.camunda.bpm.extension.reactor.projectreactor.bus.routing;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.camunda.bpm.extension.reactor.projectreactor.bus.Event;
 import org.camunda.bpm.extension.reactor.projectreactor.bus.registry.Registration;
 import org.camunda.bpm.extension.reactor.projectreactor.core.support.Assert;
-import java.util.function.Consumer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author Jon Brisbin
  */
 public class TraceableDelegatingRouter implements Router {
 
-	private final Router delegate;
-	private final Logger log;
+  private final Router delegate;
+  private final Logger log;
 
-	public TraceableDelegatingRouter(Router delegate) {
-		Assert.notNull(delegate, "Delegate EventRouter cannot be null.");
-		this.delegate = delegate;
-		this.log = LoggerFactory.getLogger(delegate.getClass());
-	}
+  public TraceableDelegatingRouter(Router delegate) {
+    Assert.notNull(delegate, "Delegate EventRouter cannot be null.");
+    this.delegate = delegate;
+    this.log = LoggerFactory.getLogger(delegate.getClass());
+  }
 
-	@Override
-	public <E extends Event<?>> void route(Object key,
-	                  E event,
-	                  List<Registration<Object, ? extends Consumer<? extends Event<?>>>> consumers,
-	                  Consumer<E> completionConsumer,
-	                  Consumer<Throwable> errorConsumer) {
-		if(log.isTraceEnabled()) {
-			log.trace("route({}, {}, {}, {}, {})", key, event, consumers, completionConsumer, errorConsumer);
-		}
-		delegate.route(key,event,consumers,completionConsumer,errorConsumer);
-	}
+  @Override
+  public <E extends Event<?>> void route(Object key,
+                                         E event,
+                                         List<Registration<Object, ? extends Consumer<? extends Event<?>>>> consumers,
+                                         Consumer<E> completionConsumer,
+                                         Consumer<Throwable> errorConsumer) {
+    if (log.isTraceEnabled()) {
+      log.trace("route({}, {}, {}, {}, {})", key, event, consumers, completionConsumer, errorConsumer);
+    }
+    delegate.route(key, event, consumers, completionConsumer, errorConsumer);
+  }
 
 }

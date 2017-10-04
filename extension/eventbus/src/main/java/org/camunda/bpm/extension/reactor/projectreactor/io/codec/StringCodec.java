@@ -16,8 +16,6 @@
 
 package org.camunda.bpm.extension.reactor.projectreactor.io.codec;
 
-import java.util.function.Consumer;
-import java.util.function.Function;
 import org.camunda.bpm.extension.reactor.projectreactor.io.buffer.Buffer;
 
 import java.nio.ByteBuffer;
@@ -27,6 +25,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * @author Jon Brisbin
@@ -34,107 +34,107 @@ import java.util.List;
  */
 public class StringCodec extends BufferCodec<String, String> {
 
-	private final Charset        charset;
+  private final Charset charset;
 
-	public StringCodec() {
-		this(null, Charset.forName("UTF-8"));
-	}
+  public StringCodec() {
+    this(null, Charset.forName("UTF-8"));
+  }
 
-	public StringCodec(Charset charset) {
-		this(null, charset);
-	}
+  public StringCodec(Charset charset) {
+    this(null, charset);
+  }
 
-	public StringCodec(Byte delimiter) {
-		this(delimiter, Charset.forName("UTF-8"));
-	}
+  public StringCodec(Byte delimiter) {
+    this(delimiter, Charset.forName("UTF-8"));
+  }
 
-	public StringCodec(Byte delimiter, Charset charset) {
-		super(delimiter);
-		this.charset = charset;
-	}
+  public StringCodec(Byte delimiter, Charset charset) {
+    super(delimiter);
+    this.charset = charset;
+  }
 
-	@Override
-	public Function<String, Buffer> encoder() {
-		return new StringEncoder();
-	}
+  @Override
+  public Function<String, Buffer> encoder() {
+    return new StringEncoder();
+  }
 
-	@Override
-	public Function<Buffer, String> decoder(Consumer<String> next) {
-		return new StringDecoder(next);
-	}
+  @Override
+  public Function<Buffer, String> decoder(Consumer<String> next) {
+    return new StringDecoder(next);
+  }
 
-	@Override
-	protected String doBufferDecode(Buffer buffer) {
-		return decode(buffer, charset.newDecoder());
-	}
+  @Override
+  protected String doBufferDecode(Buffer buffer) {
+    return decode(buffer, charset.newDecoder());
+  }
 
-	@Override
-	public Buffer apply(String s) {
-		return encode(s, charset.newEncoder());
-	}
+  @Override
+  public Buffer apply(String s) {
+    return encode(s, charset.newEncoder());
+  }
 
-	protected String decode(Buffer buffer, CharsetDecoder charsetDecoder){
-		try {
-			return charsetDecoder.decode(buffer.byteBuffer()).toString();
-		} catch (CharacterCodingException e) {
-			throw new IllegalStateException(e);
-		}
-	}
+  protected String decode(Buffer buffer, CharsetDecoder charsetDecoder) {
+    try {
+      return charsetDecoder.decode(buffer.byteBuffer()).toString();
+    } catch (CharacterCodingException e) {
+      throw new IllegalStateException(e);
+    }
+  }
 
-	private class StringDecoder implements Function<Buffer, String> {
+  private class StringDecoder implements Function<Buffer, String> {
 
-		private final CharsetDecoder decoder;
-		private final Consumer<String> next;
+    private final CharsetDecoder decoder;
+    private final Consumer<String> next;
 
-		private StringDecoder(Consumer<String> next) {
-			this.next = next;
-			this.decoder = charset.newDecoder();
-		}
+    private StringDecoder(Consumer<String> next) {
+      this.next = next;
+      this.decoder = charset.newDecoder();
+    }
 
-		protected String doBufferDecode(Buffer buffer) {
-			return decode(buffer, decoder);
-		}
+    protected String doBufferDecode(Buffer buffer) {
+      return decode(buffer, decoder);
+    }
 
-		@Override
-		public String apply(Buffer buffer) {
-			//split using the delimiter
-			if(delimiter != null) {
-				List<Buffer.View> views = buffer.split(delimiter);
-				int viewCount = views.size();
+    @Override
+    public String apply(Buffer buffer) {
+      //split using the delimiter
+      if (delimiter != null) {
+        List<Buffer.View> views = buffer.split(delimiter);
+        int viewCount = views.size();
 
-				if (viewCount == 0) return invokeCallbackOrReturn(next, doBufferDecode(buffer));
+        if (viewCount == 0) return invokeCallbackOrReturn(next, doBufferDecode(buffer));
 
-				for (Buffer.View view : views) {
-					String in = invokeCallbackOrReturn(next, decode(view.get(), decoder));
-					if(in != null) return in;
-				}
-				return null;
-			}else{
-				return invokeCallbackOrReturn(next, decode(buffer, decoder));
-			}
-		}
-	}
+        for (Buffer.View view : views) {
+          String in = invokeCallbackOrReturn(next, decode(view.get(), decoder));
+          if (in != null) return in;
+        }
+        return null;
+      } else {
+        return invokeCallbackOrReturn(next, decode(buffer, decoder));
+      }
+    }
+  }
 
-	protected Buffer encode(String s, CharsetEncoder charsetEncoder){
-		try {
-			ByteBuffer bb = charsetEncoder.encode(CharBuffer.wrap(s));
-			if (delimiter != null) {
-				return addDelimiterIfAny(new Buffer().append(bb));
-			} else {
-				return new Buffer(bb);
-			}
-		} catch (CharacterCodingException e) {
-			throw new IllegalStateException(e);
-		}
-	}
+  protected Buffer encode(String s, CharsetEncoder charsetEncoder) {
+    try {
+      ByteBuffer bb = charsetEncoder.encode(CharBuffer.wrap(s));
+      if (delimiter != null) {
+        return addDelimiterIfAny(new Buffer().append(bb));
+      } else {
+        return new Buffer(bb);
+      }
+    } catch (CharacterCodingException e) {
+      throw new IllegalStateException(e);
+    }
+  }
 
-	public final class StringEncoder implements Function<String, Buffer> {
-		private final CharsetEncoder encoder = charset.newEncoder();
+  public final class StringEncoder implements Function<String, Buffer> {
+    private final CharsetEncoder encoder = charset.newEncoder();
 
-		@Override
-		public Buffer apply(String s) {
-			return encode(s, encoder);
-		}
-	}
+    @Override
+    public Buffer apply(String s) {
+      return encode(s, encoder);
+    }
+  }
 
 }

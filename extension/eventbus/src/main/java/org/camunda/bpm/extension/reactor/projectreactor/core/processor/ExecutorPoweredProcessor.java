@@ -28,60 +28,60 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class ExecutorPoweredProcessor<IN, OUT> extends ReactorProcessor<IN, OUT> {
 
-	protected final ExecutorService executor;
+  protected final ExecutorService executor;
 
-	protected ExecutorPoweredProcessor(String name, ExecutorService executor, boolean autoCancel) {
-		super(autoCancel);
+  protected ExecutorPoweredProcessor(String name, ExecutorService executor, boolean autoCancel) {
+    super(autoCancel);
 
-		this.executor = executor == null
-				? SingleUseExecutor.create(name)
-				: executor;
-	}
+    this.executor = executor == null
+      ? SingleUseExecutor.create(name)
+      : executor;
+  }
 
 
-	@Override
-	public void onComplete() {
-		if (executor.getClass() == SingleUseExecutor.class) {
-			executor.shutdown();
-		}
-	}
+  @Override
+  public void onComplete() {
+    if (executor.getClass() == SingleUseExecutor.class) {
+      executor.shutdown();
+    }
+  }
 
-	@Override
-	public boolean awaitAndShutdown() {
-		return awaitAndShutdown(-1, TimeUnit.SECONDS);
-	}
+  @Override
+  public boolean awaitAndShutdown() {
+    return awaitAndShutdown(-1, TimeUnit.SECONDS);
+  }
 
-	@Override
-	public boolean awaitAndShutdown(long timeout, TimeUnit timeUnit) {
-		try {
-			shutdown();
-			return executor.awaitTermination(timeout, timeUnit);
-		} catch (InterruptedException ie) {
-			Thread.currentThread().interrupt();
-			return false;
-		}
-	}
+  @Override
+  public boolean awaitAndShutdown(long timeout, TimeUnit timeUnit) {
+    try {
+      shutdown();
+      return executor.awaitTermination(timeout, timeUnit);
+    } catch (InterruptedException ie) {
+      Thread.currentThread().interrupt();
+      return false;
+    }
+  }
 
-	@Override
-	public void forceShutdown() {
-		if (executor.isShutdown()) return;
-		executor.shutdownNow();
-	}
+  @Override
+  public void forceShutdown() {
+    if (executor.isShutdown()) return;
+    executor.shutdownNow();
+  }
 
-	@Override
-	public boolean alive() {
-		return !executor.isTerminated();
-	}
+  @Override
+  public boolean alive() {
+    return !executor.isTerminated();
+  }
 
-	@Override
-	public void shutdown() {
-		try {
-			onComplete();
-			executor.shutdown();
-		} catch (Throwable t) {
-			Exceptions.throwIfFatal(t);
-			onError(t);
-		}
-	}
+  @Override
+  public void shutdown() {
+    try {
+      onComplete();
+      executor.shutdown();
+    } catch (Throwable t) {
+      Exceptions.throwIfFatal(t);
+      onError(t);
+    }
+  }
 
 }

@@ -27,25 +27,24 @@ import java.util.function.Consumer;
  *
  * @author Andy Wilkinson
  * @author Stephane Maldini
- *
  */
 public interface Router {
 
-	/**
-	 * Routes the {@code event}, triggered by a notification with the given {@code key} to the
-	 * {@code consumers}. Depending on the router implementation, zero or more of the consumers
-	 * will receive the event. Upon successful completion of the event routing, the
-	 * {@code completionConsumer} will be invoked. {@code completionConsumer} may be null. In the
-	 * event of an exception during routing the {@code errorConsumer} is invoked.
-	 * {@code errorConsumer} may be null, in which case the exception is swallowed.
-	 *
-	 * @param key The notification key
-	 * @param data The {@code Object} to route
-	 * @param consumers The {@code Consumer}s to route the event to.
-	 * @param completionConsumer The {@code Consumer} to invoke upon successful completion of event routing
-	 * @param errorConsumer The {@code Consumer} to invoke when an error occurs during event routing
-	 */
-	<E extends Event<?>> void route(Object key, E data, List<Registration<Object, ? extends Consumer<? extends Event<?>>>> consumers,
+  /**
+   * Routes the {@code event}, triggered by a notification with the given {@code key} to the
+   * {@code consumers}. Depending on the router implementation, zero or more of the consumers
+   * will receive the event. Upon successful completion of the event routing, the
+   * {@code completionConsumer} will be invoked. {@code completionConsumer} may be null. In the
+   * event of an exception during routing the {@code errorConsumer} is invoked.
+   * {@code errorConsumer} may be null, in which case the exception is swallowed.
+   *
+   * @param key                The notification key
+   * @param data               The {@code Object} to route
+   * @param consumers          The {@code Consumer}s to route the event to.
+   * @param completionConsumer The {@code Consumer} to invoke upon successful completion of event routing
+   * @param errorConsumer      The {@code Consumer} to invoke when an error occurs during event routing
+   */
+  <E extends Event<?>> void route(Object key, E data, List<Registration<Object, ? extends Consumer<? extends Event<?>>>> consumers,
                                   Consumer<E> completionConsumer, Consumer<Throwable> errorConsumer);
 
 }

@@ -19,91 +19,97 @@ import org.camunda.bpm.extension.reactor.projectreactor.core.support.NamedDaemon
 
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author Stephane Maldini
  */
-public final class SingleUseExecutor implements ExecutorService{
+public final class SingleUseExecutor implements ExecutorService {
 
-	final private ExecutorService delegate;
+  final private ExecutorService delegate;
 
-	public static ExecutorService create(String name){
-		return new SingleUseExecutor(Executors.newCachedThreadPool(new NamedDaemonThreadFactory(name, null, null, false)));
-	}
+  public static ExecutorService create(String name) {
+    return new SingleUseExecutor(Executors.newCachedThreadPool(new NamedDaemonThreadFactory(name, null, null, false)));
+  }
 
-	public static ExecutorService wrap(ExecutorService delegate){
-		return new SingleUseExecutor(delegate);
-	}
+  public static ExecutorService wrap(ExecutorService delegate) {
+    return new SingleUseExecutor(delegate);
+  }
 
-	private SingleUseExecutor(ExecutorService delegate) {
-		this.delegate = delegate;
-	}
+  private SingleUseExecutor(ExecutorService delegate) {
+    this.delegate = delegate;
+  }
 
-	@Override
-	public void shutdown() {
-		delegate.shutdown();
-	}
+  @Override
+  public void shutdown() {
+    delegate.shutdown();
+  }
 
-	@Override
-	public List<Runnable> shutdownNow() {
-		return delegate.shutdownNow();
-	}
+  @Override
+  public List<Runnable> shutdownNow() {
+    return delegate.shutdownNow();
+  }
 
-	@Override
-	public boolean isShutdown() {
-		return delegate.isShutdown();
-	}
+  @Override
+  public boolean isShutdown() {
+    return delegate.isShutdown();
+  }
 
-	@Override
-	public boolean isTerminated() {
-		return delegate.isTerminated();
-	}
+  @Override
+  public boolean isTerminated() {
+    return delegate.isTerminated();
+  }
 
-	@Override
-	public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
-		return delegate.awaitTermination(timeout, unit);
-	}
+  @Override
+  public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
+    return delegate.awaitTermination(timeout, unit);
+  }
 
-	@Override
-	public <T> Future<T> submit(Callable<T> task) {
-		return delegate.submit(task);
-	}
+  @Override
+  public <T> Future<T> submit(Callable<T> task) {
+    return delegate.submit(task);
+  }
 
-	@Override
-	public <T> Future<T> submit(Runnable task, T result) {
-		return delegate.submit(task, result);
-	}
+  @Override
+  public <T> Future<T> submit(Runnable task, T result) {
+    return delegate.submit(task, result);
+  }
 
-	@Override
-	public Future<?> submit(Runnable task) {
-		return delegate.submit(task);
-	}
+  @Override
+  public Future<?> submit(Runnable task) {
+    return delegate.submit(task);
+  }
 
-	@Override
-	public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
-		return delegate.invokeAll(tasks);
-	}
+  @Override
+  public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
+    return delegate.invokeAll(tasks);
+  }
 
-	@Override
-	public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws
-			InterruptedException {
-		return delegate.invokeAll(tasks, timeout, unit);
-	}
+  @Override
+  public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws
+    InterruptedException {
+    return delegate.invokeAll(tasks, timeout, unit);
+  }
 
-	@Override
-	public <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
-		return delegate.invokeAny(tasks);
-	}
+  @Override
+  public <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
+    return delegate.invokeAny(tasks);
+  }
 
-	@Override
-	public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws
-			InterruptedException, ExecutionException, TimeoutException {
-		return delegate.invokeAny(tasks, timeout, unit);
-	}
+  @Override
+  public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws
+    InterruptedException, ExecutionException, TimeoutException {
+    return delegate.invokeAny(tasks, timeout, unit);
+  }
 
-	@Override
-	public void execute(Runnable command) {
-		delegate.execute(command);
-	}
+  @Override
+  public void execute(Runnable command) {
+    delegate.execute(command);
+  }
 }

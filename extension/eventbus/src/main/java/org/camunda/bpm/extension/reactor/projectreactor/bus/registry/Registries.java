@@ -25,29 +25,29 @@ import java.util.function.Consumer;
  */
 public abstract class Registries {
 
-	private static boolean GS_COLLECTIONS_AVAILABLE = false;
+  private static boolean GS_COLLECTIONS_AVAILABLE = false;
 
-	static {
-		try {
-			GS_COLLECTIONS_AVAILABLE = (null != Class.forName("com.gs.collections.api.list.MutableList"));
-		} catch (ClassNotFoundException e) {
-		}
-	}
+  static {
+    try {
+      GS_COLLECTIONS_AVAILABLE = (null != Class.forName("com.gs.collections.api.list.MutableList"));
+    } catch (ClassNotFoundException e) {
+    }
+  }
 
-	protected Registries() {
-	}
+  protected Registries() {
+  }
 
-	@SuppressWarnings("unchecked")
-	public static <K, V> Registry<K, V> create() {
-		return create(true, true, null);
-	}
+  @SuppressWarnings("unchecked")
+  public static <K, V> Registry<K, V> create() {
+    return create(true, true, null);
+  }
 
-	public static <K, V> Registry<K, V> create(boolean useCache, boolean cacheNotFound, Consumer<K> onNotFound) {
-		if (GS_COLLECTIONS_AVAILABLE) {
-			return new CachingRegistry<K, V>(useCache, cacheNotFound, onNotFound);
-		} else {
-			return new SimpleCachingRegistry<K, V>(useCache, cacheNotFound, onNotFound);
-		}
-	}
+  public static <K, V> Registry<K, V> create(boolean useCache, boolean cacheNotFound, Consumer<K> onNotFound) {
+    if (GS_COLLECTIONS_AVAILABLE) {
+      return new CachingRegistry<K, V>(useCache, cacheNotFound, onNotFound);
+    } else {
+      return new SimpleCachingRegistry<K, V>(useCache, cacheNotFound, onNotFound);
+    }
+  }
 
 }

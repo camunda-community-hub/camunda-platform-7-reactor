@@ -27,34 +27,34 @@ import java.util.concurrent.TimeUnit;
  */
 public interface Resource {
 
-	/**
-	 * Determine whether this {@code Resource} can be used.
-	 *
-	 * @return {@literal true} if this {@code Resource} is alive and can be used, {@literal false} otherwise.
-	 */
-	boolean alive();
+  /**
+   * Determine whether this {@code Resource} can be used.
+   *
+   * @return {@literal true} if this {@code Resource} is alive and can be used, {@literal false} otherwise.
+   */
+  boolean alive();
 
-	/**
-	 * Shutdown this active {@code Resource} such that it can no longer be used. If the resource carries any work,
-	 * it will wait (but NOT blocking the caller) for all the remaining tasks to perform before closing the resource.
-	 */
-	void shutdown();
+  /**
+   * Shutdown this active {@code Resource} such that it can no longer be used. If the resource carries any work,
+   * it will wait (but NOT blocking the caller) for all the remaining tasks to perform before closing the resource.
+   */
+  void shutdown();
 
 
-	/**
-	 * Block until all submitted tasks have completed, then do a normal {@link #shutdown()}.
-	 */
-	boolean awaitAndShutdown();
+  /**
+   * Block until all submitted tasks have completed, then do a normal {@link #shutdown()}.
+   */
+  boolean awaitAndShutdown();
 
-	/**
-	 * Block until all submitted tasks have completed, then do a normal {@link #shutdown()}.
-	 */
-	boolean awaitAndShutdown(long timeout, TimeUnit timeUnit);
+  /**
+   * Block until all submitted tasks have completed, then do a normal {@link #shutdown()}.
+   */
+  boolean awaitAndShutdown(long timeout, TimeUnit timeUnit);
 
-	/**
-	 * Shutdown this {@code Resource}, forcibly halting any work currently executing and discarding any tasks that
-	 * have not yet been executed.
-	 */
-	void forceShutdown();
+  /**
+   * Shutdown this {@code Resource}, forcibly halting any work currently executing and discarding any tasks that
+   * have not yet been executed.
+   */
+  void forceShutdown();
 
 }

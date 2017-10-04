@@ -32,51 +32,50 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * passed into the filter.
  *
  * @author Andy Wilkinson
- *
  */
 public final class RoundRobinFilter extends AbstractFilter {
 
-	private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+  private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
-	private final Lock readLock = readWriteLock.readLock();
+  private final Lock readLock = readWriteLock.readLock();
 
-	private final Lock writeLock = readWriteLock.writeLock();
+  private final Lock writeLock = readWriteLock.writeLock();
 
-	private final Map<Object, AtomicLong> usageCounts = new HashMap<Object, AtomicLong>();
+  private final Map<Object, AtomicLong> usageCounts = new HashMap<Object, AtomicLong>();
 
-	@Override
-	public <T> List<T> doFilter(List<T> items, Object key) {
-		Assert.notNull(key, "'key' must not be null");
-		if (items.isEmpty()) {
-			return items;
-		} else {
-			int index = (int)(getUsageCount(key).getAndIncrement() % (items.size()));
-			return Collections.singletonList(items.get(index));
-		}
-	}
+  @Override
+  public <T> List<T> doFilter(List<T> items, Object key) {
+    Assert.notNull(key, "'key' must not be null");
+    if (items.isEmpty()) {
+      return items;
+    } else {
+      int index = (int) (getUsageCount(key).getAndIncrement() % (items.size()));
+      return Collections.singletonList(items.get(index));
+    }
+  }
 
-	private AtomicLong getUsageCount(Object key) {
-		readLock.lock();
-		try {
-			AtomicLong usageCount = this.usageCounts.get(key);
-			if (usageCount == null) {
-				readLock.unlock();
-				writeLock.lock();
-				try {
-					usageCount = this.usageCounts.get(key);
-					if (usageCount == null) {
-						usageCount = new AtomicLong();
-						this.usageCounts.put(key, usageCount);
-					}
-				} finally {
-					writeLock.unlock();
-					readLock.lock();
-				}
-			}
-			return usageCount;
-		} finally {
-			readLock.unlock();
-		}
-	}
+  private AtomicLong getUsageCount(Object key) {
+    readLock.lock();
+    try {
+      AtomicLong usageCount = this.usageCounts.get(key);
+      if (usageCount == null) {
+        readLock.unlock();
+        writeLock.lock();
+        try {
+          usageCount = this.usageCounts.get(key);
+          if (usageCount == null) {
+            usageCount = new AtomicLong();
+            this.usageCounts.put(key, usageCount);
+          }
+        } finally {
+          writeLock.unlock();
+          readLock.lock();
+        }
+      }
+      return usageCount;
+    } finally {
+      readLock.unlock();
+    }
+  }
 
 }

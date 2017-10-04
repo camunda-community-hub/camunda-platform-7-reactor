@@ -24,18 +24,18 @@ import org.camunda.bpm.extension.reactor.projectreactor.core.Dispatcher;
  */
 public interface NonBlocking {
 
-	/**
-	 * Get the assigned {@link org.camunda.bpm.extension.reactor.projectreactor.core.Dispatcher}.
-	 *
-	 * @return true if the component wishes to use a back-pressure ready message-passing (e.g., ReactiveSubscription)
-	 */
-	boolean isReactivePull(Dispatcher dispatcher, long producerCapacity);
+  /**
+   * Get the assigned {@link org.camunda.bpm.extension.reactor.projectreactor.core.Dispatcher}.
+   *
+   * @return true if the component wishes to use a back-pressure ready message-passing (e.g., ReactiveSubscription)
+   */
+  boolean isReactivePull(Dispatcher dispatcher, long producerCapacity);
 
-	/**
-	 * Return defined element capacity, used to drive new {@link org.reactivestreams.Subscription}
-	 * request needs. This is the maximum in-flight data allowed to transit to this elements.
-	 *
-	 * @return long capacity
-	 */
-	long getCapacity();
+  /**
+   * Return defined element capacity, used to drive new {@link org.reactivestreams.Subscription}
+   * request needs. This is the maximum in-flight data allowed to transit to this elements.
+   *
+   * @return long capacity
+   */
+  long getCapacity();
 }

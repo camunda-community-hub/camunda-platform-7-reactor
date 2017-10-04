@@ -29,47 +29,47 @@ import java.util.function.Function;
  * @author Stephane Maldini
  */
 public class PassThroughCodec<SRC> extends Codec<SRC, SRC, SRC> {
-	@Override
-	public Function<SRC, SRC> decoder(final Consumer<SRC> next) {
-		return new Function<SRC, SRC>() {
-			@Override
-			public SRC apply(SRC src) {
-				if (null != next) {
-					next.accept(beforeAccept(src));
-					return null;
-				} else {
-					return beforeAccept(src);
-				}
-			}
-		};
-	}
+  @Override
+  public Function<SRC, SRC> decoder(final Consumer<SRC> next) {
+    return new Function<SRC, SRC>() {
+      @Override
+      public SRC apply(SRC src) {
+        if (null != next) {
+          next.accept(beforeAccept(src));
+          return null;
+        } else {
+          return beforeAccept(src);
+        }
+      }
+    };
+  }
 
-	@Override
-	public SRC apply(SRC src) {
-		return beforeApply(src);
-	}
+  @Override
+  public SRC apply(SRC src) {
+    return beforeApply(src);
+  }
 
-	/**
-	 * Override to intercept the source object before it is passed into the next {@link Consumer} or
-	 * returned to the caller if a {@link Consumer} is not set.
-	 *
-	 * @param src The source object.
-	 * @return
-	 */
-	protected SRC beforeAccept(SRC src) {
-		// NO-OP
-		return src;
-	}
+  /**
+   * Override to intercept the source object before it is passed into the next {@link Consumer} or
+   * returned to the caller if a {@link Consumer} is not set.
+   *
+   * @param src The source object.
+   * @return
+   */
+  protected SRC beforeAccept(SRC src) {
+    // NO-OP
+    return src;
+  }
 
-	/**
-	 * Override to intercept the source object before it is returned for output.
-	 *
-	 * @param src
-	 * @return
-	 */
-	protected SRC beforeApply(SRC src) {
-		// NO-OP
-		return src;
-	}
+  /**
+   * Override to intercept the source object before it is returned for output.
+   *
+   * @param src
+   * @return
+   */
+  protected SRC beforeApply(SRC src) {
+    // NO-OP
+    return src;
+  }
 
 }

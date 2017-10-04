@@ -23,20 +23,20 @@ import org.camunda.bpm.extension.reactor.projectreactor.io.buffer.Buffer;
  */
 public class Frame {
 
-	private final Buffer prefix;
-	private final Buffer data;
+  private final Buffer prefix;
+  private final Buffer data;
 
-	public Frame(Buffer prefix, Buffer data) {
-		this.prefix = prefix;
-		this.data = data;
-	}
+  public Frame(Buffer prefix, Buffer data) {
+    this.prefix = prefix;
+    this.data = data;
+  }
 
-	public Buffer getPrefix() {
-		return prefix;
-	}
+  public Buffer getPrefix() {
+    return prefix;
+  }
 
-	public Buffer getData() {
-		return data;
-	}
+  public Buffer getData() {
+    return data;
+  }
 
 }

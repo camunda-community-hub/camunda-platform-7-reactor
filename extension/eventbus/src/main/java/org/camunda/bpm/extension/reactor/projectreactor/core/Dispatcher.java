@@ -33,78 +33,78 @@ import java.util.function.Consumer;
  */
 public interface Dispatcher extends Executor, Resource {
 
-	/**
-	 * Instruct the {@code Dispatcher} to dispatch the {@code data}. The event {@link Consumer}
-	 *  will receive the event. In the event of an error during dispatching, the {@code errorConsumer} will be called.
-	 *
-	 * @param data               The event
-	 * @param eventConsumer      The consumer that is driven if dispatch succeeds
-	 * @param errorConsumer      The consumer that is invoked if dispatch fails. May be {@code null}
-	 * @param <E>                type of the event
-	 * @throws IllegalStateException If the {@code Dispatcher} is not {@link Dispatcher#alive() alive}
-	 */
-	<E> void dispatch(E data,
-	                  Consumer<E> eventConsumer,
-	                  Consumer<Throwable> errorConsumer);
+  /**
+   * Instruct the {@code Dispatcher} to dispatch the {@code data}. The event {@link Consumer}
+   * will receive the event. In the event of an error during dispatching, the {@code errorConsumer} will be called.
+   *
+   * @param data          The event
+   * @param eventConsumer The consumer that is driven if dispatch succeeds
+   * @param errorConsumer The consumer that is invoked if dispatch fails. May be {@code null}
+   * @param <E>           type of the event
+   * @throws IllegalStateException If the {@code Dispatcher} is not {@link Dispatcher#alive() alive}
+   */
+  <E> void dispatch(E data,
+                    Consumer<E> eventConsumer,
+                    Consumer<Throwable> errorConsumer);
 
-	/**
-	 * Instruct the {@code Dispatcher} to dispatch the {@code data}.
-	 * If the dispatcher doesn't have enough capacity and might block on the next produced event,
-	 * The event {@link Consumer}
-	 *  will receive the event. In the event of an error during dispatching, the {@code errorConsumer} will be called.
-	 *
-	 * @param data               The event
-	 * @param eventConsumer      The consumer that is driven if dispatch succeeds
-	 * @param errorConsumer      The consumer that is invoked if dispatch fails. May be {@code null}
-	 * @param <E>                type of the event
-	 * @throws IllegalStateException If the {@code Dispatcher} is not {@link Dispatcher#alive() alive}
-	 */
-	<E> void tryDispatch(E data,
-	                  Consumer<E> eventConsumer,
-	                  Consumer<Throwable> errorConsumer) throws InsufficientCapacityException;
+  /**
+   * Instruct the {@code Dispatcher} to dispatch the {@code data}.
+   * If the dispatcher doesn't have enough capacity and might block on the next produced event,
+   * The event {@link Consumer}
+   * will receive the event. In the event of an error during dispatching, the {@code errorConsumer} will be called.
+   *
+   * @param data          The event
+   * @param eventConsumer The consumer that is driven if dispatch succeeds
+   * @param errorConsumer The consumer that is invoked if dispatch fails. May be {@code null}
+   * @param <E>           type of the event
+   * @throws IllegalStateException If the {@code Dispatcher} is not {@link Dispatcher#alive() alive}
+   */
+  <E> void tryDispatch(E data,
+                       Consumer<E> eventConsumer,
+                       Consumer<Throwable> errorConsumer) throws InsufficientCapacityException;
 
-	/**
-	 * Request the remaining capacity for the underlying shared state structure.
-	 * E.g. {@link org.camunda.bpm.extension.reactor.projectreactor.core.dispatch.RingBufferDispatcher} will return
-	 * {@link RingBuffer#remainingCapacity()}.
-	 * <p>
-	 *
-	 * @return the remaining capacity if supported otherwise it returns a negative value.
-	 * @since 2.0
-	 */
-	long remainingSlots();
+  /**
+   * Request the remaining capacity for the underlying shared state structure.
+   * E.g. {@link org.camunda.bpm.extension.reactor.projectreactor.core.dispatch.RingBufferDispatcher} will return
+   * {@link RingBuffer#remainingCapacity()}.
+   * <p>
+   *
+   * @return the remaining capacity if supported otherwise it returns a negative value.
+   * @since 2.0
+   */
+  long remainingSlots();
 
-	/**
-	 * Request the capacity for the underlying shared state structure.
-	 * E.g. {@link org.camunda.bpm.extension.reactor.projectreactor.core.dispatch.RingBufferDispatcher} will return
-	 * {@link RingBuffer#getBufferSize()}.
-	 * <p>
-	 *
-	 * @return the remaining capacity if supported otherwise it returns a negative value.
-	 * @since 2.0
-	 */
-	long backlogSize();
-
-
-	/**
-	 * Inspect if the dispatcher supports ordered dispatching:
-	 * Single threaded dispatchers naturally preserve event ordering on dispatch.
-	 * Multi threaded dispatchers can't prevent a single consumer to receives concurrent notifications.
-	 *
-	 * @return true if ordering of dispatch is preserved.
-	 * * @since 2.0
-	 */
-	boolean supportsOrdering();
+  /**
+   * Request the capacity for the underlying shared state structure.
+   * E.g. {@link org.camunda.bpm.extension.reactor.projectreactor.core.dispatch.RingBufferDispatcher} will return
+   * {@link RingBuffer#getBufferSize()}.
+   * <p>
+   *
+   * @return the remaining capacity if supported otherwise it returns a negative value.
+   * @since 2.0
+   */
+  long backlogSize();
 
 
-	/**
-	 * A dispatcher context can be bound to the thread(s) it runs on. This method allows any caller to detect if he is
-	 * actually within this dispatcher scope.
-	 *
-	 * @return true if within Dispatcher scope (e.g. a thread).
-	 * * @since 2.0
-	 */
-	boolean inContext();
+  /**
+   * Inspect if the dispatcher supports ordered dispatching:
+   * Single threaded dispatchers naturally preserve event ordering on dispatch.
+   * Multi threaded dispatchers can't prevent a single consumer to receives concurrent notifications.
+   *
+   * @return true if ordering of dispatch is preserved.
+   * * @since 2.0
+   */
+  boolean supportsOrdering();
+
+
+  /**
+   * A dispatcher context can be bound to the thread(s) it runs on. This method allows any caller to detect if he is
+   * actually within this dispatcher scope.
+   *
+   * @return true if within Dispatcher scope (e.g. a thread).
+   * * @since 2.0
+   */
+  boolean inContext();
 
 
 }

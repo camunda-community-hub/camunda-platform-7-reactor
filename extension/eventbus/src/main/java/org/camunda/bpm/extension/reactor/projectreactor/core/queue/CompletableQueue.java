@@ -27,15 +27,15 @@ import java.util.Queue;
 @Deprecated
 public interface CompletableQueue<T> extends Queue<T> {
 
-	/**
-	 * Mark this queue as complete
-	 */
-	void complete();
+  /**
+   * Mark this queue as complete
+   */
+  void complete();
 
-	/**
-	 * Get the number of items persisted right now.
-	 *
-	 * @return true if current queue has been completed {@link this#complete()}
-	 */
-	boolean isComplete();
+  /**
+   * Get the number of items persisted right now.
+   *
+   * @return true if current queue has been completed {@link this#complete()}
+   */
+  boolean isComplete();
 }

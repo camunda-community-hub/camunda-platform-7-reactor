@@ -25,9 +25,9 @@ import org.camunda.bpm.extension.reactor.projectreactor.bus.EventBus;
  */
 public class EventBusSpec extends EventRoutingComponentSpec<EventBusSpec, EventBus> {
 
-	@Override
-	protected final EventBus configure(EventBus reactor, Environment environment) {
-		return reactor;
-	}
+  @Override
+  protected final EventBus configure(EventBus reactor, Environment environment) {
+    return reactor;
+  }
 
 }

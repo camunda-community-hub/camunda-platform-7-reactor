@@ -27,51 +27,50 @@ import com.lmax.disruptor.YieldingWaitStrategy;
 /**
  * A pair of slow and fast wait strategies to dynamically adapt to a given application load
  *
-* @author Stephane Maldini
- *
+ * @author Stephane Maldini
  * @since 2.0
-*/
+ */
 public final class AgileWaitingStrategy implements WaitStrategy, WaitingMood {
 
-	private final WaitStrategy slowWaitStrategy;
-	private final WaitStrategy fastWaitStrategy;
+  private final WaitStrategy slowWaitStrategy;
+  private final WaitStrategy fastWaitStrategy;
 
-	private WaitStrategy currentStrategy;
+  private WaitStrategy currentStrategy;
 
-	public AgileWaitingStrategy(){
-		this(new BlockingWaitStrategy(), new YieldingWaitStrategy());
-	}
+  public AgileWaitingStrategy() {
+    this(new BlockingWaitStrategy(), new YieldingWaitStrategy());
+  }
 
-	public AgileWaitingStrategy(WaitStrategy slowWaitStrategy, WaitStrategy fastWaitStrategy) {
-		this.slowWaitStrategy = slowWaitStrategy;
-		this.fastWaitStrategy = fastWaitStrategy;
-		this.currentStrategy = slowWaitStrategy;
-	}
+  public AgileWaitingStrategy(WaitStrategy slowWaitStrategy, WaitStrategy fastWaitStrategy) {
+    this.slowWaitStrategy = slowWaitStrategy;
+    this.fastWaitStrategy = fastWaitStrategy;
+    this.currentStrategy = slowWaitStrategy;
+  }
 
-	@Override
-	public long waitFor(long sequence, Sequence cursor, Sequence dependentSequence, SequenceBarrier barrier)
-			throws AlertException, InterruptedException, TimeoutException {
-		return currentStrategy.waitFor(sequence, cursor, dependentSequence, barrier);
-	}
+  @Override
+  public long waitFor(long sequence, Sequence cursor, Sequence dependentSequence, SequenceBarrier barrier)
+    throws AlertException, InterruptedException, TimeoutException {
+    return currentStrategy.waitFor(sequence, cursor, dependentSequence, barrier);
+  }
 
-	@Override
-	public void signalAllWhenBlocking() {
-		currentStrategy.signalAllWhenBlocking();
-	}
+  @Override
+  public void signalAllWhenBlocking() {
+    currentStrategy.signalAllWhenBlocking();
+  }
 
-	@Override
-	public void nervous(){
-		currentStrategy = fastWaitStrategy;
-		slowWaitStrategy.signalAllWhenBlocking();
-	}
+  @Override
+  public void nervous() {
+    currentStrategy = fastWaitStrategy;
+    slowWaitStrategy.signalAllWhenBlocking();
+  }
 
-	@Override
-	public void calm(){
-		currentStrategy = slowWaitStrategy;
-		fastWaitStrategy.signalAllWhenBlocking();
-	}
+  @Override
+  public void calm() {
+    currentStrategy = slowWaitStrategy;
+    fastWaitStrategy.signalAllWhenBlocking();
+  }
 
-	public WaitStrategy current(){
-		return currentStrategy;
-	}
+  public WaitStrategy current() {
+    return currentStrategy;
+  }
 }

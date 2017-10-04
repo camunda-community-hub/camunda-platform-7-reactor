@@ -32,64 +32,64 @@ import java.util.Iterator;
  */
 public class PersistentQueue<T> extends AbstractQueue<T> implements CompletableQueue<T> {
 
-	private final QueuePersistor<T> persistor;
-	boolean terminated = false;
+  private final QueuePersistor<T> persistor;
+  boolean terminated = false;
 
-	/**
-	 * Create a {@literal PersistentQueue} using the given {@link QueuePersistor}.
-	 *
-	 * @param persistor
-	 */
-	public PersistentQueue(@Nullable QueuePersistor<T> persistor) {
-		this.persistor = (null == persistor ? new InMemoryQueuePersistor<T>() : persistor);
-	}
+  /**
+   * Create a {@literal PersistentQueue} using the given {@link QueuePersistor}.
+   *
+   * @param persistor
+   */
+  public PersistentQueue(@Nullable QueuePersistor<T> persistor) {
+    this.persistor = (null == persistor ? new InMemoryQueuePersistor<T>() : persistor);
+  }
 
-	/**
-	 * Close the underlying {@link QueuePersistor} and release any resources.
-	 */
-	public void close() {
-		persistor.close();
-	}
+  /**
+   * Close the underlying {@link QueuePersistor} and release any resources.
+   */
+  public void close() {
+    persistor.close();
+  }
 
-	@Nonnull
-	public Iterator<T> iterator() {
-		return persistor.iterator();
-	}
+  @Nonnull
+  public Iterator<T> iterator() {
+    return persistor.iterator();
+  }
 
-	@Override
-	public int size() {
-		return (int)persistor.size();
-	}
+  @Override
+  public int size() {
+    return (int) persistor.size();
+  }
 
-	@Override
-	public boolean offer(T obj) {
-		return (null != persistor.offer(obj));
-	}
+  @Override
+  public boolean offer(T obj) {
+    return (null != persistor.offer(obj));
+  }
 
-	@Override
-	public T poll() {
-		if(size() == 0 || !persistor.hasNext()) {
-			return null;
-		}
-		return persistor.remove();
-	}
+  @Override
+  public T poll() {
+    if (size() == 0 || !persistor.hasNext()) {
+      return null;
+    }
+    return persistor.remove();
+  }
 
-	@Override
-	public T peek() {
-		if(size() == 0 || !persistor.hasNext()) {
-			return null;
-		}
-		Long lastId = persistor.lastId();
-		return persistor.get(lastId);
-	}
+  @Override
+  public T peek() {
+    if (size() == 0 || !persistor.hasNext()) {
+      return null;
+    }
+    Long lastId = persistor.lastId();
+    return persistor.get(lastId);
+  }
 
-	@Override
-	public void complete() {
-		terminated = true;
-	}
+  @Override
+  public void complete() {
+    terminated = true;
+  }
 
-	@Override
-	public boolean isComplete() {
-		return terminated;
-	}
+  @Override
+  public boolean isComplete() {
+    return terminated;
+  }
 }

@@ -21,20 +21,20 @@ package org.camunda.bpm.extension.reactor.projectreactor.core.processor;
  * @author Stephane Maldini
  */
 public final class CancelException extends RuntimeException {
-	public static final CancelException INSTANCE = new CancelException();
+  public static final CancelException INSTANCE = new CancelException();
 
-	public static final boolean TRACE_CANCEL = Boolean.parseBoolean(System.getProperty("reactor.trace.cancel", "false"));
+  public static final boolean TRACE_CANCEL = Boolean.parseBoolean(System.getProperty("reactor.trace.cancel", "false"));
 
-	private CancelException() {
-		super("The subscriber has denied dispatching");
-	}
+  private CancelException() {
+    super("The subscriber has denied dispatching");
+  }
 
-	public static CancelException get() {
-		return TRACE_CANCEL ? new CancelException() : INSTANCE;
-	}
+  public static CancelException get() {
+    return TRACE_CANCEL ? new CancelException() : INSTANCE;
+  }
 
-	@Override
-	public synchronized Throwable fillInStackTrace() {
-		return TRACE_CANCEL ? super.fillInStackTrace() : this;
-	}
+  @Override
+  public synchronized Throwable fillInStackTrace() {
+    return TRACE_CANCEL ? super.fillInStackTrace() : this;
+  }
 }

@@ -20,26 +20,23 @@ package org.camunda.bpm.extension.reactor.projectreactor.core.processor;
  * due to insufficient capacity.
  *
  * @author Stephane Maldini
- *
  */
 @SuppressWarnings("serial")
-public final class InsufficientCapacityException extends RuntimeException
-{
-	private static final InsufficientCapacityException INSTANCE = new InsufficientCapacityException();
+public final class InsufficientCapacityException extends RuntimeException {
+  private static final InsufficientCapacityException INSTANCE = new InsufficientCapacityException();
 
-	public static final boolean TRACE_NOCAPACITY = Boolean.parseBoolean(System.getProperty("reactor.trace.nocapacity", "false"));
+  public static final boolean TRACE_NOCAPACITY = Boolean.parseBoolean(System.getProperty("reactor.trace.nocapacity", "false"));
 
-	private InsufficientCapacityException()
-	{
-		super("The subscriber is overrun by more signals than expected (bounded queue...)");
-	}
+  private InsufficientCapacityException() {
+    super("The subscriber is overrun by more signals than expected (bounded queue...)");
+  }
 
-	public static InsufficientCapacityException get() {
-		return TRACE_NOCAPACITY ? new InsufficientCapacityException() : INSTANCE;
-	}
+  public static InsufficientCapacityException get() {
+    return TRACE_NOCAPACITY ? new InsufficientCapacityException() : INSTANCE;
+  }
 
-	@Override
-	public synchronized Throwable fillInStackTrace() {
-		return TRACE_NOCAPACITY ? super.fillInStackTrace() : this;
-	}
+  @Override
+  public synchronized Throwable fillInStackTrace() {
+    return TRACE_NOCAPACITY ? super.fillInStackTrace() : this;
+  }
 }

@@ -28,75 +28,75 @@ import java.util.List;
  */
 public abstract class SingleThreadDispatcher extends AbstractLifecycleDispatcher {
 
-	protected final List<Task> tailRecursionPile = new ArrayList<Task>();
-	protected final int backlog;
+  protected final List<Task> tailRecursionPile = new ArrayList<Task>();
+  protected final int backlog;
 
-	protected int tailRecurseSeq        = -1;
-	protected int tailRecursionPileSize = 0;
+  protected int tailRecurseSeq = -1;
+  protected int tailRecursionPileSize = 0;
 
-	public SingleThreadDispatcher(int backlog) {
-		this.backlog = backlog;
-		expandTailRecursionPile(backlog);
-	}
+  public SingleThreadDispatcher(int backlog) {
+    this.backlog = backlog;
+    expandTailRecursionPile(backlog);
+  }
 
 
-	@Override
-	public boolean supportsOrdering() {
-		return true;
-	}
+  @Override
+  public boolean supportsOrdering() {
+    return true;
+  }
 
-	@Override
-	public long backlogSize() {
-		return backlog;
-	}
+  @Override
+  public long backlogSize() {
+    return backlog;
+  }
 
-	public int getTailRecursionPileSize() {
-		return tailRecursionPileSize;
-	}
+  public int getTailRecursionPileSize() {
+    return tailRecursionPileSize;
+  }
 
-	protected void expandTailRecursionPile(int amount) {
-		int toAdd = amount * 2;
-		for (int i = 0; i < toAdd; i++) {
-			tailRecursionPile.add(new SingleThreadTask());
-		}
-		this.tailRecursionPileSize += toAdd;
-	}
+  protected void expandTailRecursionPile(int amount) {
+    int toAdd = amount * 2;
+    for (int i = 0; i < toAdd; i++) {
+      tailRecursionPile.add(new SingleThreadTask());
+    }
+    this.tailRecursionPileSize += toAdd;
+  }
 
-	protected Task allocateRecursiveTask() {
-		int next = ++tailRecurseSeq;
-		if (next == tailRecursionPileSize) {
-			expandTailRecursionPile(backlog);
-		}
-		return tailRecursionPile.get(next);
-	}
+  protected Task allocateRecursiveTask() {
+    int next = ++tailRecurseSeq;
+    if (next == tailRecursionPileSize) {
+      expandTailRecursionPile(backlog);
+    }
+    return tailRecursionPile.get(next);
+  }
 
-	protected abstract Task allocateTask();
+  protected abstract Task allocateTask();
 
-	protected class SingleThreadTask extends Task {
+  protected class SingleThreadTask extends Task {
 
-		@Override
-		public void run() {
-			route(this);
+    @Override
+    public void run() {
+      route(this);
 
-			//Process any recursive tasks
-			if (tailRecurseSeq < 0) {
-				return;
-			}
-			int next = -1;
-			while (next < tailRecurseSeq) {
-				route(tailRecursionPile.get(++next));
-			}
+      //Process any recursive tasks
+      if (tailRecurseSeq < 0) {
+        return;
+      }
+      int next = -1;
+      while (next < tailRecurseSeq) {
+        route(tailRecursionPile.get(++next));
+      }
 
-			// clean up extra tasks
-			next = tailRecurseSeq;
-			int max = backlog * 2;
-			while (next >= max) {
-				tailRecursionPile.remove(next--);
-			}
-			tailRecursionPileSize = max;
-			tailRecurseSeq = -1;
-		}
-	}
+      // clean up extra tasks
+      next = tailRecurseSeq;
+      int max = backlog * 2;
+      while (next >= max) {
+        tailRecursionPile.remove(next--);
+      }
+      tailRecursionPileSize = max;
+      tailRecurseSeq = -1;
+    }
+  }
 
 
 }

@@ -18,59 +18,59 @@ package org.camunda.bpm.extension.reactor.projectreactor.io.codec.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import org.camunda.bpm.extension.reactor.projectreactor.io.codec.SerializationCodec;
 
 import java.io.IOException;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * @author Jon Brisbin
  */
 public class JacksonJsonCodec<IN, OUT> extends SerializationCodec<ObjectMapper, IN, OUT> {
 
-	public JacksonJsonCodec() {
-		this(new ObjectMapper());
-	}
+  public JacksonJsonCodec() {
+    this(new ObjectMapper());
+  }
 
-	public JacksonJsonCodec(ObjectMapper engine) {
-		super(engine, true);
-	}
+  public JacksonJsonCodec(ObjectMapper engine) {
+    super(engine, true);
+  }
 
-	@Override
-	protected Function<byte[], IN> deserializer(final ObjectMapper engine,
-	                                            final Class<IN> type,
-	                                            final Consumer<IN> next) {
-		return new Function<byte[], IN>() {
-			@Override
-			public IN apply(byte[] bytes) {
-				try {
-					IN o = engine.readValue(bytes, type);
-					if(null != next) {
-						next.accept(o);
-						return null;
-					} else {
-						return o;
-					}
-				} catch(IOException e) {
-					throw new IllegalStateException(e.getMessage(), e);
-				}
-			}
-		};
-	}
+  @Override
+  protected Function<byte[], IN> deserializer(final ObjectMapper engine,
+                                              final Class<IN> type,
+                                              final Consumer<IN> next) {
+    return new Function<byte[], IN>() {
+      @Override
+      public IN apply(byte[] bytes) {
+        try {
+          IN o = engine.readValue(bytes, type);
+          if (null != next) {
+            next.accept(o);
+            return null;
+          } else {
+            return o;
+          }
+        } catch (IOException e) {
+          throw new IllegalStateException(e.getMessage(), e);
+        }
+      }
+    };
+  }
 
-	@Override
-	protected Function<OUT, byte[]> serializer(final ObjectMapper engine) {
-		return new Function<OUT, byte[]>() {
-			@Override
-			public byte[] apply(OUT o) {
-				try {
-					return engine.writeValueAsBytes(o);
-				} catch(JsonProcessingException e) {
-					throw new IllegalArgumentException(e.getMessage(), e);
-				}
-			}
-		};
-	}
+  @Override
+  protected Function<OUT, byte[]> serializer(final ObjectMapper engine) {
+    return new Function<OUT, byte[]>() {
+      @Override
+      public byte[] apply(OUT o) {
+        try {
+          return engine.writeValueAsBytes(o);
+        } catch (JsonProcessingException e) {
+          throw new IllegalArgumentException(e.getMessage(), e);
+        }
+      }
+    };
+  }
 
 }

@@ -34,114 +34,112 @@ import java.util.regex.Pattern;
  */
 public class UriPathTemplate {
 
-	private static final Pattern FULL_SPLAT_PATTERN     = Pattern.compile("[\\*][\\*]");
-	private static final String  FULL_SPLAT_REPLACEMENT = ".*";
+  private static final Pattern FULL_SPLAT_PATTERN = Pattern.compile("[\\*][\\*]");
+  private static final String FULL_SPLAT_REPLACEMENT = ".*";
 
-	private static final Pattern NAME_SPLAT_PATTERN     = Pattern.compile("\\{([^/]+?)\\}[\\*][\\*]");
-	// JDK 6 doesn't support named capture groups
-	private static final String  NAME_SPLAT_REPLACEMENT = "(?<%NAME%>.*)";
-	//private static final String  NAME_SPLAT_REPLACEMENT = "(.*)";
+  private static final Pattern NAME_SPLAT_PATTERN = Pattern.compile("\\{([^/]+?)\\}[\\*][\\*]");
+  // JDK 6 doesn't support named capture groups
+  private static final String NAME_SPLAT_REPLACEMENT = "(?<%NAME%>.*)";
+  //private static final String  NAME_SPLAT_REPLACEMENT = "(.*)";
 
-	private static final Pattern NAME_PATTERN     = Pattern.compile("\\{([^/]+?)\\}");
-	// JDK 6 doesn't support named capture groups
-	private static final String  NAME_REPLACEMENT = "(?<%NAME%>[^\\/.]*)";
-	//private static final String  NAME_REPLACEMENT = "([^\\/.]*)";
+  private static final Pattern NAME_PATTERN = Pattern.compile("\\{([^/]+?)\\}");
+  // JDK 6 doesn't support named capture groups
+  private static final String NAME_REPLACEMENT = "(?<%NAME%>[^\\/.]*)";
+  //private static final String  NAME_REPLACEMENT = "([^\\/.]*)";
 
-	private final List<String>                         pathVariables = new ArrayList<String>();
-	private final HashMap<String, Matcher>             matchers      = new HashMap<String, Matcher>();
-	private final HashMap<String, Map<String, Object>> vars          = new HashMap<String, Map<String, Object>>();
+  private final List<String> pathVariables = new ArrayList<String>();
+  private final HashMap<String, Matcher> matchers = new HashMap<String, Matcher>();
+  private final HashMap<String, Map<String, Object>> vars = new HashMap<String, Map<String, Object>>();
 
-	private final Pattern uriPattern;
+  private final Pattern uriPattern;
 
-	/**
-	 * Creates a new {@code UriPathTemplate} from the given {@code uriPattern}.
-	 *
-	 * @param uriPattern The pattern to be used by the template
-	 */
-	public UriPathTemplate(String uriPattern) {
-		String s = "^" + uriPattern;
+  /**
+   * Creates a new {@code UriPathTemplate} from the given {@code uriPattern}.
+   *
+   * @param uriPattern The pattern to be used by the template
+   */
+  public UriPathTemplate(String uriPattern) {
+    String s = "^" + uriPattern;
 
-		Matcher m = NAME_SPLAT_PATTERN.matcher(s);
-		while (m.find()) {
-			for (int i = 1; i <= m.groupCount(); i++) {
-				String name = m.group(i);
-				pathVariables.add(name);
-				s = m.replaceFirst(NAME_SPLAT_REPLACEMENT.replaceAll("%NAME%", name));
-				m.reset(s);
-			}
-		}
+    Matcher m = NAME_SPLAT_PATTERN.matcher(s);
+    while (m.find()) {
+      for (int i = 1; i <= m.groupCount(); i++) {
+        String name = m.group(i);
+        pathVariables.add(name);
+        s = m.replaceFirst(NAME_SPLAT_REPLACEMENT.replaceAll("%NAME%", name));
+        m.reset(s);
+      }
+    }
 
-		m = NAME_PATTERN.matcher(s);
-		while (m.find()) {
-			for (int i = 1; i <= m.groupCount(); i++) {
-				String name = m.group(i);
-				pathVariables.add(name);
-				s = m.replaceFirst(NAME_REPLACEMENT.replaceAll("%NAME%", name));
-				m.reset(s);
-			}
-		}
+    m = NAME_PATTERN.matcher(s);
+    while (m.find()) {
+      for (int i = 1; i <= m.groupCount(); i++) {
+        String name = m.group(i);
+        pathVariables.add(name);
+        s = m.replaceFirst(NAME_REPLACEMENT.replaceAll("%NAME%", name));
+        m.reset(s);
+      }
+    }
 
-		m = FULL_SPLAT_PATTERN.matcher(s);
-		while (m.find()) {
-			s = m.replaceAll(FULL_SPLAT_REPLACEMENT);
-			m.reset(s);
-		}
+    m = FULL_SPLAT_PATTERN.matcher(s);
+    while (m.find()) {
+      s = m.replaceAll(FULL_SPLAT_REPLACEMENT);
+      m.reset(s);
+    }
 
-		this.uriPattern = Pattern.compile(s + "$");
-	}
+    this.uriPattern = Pattern.compile(s + "$");
+  }
 
-	/**
-	 * Tests the given {@code uri} against this template, returning {@code true} if the
-	 * uri matches the template, {@code false} otherwise.
-	 *
-	 * @param uri The uri to match
-	 *
-	 * @return {@code true} if there's a match, {@code false} otherwise
-	 */
-	public boolean matches(String uri) {
-		return matcher(uri).matches();
-	}
+  /**
+   * Tests the given {@code uri} against this template, returning {@code true} if the
+   * uri matches the template, {@code false} otherwise.
+   *
+   * @param uri The uri to match
+   * @return {@code true} if there's a match, {@code false} otherwise
+   */
+  public boolean matches(String uri) {
+    return matcher(uri).matches();
+  }
 
-	/**
-	 * Matches the template against the given {@code uri} returning a map of path parameters
-	 * extracted from the uri, keyed by the names in the template. If the uri does not match,
-	 * or there are no path parameters, an empty map is returned.
-	 *
-	 * @param uri The uri to match
-	 *
-	 * @return the path parameters from the uri. Never {@code null}.
-	 */
-	public Map<String, Object> match(String uri) {
-		Map<String, Object> pathParameters = vars.get(uri);
-		if (null != pathParameters) {
-			return pathParameters;
-		}
+  /**
+   * Matches the template against the given {@code uri} returning a map of path parameters
+   * extracted from the uri, keyed by the names in the template. If the uri does not match,
+   * or there are no path parameters, an empty map is returned.
+   *
+   * @param uri The uri to match
+   * @return the path parameters from the uri. Never {@code null}.
+   */
+  public Map<String, Object> match(String uri) {
+    Map<String, Object> pathParameters = vars.get(uri);
+    if (null != pathParameters) {
+      return pathParameters;
+    }
 
-		pathParameters = new HashMap<String, Object>();
-		Matcher m = matcher(uri);
-		if (m.matches()) {
-			int i = 1;
-			for (String name : pathVariables) {
-				String val = m.group(i++);
-				pathParameters.put(name, val);
-			}
-		}
-		synchronized (vars) {
-			vars.put(uri, pathParameters);
-		}
+    pathParameters = new HashMap<String, Object>();
+    Matcher m = matcher(uri);
+    if (m.matches()) {
+      int i = 1;
+      for (String name : pathVariables) {
+        String val = m.group(i++);
+        pathParameters.put(name, val);
+      }
+    }
+    synchronized (vars) {
+      vars.put(uri, pathParameters);
+    }
 
-		return pathParameters;
-	}
+    return pathParameters;
+  }
 
-	private Matcher matcher(String uri) {
-		Matcher m = matchers.get(uri);
-		if (null == m) {
-			m = uriPattern.matcher(uri);
-			synchronized (matchers) {
-				matchers.put(uri, m);
-			}
-		}
-		return m;
-	}
+  private Matcher matcher(String uri) {
+    Matcher m = matchers.get(uri);
+    if (null == m) {
+      m = uriPattern.matcher(uri);
+      synchronized (matchers) {
+        matchers.put(uri, m);
+      }
+    }
+    return m;
+  }
 
 }

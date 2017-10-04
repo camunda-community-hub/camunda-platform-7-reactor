@@ -22,12 +22,12 @@ import java.util.List;
 
 abstract class AbstractFilter implements Filter {
 
-	@Override
-	public final <T> List<T> filter(List<T> items, Object key) {
-		Assert.notNull(items, "items must not be null");
-		return doFilter(items, key);
-	}
+  @Override
+  public final <T> List<T> filter(List<T> items, Object key) {
+    Assert.notNull(items, "items must not be null");
+    return doFilter(items, key);
+  }
 
-	protected abstract <T> List<T> doFilter(List<T> items, Object key);
+  protected abstract <T> List<T> doFilter(List<T> items, Object key);
 
 }

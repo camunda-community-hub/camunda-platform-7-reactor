@@ -16,6 +16,7 @@
 package org.camunda.bpm.extension.reactor.projectreactor.core;
 
 import org.camunda.bpm.extension.reactor.projectreactor.fn.Resource;
+
 import java.util.function.Supplier;
 
 /**

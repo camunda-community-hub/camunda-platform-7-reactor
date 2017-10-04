@@ -65,115 +65,115 @@ import java.util.Map;
  */
 public class UriSelector extends ObjectSelector<Object, URI> {
 
-	private static final UriHeaderResolver URI_HEADER_RESOLVER = new UriHeaderResolver();
+  private static final UriHeaderResolver URI_HEADER_RESOLVER = new UriHeaderResolver();
 
-	private final String scheme;
-	private final String host;
-	private final int    port;
-	private final String path;
-	private final String fragment;
+  private final String scheme;
+  private final String host;
+  private final int port;
+  private final String path;
+  private final String fragment;
 
-	public UriSelector(String uri) {
-		this(URI.create(uri));
-	}
+  public UriSelector(String uri) {
+    this(URI.create(uri));
+  }
 
-	public UriSelector(URI uri) {
-		super(uri);
-		scheme = (null != uri.getScheme() ? uri.getScheme() : "*");
-		String authority = uri.getAuthority();
-		host = (null != uri.getHost() ? uri.getHost() : "*");
-		if(authority.contains("*:")) {
-			int i = authority.lastIndexOf(":") + 1;
-			if(i > 1) {
-				port = Integer.parseInt(authority.substring(i));
-			} else {
-				port = -1;
-			}
-		} else {
-			port = uri.getPort();
-		}
-		path = (null != uri.getPath() ? uri.getPath() : "/*");
-		fragment = uri.getFragment();
-	}
+  public UriSelector(URI uri) {
+    super(uri);
+    scheme = (null != uri.getScheme() ? uri.getScheme() : "*");
+    String authority = uri.getAuthority();
+    host = (null != uri.getHost() ? uri.getHost() : "*");
+    if (authority.contains("*:")) {
+      int i = authority.lastIndexOf(":") + 1;
+      if (i > 1) {
+        port = Integer.parseInt(authority.substring(i));
+      } else {
+        port = -1;
+      }
+    } else {
+      port = uri.getPort();
+    }
+    path = (null != uri.getPath() ? uri.getPath() : "/*");
+    fragment = uri.getFragment();
+  }
 
-	@Override
-	public HeaderResolver getHeaderResolver() {
-		return URI_HEADER_RESOLVER;
-	}
+  @Override
+  public HeaderResolver getHeaderResolver() {
+    return URI_HEADER_RESOLVER;
+  }
 
-	@Override
-	public boolean matches(Object key) {
-		if(null == key) {
-			return false;
-		}
+  @Override
+  public boolean matches(Object key) {
+    if (null == key) {
+      return false;
+    }
 
-		URI uri = objectToURI(key);
+    URI uri = objectToURI(key);
 
-		if(uri == null){
-			return false;
-		}
+    if (uri == null) {
+      return false;
+    }
 
-		boolean schemeMatches = "*".equals(scheme) || scheme.equals(uri.getScheme());
-		boolean hostMatches = "*".equals(host) || host.equals(uri.getHost());
-		boolean portMatches = -1 == port || port == uri.getPort();
-		boolean pathMatches = "/*".equals(path) || path.equals(uri.getPath());
-		boolean fragmentMatches = null == fragment || fragment.equals(uri.getFragment());
+    boolean schemeMatches = "*".equals(scheme) || scheme.equals(uri.getScheme());
+    boolean hostMatches = "*".equals(host) || host.equals(uri.getHost());
+    boolean portMatches = -1 == port || port == uri.getPort();
+    boolean pathMatches = "/*".equals(path) || path.equals(uri.getPath());
+    boolean fragmentMatches = null == fragment || fragment.equals(uri.getFragment());
 
-		return schemeMatches
-				&& hostMatches
-				&& portMatches
-				&& pathMatches
-				&& fragmentMatches;
-	}
+    return schemeMatches
+      && hostMatches
+      && portMatches
+      && pathMatches
+      && fragmentMatches;
+  }
 
-	private static URI objectToURI(Object key) {
-		if(key instanceof URI) {
-			return (URI)key;
-		} else if(key instanceof String) {
-			return URI.create(key.toString());
-		} else {
-			return null;
-		}
-	}
+  private static URI objectToURI(Object key) {
+    if (key instanceof URI) {
+      return (URI) key;
+    } else if (key instanceof String) {
+      return URI.create(key.toString());
+    } else {
+      return null;
+    }
+  }
 
-	private static class UriHeaderResolver implements HeaderResolver {
-		@Nullable
-		@Override
-		public Map<String, Object> resolve(Object key) {
-			if(null == key) {
-				return null;
-			}
+  private static class UriHeaderResolver implements HeaderResolver {
+    @Nullable
+    @Override
+    public Map<String, Object> resolve(Object key) {
+      if (null == key) {
+        return null;
+      }
 
-			URI uri = objectToURI(key);
+      URI uri = objectToURI(key);
 
-			if(uri == null){
-				return null;
-			}
+      if (uri == null) {
+        return null;
+      }
 
-			Map<String, Object> headers = new HashMap<String, Object>();
+      Map<String, Object> headers = new HashMap<String, Object>();
 
-			headers.put("authority", uri.getAuthority());
-			headers.put("fragment", uri.getFragment());
-			headers.put("host", uri.getHost());
-			headers.put("path", uri.getPath());
-			headers.put("port", String.valueOf(uri.getPort()));
-			headers.put("query", uri.getQuery());
-			if(null != uri.getQuery()) {
-				try {
-					String query = URLDecoder.decode(uri.getQuery(), "ISO-8859-1");
-					for(String s : query.split("&")) {
-						String[] parts = s.split("=");
-						headers.put(parts[0], parts[1]);
-					}
-				} catch(UnsupportedEncodingException e) {
-					throw new IllegalArgumentException(e);
-				}
-			}
-			headers.put("scheme", uri.getScheme());
-			headers.put("userInfo", uri.getUserInfo());
+      headers.put("authority", uri.getAuthority());
+      headers.put("fragment", uri.getFragment());
+      headers.put("host", uri.getHost());
+      headers.put("path", uri.getPath());
+      headers.put("port", String.valueOf(uri.getPort()));
+      headers.put("query", uri.getQuery());
+      if (null != uri.getQuery()) {
+        try {
+          String query = URLDecoder.decode(uri.getQuery(), "ISO-8859-1");
+          for (String s : query.split("&")) {
+            String[] parts = s.split("=");
+            headers.put(parts[0], parts[1]);
+          }
+        } catch (UnsupportedEncodingException e) {
+          throw new IllegalArgumentException(e);
+        }
+      }
+      headers.put("scheme", uri.getScheme());
+      headers.put("userInfo", uri.getUserInfo());
 
-			return headers;
-		}
-	}
+      return headers;
+    }
+  }
 
 }

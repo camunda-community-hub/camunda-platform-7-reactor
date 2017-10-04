@@ -25,30 +25,30 @@ import org.camunda.bpm.extension.reactor.projectreactor.io.buffer.Buffer;
  */
 public abstract class StandardCodecs {
 
-	private StandardCodecs() {
-	}
+  private StandardCodecs() {
+  }
 
-	public static final Codec<Buffer, Buffer, Buffer> PASS_THROUGH_CODEC = new PassThroughCodec<Buffer>();
+  public static final Codec<Buffer, Buffer, Buffer> PASS_THROUGH_CODEC = new PassThroughCodec<Buffer>();
 
-	/**
-	 * A {@link ByteArrayCodec}.
-	 */
-	public static final ByteArrayCodec BYTE_ARRAY_CODEC = new ByteArrayCodec();
+  /**
+   * A {@link ByteArrayCodec}.
+   */
+  public static final ByteArrayCodec BYTE_ARRAY_CODEC = new ByteArrayCodec();
 
-	/**
-	 * A {@link StringCodec}.
-	 */
-	public static final StringCodec STRING_CODEC = new StringCodec();
+  /**
+   * A {@link StringCodec}.
+   */
+  public static final StringCodec STRING_CODEC = new StringCodec();
 
-	/**
-	 * A {@link StringCodec}.
-	 */
-	public static final StringCodec DELIMITED_STRING_CODEC = new StringCodec(Codec.DEFAULT_DELIMITER);
+  /**
+   * A {@link StringCodec}.
+   */
+  public static final StringCodec DELIMITED_STRING_CODEC = new StringCodec(Codec.DEFAULT_DELIMITER);
 
-	/**
-	 * A {@link DelimitedCodec} that works with {@code String} data delimited by a line-feed ({@code '\n'}) character
-	 */
-	public static final DelimitedCodec<String, String> LINE_FEED_CODEC = new DelimitedCodec<String,
-			String>(STRING_CODEC);
+  /**
+   * A {@link DelimitedCodec} that works with {@code String} data delimited by a line-feed ({@code '\n'}) character
+   */
+  public static final DelimitedCodec<String, String> LINE_FEED_CODEC = new DelimitedCodec<String,
+    String>(STRING_CODEC);
 
 }

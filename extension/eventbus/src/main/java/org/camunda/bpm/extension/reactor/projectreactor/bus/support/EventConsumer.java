@@ -28,28 +28,27 @@ import java.util.function.Consumer;
  *
  * @param <T> the type of the event that can be handled by the consumer and the type that
  *            can be handled by the delegate
- *
  * @author Jon Brisbin
  * @author Stephane Maldini
  */
 public class EventConsumer<T> implements Consumer<Event<T>> {
 
-	private final Consumer<T> delegate;
+  private final Consumer<T> delegate;
 
-	/**
-	 * Creates a new {@code EventConsumer} that will pass event data to the given {@code
-	 * delegate}.
-	 *
-	 * @param delegate The delegate consumer
-	 */
-	public EventConsumer(@Nonnull Consumer<T> delegate) {
-		Assert.notNull(delegate, "Delegate must not be null");
-		this.delegate = delegate;
-	}
+  /**
+   * Creates a new {@code EventConsumer} that will pass event data to the given {@code
+   * delegate}.
+   *
+   * @param delegate The delegate consumer
+   */
+  public EventConsumer(@Nonnull Consumer<T> delegate) {
+    Assert.notNull(delegate, "Delegate must not be null");
+    this.delegate = delegate;
+  }
 
-	@Override
-	public void accept(Event<T> ev) {
-		delegate.accept(ev.getData());
-	}
+  @Override
+  public void accept(Event<T> ev) {
+    delegate.accept(ev.getData());
+  }
 
 }

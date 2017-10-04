@@ -16,9 +16,10 @@
 
 package org.camunda.bpm.extension.reactor.projectreactor.io.codec;
 
+import org.camunda.bpm.extension.reactor.projectreactor.io.buffer.Buffer;
+
 import java.util.function.Consumer;
 import java.util.function.Function;
-import org.camunda.bpm.extension.reactor.projectreactor.io.buffer.Buffer;
 
 /**
  * A simple {@link Codec} implementation that turns a {@link Buffer} into a {@code byte[]} and
@@ -29,26 +30,26 @@ import org.camunda.bpm.extension.reactor.projectreactor.io.buffer.Buffer;
  */
 public class ByteArrayCodec extends BufferCodec<byte[], byte[]> {
 
-	@Override
-	public Function<Buffer, byte[]> decoder(final Consumer<byte[]> next) {
-		return new Function<Buffer, byte[]>() {
-			@Override
-			public byte[] apply(Buffer buffer) {
-				byte[] bytes = buffer.asBytes();
-				buffer.skip(bytes.length);
-				if (null != next) {
-					next.accept(bytes);
-					return null;
-				} else {
-					return bytes;
-				}
-			}
-		};
-	}
+  @Override
+  public Function<Buffer, byte[]> decoder(final Consumer<byte[]> next) {
+    return new Function<Buffer, byte[]>() {
+      @Override
+      public byte[] apply(Buffer buffer) {
+        byte[] bytes = buffer.asBytes();
+        buffer.skip(bytes.length);
+        if (null != next) {
+          next.accept(bytes);
+          return null;
+        } else {
+          return bytes;
+        }
+      }
+    };
+  }
 
-	@Override
-	public Buffer apply(byte[] bytes) {
-		return Buffer.wrap(bytes);
-	}
+  @Override
+  public Buffer apply(byte[] bytes) {
+    return Buffer.wrap(bytes);
+  }
 
 }

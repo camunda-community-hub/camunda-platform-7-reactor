@@ -29,33 +29,33 @@ import java.util.concurrent.locks.LockSupport;
  */
 public class ParkWaitStrategy implements WaitStrategy {
 
-	private final long parkFor;
+  private final long parkFor;
 
-	public ParkWaitStrategy() {
-		this(250);
-	}
+  public ParkWaitStrategy() {
+    this(250);
+  }
 
-	public ParkWaitStrategy(long parkFor) {
-		this.parkFor = parkFor;
-	}
+  public ParkWaitStrategy(long parkFor) {
+    this.parkFor = parkFor;
+  }
 
-	@Override
-	public long waitFor(long sequence,
-	                    Sequence cursor,
-	                    Sequence dependentSequence,
-	                    SequenceBarrier barrier) throws AlertException,
-	                                                    InterruptedException,
+  @Override
+  public long waitFor(long sequence,
+                      Sequence cursor,
+                      Sequence dependentSequence,
+                      SequenceBarrier barrier) throws AlertException,
+    InterruptedException,
     TimeoutException {
-		long availableSequence;
-		while ((availableSequence = dependentSequence.get()) < sequence) {
-			barrier.checkAlert();
-			LockSupport.parkNanos(parkFor);
-		}
-		return availableSequence;
-	}
+    long availableSequence;
+    while ((availableSequence = dependentSequence.get()) < sequence) {
+      barrier.checkAlert();
+      LockSupport.parkNanos(parkFor);
+    }
+    return availableSequence;
+  }
 
-	@Override
-	public void signalAllWhenBlocking() {
-	}
+  @Override
+  public void signalAllWhenBlocking() {
+  }
 
 }

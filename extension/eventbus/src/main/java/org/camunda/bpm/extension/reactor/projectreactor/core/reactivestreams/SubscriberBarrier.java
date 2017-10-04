@@ -15,12 +15,12 @@
  */
 package org.camunda.bpm.extension.reactor.projectreactor.core.reactivestreams;
 
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 import org.camunda.bpm.extension.reactor.projectreactor.core.Dispatcher;
 import org.camunda.bpm.extension.reactor.projectreactor.core.support.Exceptions;
 import org.camunda.bpm.extension.reactor.projectreactor.core.support.NonBlocking;
 import org.camunda.bpm.extension.reactor.projectreactor.core.support.SpecificationExceptions;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 
 /**
  * A {@link Subscriber} with an asymetric typed wrapped subscriber. Yet it represents a unique relationship between
@@ -32,118 +32,118 @@ import org.camunda.bpm.extension.reactor.projectreactor.core.support.Specificati
  */
 public class SubscriberBarrier<I, O> implements Subscriber<I>, Subscription, NonBlocking {
 
-	protected final Subscriber<? super O> subscriber;
+  protected final Subscriber<? super O> subscriber;
 
-	private Subscription subscription;
+  private Subscription subscription;
 
-	public SubscriberBarrier(Subscriber<? super O> subscriber) {
-		this.subscriber = subscriber;
-	}
+  public SubscriberBarrier(Subscriber<? super O> subscriber) {
+    this.subscriber = subscriber;
+  }
 
-	@Override
-	public final void onSubscribe(Subscription s) {
-		if (s == null) {
-			throw SpecificationExceptions.spec_2_13_exception();
-		}
+  @Override
+  public final void onSubscribe(Subscription s) {
+    if (s == null) {
+      throw SpecificationExceptions.spec_2_13_exception();
+    }
 
-		try {
-			if (subscription != null) {
-				s.cancel();
-				return;
-			}
-			subscription = s;
-			doSubscribe(this);
-		} catch (Throwable throwable) {
-			Exceptions.throwIfFatal(throwable);
-			doError(throwable);
-		}
-	}
+    try {
+      if (subscription != null) {
+        s.cancel();
+        return;
+      }
+      subscription = s;
+      doSubscribe(this);
+    } catch (Throwable throwable) {
+      Exceptions.throwIfFatal(throwable);
+      doError(throwable);
+    }
+  }
 
-	protected void doSubscribe(Subscription subscription) {
-		subscriber.onSubscribe(subscription);
-	}
+  protected void doSubscribe(Subscription subscription) {
+    subscriber.onSubscribe(subscription);
+  }
 
-	@Override
-	public final void onNext(I i) {
-		try {
-			doNext(i);
-		} catch (Throwable throwable) {
-			doError(throwable);
-		}
-	}
+  @Override
+  public final void onNext(I i) {
+    try {
+      doNext(i);
+    } catch (Throwable throwable) {
+      doError(throwable);
+    }
+  }
 
-	@SuppressWarnings("unchecked")
-	protected void doNext(I i) {
-		subscriber.onNext((O) i);
-	}
+  @SuppressWarnings("unchecked")
+  protected void doNext(I i) {
+    subscriber.onNext((O) i);
+  }
 
-	@Override
-	public final void onError(Throwable t) {
-		doError(t);
-	}
+  @Override
+  public final void onError(Throwable t) {
+    doError(t);
+  }
 
-	protected void doError(Throwable throwable) {
-		subscriber.onError(throwable);
-	}
+  protected void doError(Throwable throwable) {
+    subscriber.onError(throwable);
+  }
 
-	@Override
-	public final void onComplete() {
-		try {
-			doComplete();
-		} catch (Throwable throwable) {
-			doError(throwable);
-		}
-	}
+  @Override
+  public final void onComplete() {
+    try {
+      doComplete();
+    } catch (Throwable throwable) {
+      doError(throwable);
+    }
+  }
 
-	protected void doComplete() {
-		subscriber.onComplete();
-	}
+  protected void doComplete() {
+    subscriber.onComplete();
+  }
 
-	@Override
-	public final void request(long n) {
-		if(n < 0) throw SpecificationExceptions.spec_3_09_exception(n);
-		try {
-			doRequest(n);
-		} catch (Throwable throwable) {
-			doError(throwable);
-		}
-	}
+  @Override
+  public final void request(long n) {
+    if (n < 0) throw SpecificationExceptions.spec_3_09_exception(n);
+    try {
+      doRequest(n);
+    } catch (Throwable throwable) {
+      doError(throwable);
+    }
+  }
 
-	protected void doRequest(long n) {
-		Subscription s = this.subscription;
-		if (s != null) {
-			s.request(n);
-		}
-	}
+  protected void doRequest(long n) {
+    Subscription s = this.subscription;
+    if (s != null) {
+      s.request(n);
+    }
+  }
 
-	@Override
-	public final void cancel() {
-		try {
-			doCancel();
-		} catch (Throwable throwable) {
-			doError(throwable);
-		}
-	}
+  @Override
+  public final void cancel() {
+    try {
+      doCancel();
+    } catch (Throwable throwable) {
+      doError(throwable);
+    }
+  }
 
-	protected void doCancel() {
-		Subscription s = this.subscription;
-		if (s != null) {
-			this.subscription = null;
-			s.cancel();
-		}
-	}
+  protected void doCancel() {
+    Subscription s = this.subscription;
+    if (s != null) {
+      this.subscription = null;
+      s.cancel();
+    }
+  }
 
 
-	@Override
-	public boolean isReactivePull(Dispatcher dispatcher, long producerCapacity) {
-		return NonBlocking.class.isAssignableFrom(subscriber.getClass())
-				&& ((NonBlocking) subscriber).isReactivePull(dispatcher, producerCapacity);
-	}
+  @Override
+  public boolean isReactivePull(Dispatcher dispatcher, long producerCapacity) {
+    return NonBlocking.class.isAssignableFrom(subscriber.getClass())
+      && ((NonBlocking) subscriber).isReactivePull(dispatcher, producerCapacity);
+  }
 
-	@Override
-	public long getCapacity() {
-		return NonBlocking.class.isAssignableFrom(subscriber.getClass()) ?
-				((NonBlocking) subscriber).getCapacity() :
-				Long.MAX_VALUE;
-	}
+  @Override
+  public long getCapacity() {
+    return NonBlocking.class.isAssignableFrom(subscriber.getClass()) ?
+      ((NonBlocking) subscriber).getCapacity() :
+      Long.MAX_VALUE;
+  }
 }

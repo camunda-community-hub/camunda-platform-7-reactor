@@ -18,12 +18,12 @@ package org.camunda.bpm.extension.reactor.projectreactor.core.dispatch;
 
 import org.camunda.bpm.extension.reactor.projectreactor.Environment;
 import org.camunda.bpm.extension.reactor.projectreactor.core.Dispatcher;
-import java.util.function.Consumer;
 
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
+import java.util.function.Consumer;
 
 /**
  * A {@link org.camunda.bpm.extension.reactor.projectreactor.core.Dispatcher} implementation that trampolines events using the calling thread and.
@@ -32,137 +32,137 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
  */
 public final class TailRecurseDispatcher implements Dispatcher {
 
-	public static final TailRecurseDispatcher INSTANCE = new TailRecurseDispatcher();
+  public static final TailRecurseDispatcher INSTANCE = new TailRecurseDispatcher();
 
-	private final        PriorityBlockingQueue<Task>                      queue           = new
-			PriorityBlockingQueue<Task>();
-	private final        AtomicInteger                                    wip             = new AtomicInteger();
-	private static final AtomicIntegerFieldUpdater<TailRecurseDispatcher> COUNTER_UPDATER =
-			AtomicIntegerFieldUpdater.newUpdater
-					(TailRecurseDispatcher.class, "counter");
+  private final PriorityBlockingQueue<Task> queue = new
+    PriorityBlockingQueue<Task>();
+  private final AtomicInteger wip = new AtomicInteger();
+  private static final AtomicIntegerFieldUpdater<TailRecurseDispatcher> COUNTER_UPDATER =
+    AtomicIntegerFieldUpdater.newUpdater
+      (TailRecurseDispatcher.class, "counter");
 
-	private volatile boolean terminated = false;
-	private volatile int counter;
+  private volatile boolean terminated = false;
+  private volatile int counter;
 
-	public TailRecurseDispatcher() {
-	}
+  public TailRecurseDispatcher() {
+  }
 
-	@Override
-	public boolean alive() {
-		return terminated;
-	}
+  @Override
+  public boolean alive() {
+    return terminated;
+  }
 
-	@Override
-	public boolean awaitAndShutdown() {
-		terminated = true;
-		return true;
-	}
+  @Override
+  public boolean awaitAndShutdown() {
+    terminated = true;
+    return true;
+  }
 
-	@Override
-	public boolean awaitAndShutdown(long timeout, TimeUnit timeUnit) {
-		terminated = true;
-		return true;
-	}
+  @Override
+  public boolean awaitAndShutdown(long timeout, TimeUnit timeUnit) {
+    terminated = true;
+    return true;
+  }
 
-	@Override
-	public void shutdown() {
-		awaitAndShutdown();
-	}
+  @Override
+  public void shutdown() {
+    awaitAndShutdown();
+  }
 
-	@Override
-	public void forceShutdown() {
-		awaitAndShutdown();
-	}
+  @Override
+  public void forceShutdown() {
+    awaitAndShutdown();
+  }
 
-	@Override
-	public <E> void tryDispatch(E event,
-	                            Consumer<E> consumer,
-	                            Consumer<Throwable> errorConsumer) {
-		dispatch(event, consumer, errorConsumer);
-	}
+  @Override
+  public <E> void tryDispatch(E event,
+                              Consumer<E> consumer,
+                              Consumer<Throwable> errorConsumer) {
+    dispatch(event, consumer, errorConsumer);
+  }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <E> void dispatch(E event,
-	                         Consumer<E> eventConsumer,
-	                         Consumer<Throwable> errorConsumer) {
-		if (terminated) {
-			return;
-		}
+  @Override
+  @SuppressWarnings("unchecked")
+  public <E> void dispatch(E event,
+                           Consumer<E> eventConsumer,
+                           Consumer<Throwable> errorConsumer) {
+    if (terminated) {
+      return;
+    }
 
-		final Task task = new Task(COUNTER_UPDATER.incrementAndGet(this), event, eventConsumer, errorConsumer);
+    final Task task = new Task(COUNTER_UPDATER.incrementAndGet(this), event, eventConsumer, errorConsumer);
 
-		queue.add(task);
+    queue.add(task);
 
-		if (wip.getAndIncrement() == 0) {
-			do {
-				final Task polled = queue.poll();
-				if (polled != null) {
-					try {
-						polled.eventConsumer.accept(polled.data);
-					} catch (Throwable e) {
-						if (polled.errorConsumer != null) {
-							polled.errorConsumer.accept(e);
-						} else if (Environment.alive()) {
-							Environment.get().routeError(e);
-						}
-					}
-				}
-			} while (wip.decrementAndGet() > 0);
-		}
-	}
+    if (wip.getAndIncrement() == 0) {
+      do {
+        final Task polled = queue.poll();
+        if (polled != null) {
+          try {
+            polled.eventConsumer.accept(polled.data);
+          } catch (Throwable e) {
+            if (polled.errorConsumer != null) {
+              polled.errorConsumer.accept(e);
+            } else if (Environment.alive()) {
+              Environment.get().routeError(e);
+            }
+          }
+        }
+      } while (wip.decrementAndGet() > 0);
+    }
+  }
 
-	@Override
-	public void execute(final Runnable command) {
-		dispatch(null, new Consumer<Void>() {
-			@Override
-			public void accept(Void aVoid) {
-				command.run();
-			}
-		}, null);
-	}
+  @Override
+  public void execute(final Runnable command) {
+    dispatch(null, new Consumer<Void>() {
+      @Override
+      public void accept(Void aVoid) {
+        command.run();
+      }
+    }, null);
+  }
 
-	@Override
-	public long remainingSlots() {
-		return Long.MAX_VALUE;
-	}
+  @Override
+  public long remainingSlots() {
+    return Long.MAX_VALUE;
+  }
 
-	@Override
-	public boolean supportsOrdering() {
-		return true;
-	}
+  @Override
+  public boolean supportsOrdering() {
+    return true;
+  }
 
-	@Override
-	public long backlogSize() {
-		return counter;
-	}
+  @Override
+  public long backlogSize() {
+    return counter;
+  }
 
-	@Override
-	public boolean inContext() {
-		return true;
-	}
+  @Override
+  public boolean inContext() {
+    return true;
+  }
 
-	@Override
-	public String toString() {
-		return counter + ", " + queue.toString();
-	}
+  @Override
+  public String toString() {
+    return counter + ", " + queue.toString();
+  }
 
-	private static class Task implements Comparable<Task> {
-		final Object              data;
-		final Consumer            eventConsumer;
-		final Consumer<Throwable> errorConsumer;
-		final int                 index;
+  private static class Task implements Comparable<Task> {
+    final Object data;
+    final Consumer eventConsumer;
+    final Consumer<Throwable> errorConsumer;
+    final int index;
 
-		public Task(int index, Object data, Consumer eventConsumer, Consumer<Throwable> errorConsumer) {
-			this.data = data;
-			this.index = index;
-			this.eventConsumer = eventConsumer;
-			this.errorConsumer = errorConsumer;
-		}
+    public Task(int index, Object data, Consumer eventConsumer, Consumer<Throwable> errorConsumer) {
+      this.data = data;
+      this.index = index;
+      this.eventConsumer = eventConsumer;
+      this.errorConsumer = errorConsumer;
+    }
 
-		@Override
-		public int compareTo(Task o) {
-			return Integer.compare(index, o.index);
-		}
-	}
+    @Override
+    public int compareTo(Task o) {
+      return Integer.compare(index, o.index);
+    }
+  }
 }

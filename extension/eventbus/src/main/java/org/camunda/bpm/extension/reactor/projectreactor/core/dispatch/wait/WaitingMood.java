@@ -21,20 +21,19 @@ package org.camunda.bpm.extension.reactor.projectreactor.core.dispatch.wait;
  * (e.g. blocking wait) and a CPU-starving strategy (e.g. Thread.yield spining).
  *
  * @author Stephane Maldini
- *
  * @since 2.0
  */
 public interface WaitingMood {
 
-	/**
-	 * Turn the mood into aggressive CPU demand mode to effectively give an an additional resources boost to the underlying
-	 * component.
-	 */
-	void nervous();
+  /**
+   * Turn the mood into aggressive CPU demand mode to effectively give an an additional resources boost to the underlying
+   * component.
+   */
+  void nervous();
 
-	/**
-	 * Turn the mood into eco CPU demand mode to save resources from the underlying component.
-	 */
-	void calm();
+  /**
+   * Turn the mood into eco CPU demand mode to save resources from the underlying component.
+   */
+  void calm();
 
 }
