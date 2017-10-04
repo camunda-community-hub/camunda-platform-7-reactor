@@ -26,9 +26,9 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import reactor.bus.Event;
-import reactor.bus.selector.Selectors;
-import reactor.fn.Consumer;
+import org.camunda.bpm.extension.reactor.projectreactor.bus.Event;
+import org.camunda.bpm.extension.reactor.projectreactor.bus.selector.Selectors;
+import org.camunda.bpm.extension.reactor.projectreactor.fn.Consumer;
 
 @RunWith(Enclosed.class)
 public class CamundaEventBusTest {
@@ -44,12 +44,12 @@ public class CamundaEventBusTest {
 
     @Mock
     protected DelegateExecution delegateExecution;
-    
+
     @Mock
     protected DelegateCaseExecution delegateCaseExecution;
-    
+
     protected DelegateTask delegateTask = CamundaReactorTestHelper.delegateTask();
-    
+
     @Mock
     protected ExecutionListener executionListener;
 
@@ -106,24 +106,24 @@ public class CamundaEventBusTest {
   }
 
   public static class PublishSubscribe extends Common {
-    
+
     @CamundaSelector
     public class ToAnyTask implements TaskListener {
-      
+
       private String value;
 
       @Override
       public void notify(DelegateTask delegateTask) {
         value = "foo";
       }}
-    
+
     @Test
     public void tasklistener_registers_to_contextTask_automatically() throws Exception {
       ToAnyTask listener = new ToAnyTask();
       eventBus.register(listener);
-      
+
       eventBus.notify(delegateTask);
-      
+
       assertThat(listener.value).isEqualTo("foo");
     }
 
@@ -148,19 +148,19 @@ public class CamundaEventBusTest {
 
       verify(taskListener).notify(task);
     }
-    
+
     @Test
     public void notify_caseExecution() throws Exception {
       eventBus.register(SelectorBuilder.selector().context(cmmn), caseExecutionListener);
-      
+
       DelegateCaseExecution execution= CamundaReactorTestHelper.delegateCaseExecution();
-      
+
       eventBus.notify(execution);
-      
+
       verify(caseExecutionListener).notify(execution);
     }
   }
-  
+
 
   public static class ErrorHandling extends Common {
 
@@ -192,7 +192,7 @@ public class CamundaEventBusTest {
       eventBus.get().notify(Selectors.$("any"), Event.wrap("event"));
 
     }
-    
+
   }
 
 }

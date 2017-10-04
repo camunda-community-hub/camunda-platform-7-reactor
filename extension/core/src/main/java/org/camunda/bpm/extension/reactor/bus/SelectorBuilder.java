@@ -5,7 +5,6 @@ import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context.task
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.camunda.bpm.engine.delegate.BpmnModelExecutionContext;
 import org.camunda.bpm.engine.delegate.CaseExecutionListener;
@@ -16,12 +15,11 @@ import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.reactor.CamundaReactor;
-import org.camunda.bpm.extension.reactor.plugin.parse.RegisterAllBpmnParseListener;
 import org.camunda.bpm.model.bpmn.instance.FlowElement;
 import org.camunda.bpm.model.cmmn.instance.CmmnElement;
 
-import reactor.bus.selector.Selector;
-import reactor.bus.selector.Selectors;
+import org.camunda.bpm.extension.reactor.projectreactor.bus.selector.Selector;
+import org.camunda.bpm.extension.reactor.projectreactor.bus.selector.Selectors;
 
 public class SelectorBuilder {
 

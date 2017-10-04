@@ -18,11 +18,11 @@ import org.camunda.bpm.extension.reactor.event.ProcessEnginePluginEvent.PostProc
 import org.camunda.bpm.extension.reactor.event.ProcessEnginePluginEvent.PostInitEvent;
 import org.camunda.bpm.extension.reactor.event.ProcessEnginePluginEvent.PreInitEvent;
 import org.slf4j.Logger;
-import reactor.bus.EventBus;
-import reactor.bus.selector.Selectors;
-import reactor.bus.spec.EventBusSpec;
-import reactor.core.dispatch.SynchronousDispatcher;
-import reactor.fn.Consumer;
+import org.camunda.bpm.extension.reactor.projectreactor.bus.EventBus;
+import org.camunda.bpm.extension.reactor.projectreactor.bus.selector.Selectors;
+import org.camunda.bpm.extension.reactor.projectreactor.bus.spec.EventBusSpec;
+import org.camunda.bpm.extension.reactor.projectreactor.core.dispatch.SynchronousDispatcher;
+import org.camunda.bpm.extension.reactor.projectreactor.fn.Consumer;
 
 import java.io.Serializable;
 
@@ -66,7 +66,7 @@ public class CamundaEventBus implements Serializable {
   }
 
   /**
-   * @return this eventbus downcasted to standard api
+   * @return this projectreactor downcasted to standard api
    */
   public EventBus get() {
     return eventBus;
