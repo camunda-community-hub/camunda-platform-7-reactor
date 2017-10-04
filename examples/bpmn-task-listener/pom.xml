@@ -3,13 +3,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.camunda.bpm.extension.examples</groupId>
-    <artifactId>camunda-bpm-reactor-examples</artifactId>
-    <version>2.0-SNAPSHOT</version>
+    <groupId>org.camunda.bpm.extension.reactor.project</groupId>
+    <artifactId>camunda-bpm-reactor-example-root</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.camunda.bpm.extension.examples</groupId>
-  <artifactId>camunda-bpm-reactor-examples-bpmn-task-listener</artifactId>
+  <groupId>${groupId.example}</groupId>
+  <artifactId>camunda-bpm-reactor-example-bpmn-task-listener</artifactId>
 
   <dependencyManagement>
     <dependencies>
@@ -30,7 +30,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.camunda.bpm.extension</groupId>
+      <groupId>${groupId.extension}</groupId>
       <artifactId>camunda-bpm-reactor-core</artifactId>
     </dependency>
 
