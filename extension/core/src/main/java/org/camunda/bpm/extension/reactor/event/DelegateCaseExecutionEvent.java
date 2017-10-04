@@ -3,7 +3,7 @@ package org.camunda.bpm.extension.reactor.event;
 import org.camunda.bpm.engine.ProcessEngineException;
 import org.camunda.bpm.engine.delegate.CaseExecutionListener;
 import org.camunda.bpm.engine.delegate.DelegateCaseExecution;
-import org.camunda.bpm.extension.reactor.projectreactor.fn.Consumer;
+import java.util.function.Consumer;
 
 public class DelegateCaseExecutionEvent extends DelegateEvent<DelegateCaseExecution> {
 

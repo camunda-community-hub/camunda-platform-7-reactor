@@ -28,7 +28,7 @@ import org.mockito.junit.MockitoRule;
 
 import org.camunda.bpm.extension.reactor.projectreactor.bus.Event;
 import org.camunda.bpm.extension.reactor.projectreactor.bus.selector.Selectors;
-import org.camunda.bpm.extension.reactor.projectreactor.fn.Consumer;
+import java.util.function.Consumer;
 
 @RunWith(Enclosed.class)
 public class CamundaEventBusTest {

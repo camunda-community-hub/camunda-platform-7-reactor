@@ -2,7 +2,7 @@ package org.camunda.bpm.extension.reactor.event;
 
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.TaskListener;
-import org.camunda.bpm.extension.reactor.projectreactor.fn.Consumer;
+import java.util.function.Consumer;
 
 public class DelegateTaskEvent extends DelegateEvent<DelegateTask> {
 

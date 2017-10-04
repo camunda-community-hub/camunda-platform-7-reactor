@@ -22,9 +22,9 @@ import org.camunda.bpm.extension.reactor.projectreactor.bus.EventBus;
 import org.camunda.bpm.extension.reactor.projectreactor.bus.selector.Selectors;
 import org.camunda.bpm.extension.reactor.projectreactor.bus.spec.EventBusSpec;
 import org.camunda.bpm.extension.reactor.projectreactor.core.dispatch.SynchronousDispatcher;
-import org.camunda.bpm.extension.reactor.projectreactor.fn.Consumer;
 
 import java.io.Serializable;
+import java.util.function.Consumer;
 
 import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.selector;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -121,26 +121,11 @@ public class CamundaEventBus implements Serializable {
 
   public void register(final ProcessEnginePlugin processEnginePlugin) {
 
-    eventBus.on(Selectors.type(PreInitEvent.class), new Consumer<PreInitEvent>() {
-      @Override
-      public void accept(PreInitEvent event) {
-        processEnginePlugin.preInit(event.getData());
-      }
-    });
+    eventBus.on(Selectors.type(PreInitEvent.class), (Consumer<PreInitEvent>) event -> processEnginePlugin.preInit(event.getData()));
 
-    eventBus.on(Selectors.type(PostInitEvent.class), new Consumer<PostInitEvent>() {
-      @Override
-      public void accept(PostInitEvent event) {
-        processEnginePlugin.postInit(event.getData());
-      }
-    });
+    eventBus.on(Selectors.type(PostInitEvent.class), (Consumer<PostInitEvent>) event -> processEnginePlugin.postInit(event.getData()));
 
-    eventBus.on(Selectors.type(PostProcessEngineBuild.class), new Consumer<PostProcessEngineBuild>() {
-      @Override
-      public void accept(PostProcessEngineBuild event) {
-        processEnginePlugin.postProcessEngineBuild(event.getData());
-      }
-    });
+    eventBus.on(Selectors.type(PostProcessEngineBuild.class), (Consumer<PostProcessEngineBuild>) event -> processEnginePlugin.postProcessEngineBuild(event.getData()));
   }
 
   /**
