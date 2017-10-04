@@ -36,7 +36,6 @@ public final class MpscDispatcher extends SingleThreadDispatcher {
 
   private static final int DEFAULT_BUFFER_SIZE = 1024;
 
-  //private final Logger log = LoggerFactory.getLogger(getClass());
   private final ExecutorService executor;
   private final Queue<Task> workQueue;
   private final int capacity;
@@ -64,22 +63,19 @@ public final class MpscDispatcher extends SingleThreadDispatcher {
     this.executor = Executors.newSingleThreadExecutor(new NamedDaemonThreadFactory(name, getContext()));
     this.workQueue = MpscLinkedQueue.create();
     this.capacity = bufferSize;
-    this.executor.execute(new Runnable() {
-      @Override
-      public void run() {
-        Task task;
-        try {
-          for (; ; ) {
-            task = workQueue.poll();
-            if (null != task) {
-              task.run();
-            } else {
-              LockSupport.parkNanos(1l); //TODO expose
-            }
+    this.executor.execute(() -> {
+      Task task;
+      try {
+        for (; ; ) {
+          task = workQueue.poll();
+          if (null != task) {
+            task.run();
+          } else {
+            LockSupport.parkNanos(1l); //TODO expose
           }
-        } catch (EndException e) {
-          //ignore
         }
+      } catch (EndException e) {
+        //ignore
       }
     });
   }

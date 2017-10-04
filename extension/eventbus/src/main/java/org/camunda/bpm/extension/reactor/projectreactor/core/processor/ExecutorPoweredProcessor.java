@@ -18,6 +18,7 @@ package org.camunda.bpm.extension.reactor.projectreactor.core.processor;
 import org.camunda.bpm.extension.reactor.projectreactor.core.processor.util.SingleUseExecutor;
 import org.camunda.bpm.extension.reactor.projectreactor.core.support.Exceptions;
 
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -33,9 +34,7 @@ public abstract class ExecutorPoweredProcessor<IN, OUT> extends ReactorProcessor
   protected ExecutorPoweredProcessor(String name, ExecutorService executor, boolean autoCancel) {
     super(autoCancel);
 
-    this.executor = executor == null
-      ? SingleUseExecutor.create(name)
-      : executor;
+    this.executor = Optional.ofNullable(executor).orElse(SingleUseExecutor.create(name));
   }
 
 

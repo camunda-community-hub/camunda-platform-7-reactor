@@ -49,7 +49,7 @@ public class CachingRegistry<K, V> implements Registry<K, V> {
     this.cacheNotFound = cacheNotFound;
     this.onNotFound = onNotFound;
     this.registrations = MultiReaderFastList.newList();
-    this.threadLocalCache = new ConcurrentHashMap<Long, UnifiedMap<Object, List<Registration<K, ? extends V>>>>();
+    this.threadLocalCache = new ConcurrentHashMap<>();
   }
 
   @Override
@@ -58,12 +58,7 @@ public class CachingRegistry<K, V> implements Registry<K, V> {
     final Registration<K, V> reg = new CachableRegistration<>(sel, obj, removeFn);
     removeFn.reg = reg;
 
-    registrations.withWriteLockAndDelegate(new Procedure<MutableList<Registration<K, ? extends V>>>() {
-      @Override
-      public void value(MutableList<Registration<K, ? extends V>> regs) {
-        regs.add(reg);
-      }
-    });
+    registrations.withWriteLockAndDelegate((Procedure<MutableList<Registration<K, ? extends V>>>) regs -> regs.add(reg));
     if (useCache) {
       threadLocalCache.clear();
     }
@@ -75,21 +70,18 @@ public class CachingRegistry<K, V> implements Registry<K, V> {
   @SuppressWarnings("unchecked")
   public boolean unregister(final K key) {
     final AtomicBoolean modified = new AtomicBoolean(false);
-    registrations.withWriteLockAndDelegate(new Procedure<MutableList<Registration<K, ? extends V>>>() {
-      @Override
-      public void value(final MutableList<Registration<K, ? extends V>> regs) {
-        Iterator<Registration<K, ? extends V>> registrationIterator = regs.iterator();
-        Registration<K, ? extends V> reg;
-        while (registrationIterator.hasNext()) {
-          reg = registrationIterator.next();
-          if (reg.getSelector().matches(key)) {
-            registrationIterator.remove();
-            modified.compareAndSet(false, true);
-          }
+    registrations.withWriteLockAndDelegate((Procedure<MutableList<Registration<K, ? extends V>>>) regs -> {
+      Iterator<Registration<K, ? extends V>> registrationIterator = regs.iterator();
+      Registration<K, ? extends V> reg;
+      while (registrationIterator.hasNext()) {
+        reg = registrationIterator.next();
+        if (reg.getSelector().matches(key)) {
+          registrationIterator.remove();
+          modified.compareAndSet(false, true);
         }
-        if (useCache && modified.get()) {
-          threadLocalCache.clear();
-        }
+      }
+      if (useCache && modified.get()) {
+        threadLocalCache.clear();
       }
     });
     return modified.get();
@@ -157,12 +149,9 @@ public class CachingRegistry<K, V> implements Registry<K, V> {
 
     @Override
     public void run() {
-      registrations.withWriteLockAndDelegate(new Procedure<MutableList<Registration<K, ? extends V>>>() {
-        @Override
-        public void value(MutableList<Registration<K, ? extends V>> regs) {
-          regs.remove(reg);
-          threadLocalCache.clear();
-        }
+      registrations.withWriteLockAndDelegate((Procedure<MutableList<Registration<K, ? extends V>>>) regs -> {
+        regs.remove(reg);
+        threadLocalCache.clear();
       });
     }
   }

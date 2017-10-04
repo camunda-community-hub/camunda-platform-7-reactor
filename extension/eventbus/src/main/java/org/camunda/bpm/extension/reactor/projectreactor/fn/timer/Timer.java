@@ -42,9 +42,7 @@ public interface Timer {
    * @param period              the amount of time that should elapse between invocations of the given {@code Consumer}
    * @param timeUnit            the unit of time the {@code period} is to be measured in
    * @param delayInMilliseconds a number of milliseconds in which to delay any execution of the given {@code Consumer}
-   * @return a {@link org.camunda.bpm.extension.reactor.projectreactor.fn.Pausable} that can be used to {@link
-   * org.camunda.bpm.extension.reactor.projectreactor.fn.Pausable#cancel() cancel}, {@link org.camunda.bpm.extension.reactor.projectreactor.fn.Pausable#pause() pause} or
-   * {@link org.camunda.bpm.extension.reactor.projectreactor.fn.Pausable#resume() resume} the given task.
+   * @return a {@link Pausable} that can be used to {@link Pausable#cancel() cancel}, {@link Pausable#pause() pause} or {@link Pausable#resume() resume} the given task.
    */
   Pausable schedule(Consumer<Long> consumer,
                     long period,
@@ -59,14 +57,10 @@ public interface Timer {
    * @param consumer the {@code Consumer} to invoke each period
    * @param period   the amount of time that should elapse between invocations of the given {@code Consumer}
    * @param timeUnit the unit of time the {@code period} is to be measured in
-   * @return a {@link org.camunda.bpm.extension.reactor.projectreactor.fn.Pausable} that can be used to {@link
-   * org.camunda.bpm.extension.reactor.projectreactor.fn.Pausable#cancel() cancel}, {@link org.camunda.bpm.extension.reactor.projectreactor.fn.Pausable#pause() pause} or
-   * {@link org.camunda.bpm.extension.reactor.projectreactor.fn.Pausable#resume() resume} the given task.
-   * @see #schedule(Consumer, long, java.util.concurrent.TimeUnit, long)
+   * @return a {@link Pausable} that can be used to {@link Pausable#cancel() cancel}, {@link Pausable#pause() pause} or {@link Pausable#resume() resume} the given task.
+   * @see #schedule(Consumer, long, TimeUnit, long)
    */
-  Pausable schedule(Consumer<Long> consumer,
-                    long period,
-                    TimeUnit timeUnit);
+  Pausable schedule(Consumer<Long> consumer, long period, TimeUnit timeUnit);
 
   /**
    * Submit a task for arbitrary execution after the given time delay.
@@ -74,13 +68,10 @@ public interface Timer {
    * @param consumer the {@code Consumer} to invoke
    * @param delay    the amount of time that should elapse before invocations of the given {@code Consumer}
    * @param timeUnit the unit of time the {@code period} is to be measured in
-   * @return a {@link org.camunda.bpm.extension.reactor.projectreactor.fn.Pausable} that can be used to {@link
-   * org.camunda.bpm.extension.reactor.projectreactor.fn.Pausable#cancel() cancel}, {@link org.camunda.bpm.extension.reactor.projectreactor.fn.Pausable#pause() pause} or
-   * {@link org.camunda.bpm.extension.reactor.projectreactor.fn.Pausable#resume() resume} the given task.
+   * @return a {@link Pausable} that can be used to {@link Pausable#cancel() cancel}, {@link Pausable#pause() pause} or
+   * {@link Pausable#resume() resume} the given task.
    */
-  Pausable submit(Consumer<Long> consumer,
-                  long delay,
-                  TimeUnit timeUnit);
+  Pausable submit(Consumer<Long> consumer, long delay, TimeUnit timeUnit);
 
   /**
    * Submit a task for arbitrary execution after the delay of this timer's resolution.
