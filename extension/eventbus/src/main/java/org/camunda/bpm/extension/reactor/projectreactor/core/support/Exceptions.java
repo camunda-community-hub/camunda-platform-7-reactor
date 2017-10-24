@@ -64,24 +64,6 @@ public final class Exceptions {
   }
 
   /**
-   * Try to find the last value at the end of the causality-chain for a particular {@code Throwable}
-   * If the final cause wasn't of type {@link org.camunda.bpm.extension.reactor.projectreactor.core.support.Exceptions.ValueCause},
-   * return null;
-   *
-   * @param e the {@code Throwable} whose final cause you are curious about
-   * @return the last {@code Throwable} in the causality-chain of {@code e} (or a "Stack too deep to get
-   * final cause" {@code RuntimeException} if the chain is too long to traverse)
-   */
-  @SuppressWarnings("unchecked")
-  public static Object getFinalValueCause(Throwable e) {
-    Throwable t = getFinalCause(e);
-    if (ValueCause.class.isAssignableFrom(t.getClass())) {
-      return ((ValueCause) t).getValue();
-    }
-    return null;
-  }
-
-  /**
    * Get the {@code Throwable} at the end of the causality-chain for a particular {@code Throwable}
    *
    * @param e the {@code Throwable} whose final cause you are curious about

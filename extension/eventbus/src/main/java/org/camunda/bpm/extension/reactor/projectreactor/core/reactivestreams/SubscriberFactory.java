@@ -59,12 +59,9 @@ public final class SubscriberFactory {
    * @return a fresh Reactive Streams subscriber ready to be subscribed
    */
   public static <T> Subscriber<T> create(final Consumer<Subscription> subscriptionHandler) {
-    return create(new Function<Subscription, Void>() {
-      @Override
-      public Void apply(Subscription subscription) {
-        subscriptionHandler.accept(subscription);
-        return null;
-      }
+    return create((Function<Subscription, Void>) subscription -> {
+      subscriptionHandler.accept(subscription);
+      return null;
     }, null, null, null);
   }
 
@@ -168,12 +165,7 @@ public final class SubscriberFactory {
     return create(
       UNBOUNDED_REQUEST_FUNCTION,
       dataConsumer,
-      errorConsumer != null ? new BiConsumer<Throwable, Void>() {
-        @Override
-        public void accept(Throwable throwable, Void aVoid) {
-          errorConsumer.accept(throwable);
-        }
-      } : null,
+      errorConsumer != null ? (BiConsumer<Throwable, Void>) (throwable, aVoid) -> errorConsumer.accept(throwable) : null,
       completeConsumer
     );
   }
@@ -205,12 +197,9 @@ public final class SubscriberFactory {
     return new ReactorSubscriber<T, C>(dataConsumer, subscriptionHandler, errorConsumer, completeConsumer);
   }
 
-  private static final Function<Subscription, Void> UNBOUNDED_REQUEST_FUNCTION = new Function<Subscription, Void>() {
-    @Override
-    public Void apply(Subscription subscription) {
-      subscription.request(Long.MAX_VALUE);
-      return null;
-    }
+  private static final Function<Subscription, Void> UNBOUNDED_REQUEST_FUNCTION = subscription -> {
+    subscription.request(Long.MAX_VALUE);
+    return null;
   };
 
   private static final class ReactorSubscriber<T, C> implements Subscriber<T>, NonBlocking {

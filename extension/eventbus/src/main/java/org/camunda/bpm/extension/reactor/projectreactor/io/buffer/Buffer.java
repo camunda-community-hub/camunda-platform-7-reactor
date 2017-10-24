@@ -47,11 +47,7 @@ import java.util.function.Supplier;
  * @author Stephane Maldini
  */
 @NotThreadSafe
-public class Buffer implements Recyclable,
-  Comparable<Buffer>,
-  Iterable<Byte>,
-  ReadableByteChannel,
-  WritableByteChannel {
+public class Buffer implements Recyclable, Comparable<Buffer>, Iterable<Byte>, ReadableByteChannel, WritableByteChannel {
 
   /**
    * The size, in bytes, of a small buffer. Can be configured using the {@code org.camunda.bpm.extension.reactor.projectreactor.io.defaultBufferSize} system

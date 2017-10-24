@@ -61,17 +61,6 @@ public abstract class Assert {
   }
 
   /**
-   * Assert a boolean expression, throwing {@code IllegalArgumentException} if the test result is {@code false}. <pre
-   * class="code">Assert.isTrue(i &gt; 0);</pre>
-   *
-   * @param expression a boolean expression
-   * @throws IllegalArgumentException if expression is {@code false}
-   */
-  public static void isTrue(boolean expression) {
-    isTrue(expression, "[Assertion failed] - this expression must be true");
-  }
-
-  /**
    * Assert that an object is {@code null} . <pre class="code">Assert.isNull(value, "The value must be null");</pre>
    *
    * @param object  the object to check
@@ -122,47 +111,6 @@ public abstract class Assert {
       throw new IllegalArgumentException(message);
     }
   }
-
-  /**
-   * Assert that the provided object is an instance of the provided class. <pre class="code">Assert.instanceOf(Foo.class,
-   * foo);</pre>
-   *
-   * @param type    the type to check against
-   * @param obj     the object to check
-   * @param message a message which will be prepended to the message produced by the function itself, and which may be
-   *                used to provide context. It should normally end in a ": " or ". " so that the function generate
-   *                message looks ok when prepended to it.
-   * @throws IllegalArgumentException if the object is not an instance of clazz
-   * @see Class#isInstance
-   */
-  public static void isInstanceOf(Class<?> type, Object obj, String message) {
-    notNull(type, "Type to check against must not be null");
-    if (!type.isInstance(obj)) {
-      throw new IllegalArgumentException(
-        (message != null && message.length() > 0 ? message + " " : "") +
-          "Object of class [" + (obj != null ? obj.getClass().getName() : "null") +
-          "] must be an instance of " + type);
-    }
-  }
-
-  /**
-   * Assert that {@code superType.isAssignableFrom(subType)} is {@code true}. <pre class="code">Assert.isAssignable(Number.class,
-   * myClass);</pre>
-   *
-   * @param superType the super type to check against
-   * @param subType   the sub type to check
-   * @param message   a message which will be prepended to the message produced by the function itself, and which may be
-   *                  used to provide context. It should normally end in a ": " or ". " so that the function generate
-   *                  message looks ok when prepended to it.
-   * @throws IllegalArgumentException if the classes are not assignable
-   */
-  public static void isAssignable(Class<?> superType, Class<?> subType, String message) {
-    notNull(superType, "Type to check against must not be null");
-    if (subType == null || !superType.isAssignableFrom(subType)) {
-      throw new IllegalArgumentException(message + subType + " is not assignable to " + superType);
-    }
-  }
-
 
   /**
    * Assert a boolean expression, throwing {@code IllegalStateException} if the test result is {@code false}. Call isTrue

@@ -24,12 +24,7 @@
   <properties>
     <version.java>1.8</version.java>
 
-    <encoding>UTF-8</encoding>
-    <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
-    <project.build.resourceEncoding>${encoding}</project.build.resourceEncoding>
-
     <camunda.version>7.7.0</camunda.version>
-    <reactor.version>2.0.8.RELEASE</reactor.version>
     <slf4j.version>1.7.12</slf4j.version>
     <surefire.runOrder>reversealphabetical</surefire.runOrder>
 
@@ -40,18 +35,23 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>${groupId.extension}</groupId>
+        <artifactId>camunda-bpm-reactor-eventbus</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${groupId.extension}</groupId>
         <artifactId>camunda-bpm-reactor-core</artifactId>
-        <groupId>${groupId.extension}</groupId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
+        <groupId>${groupId.extension}</groupId>
         <artifactId>camunda-bpm-reactor-spring</artifactId>
-        <groupId>${groupId.extension}</groupId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <artifactId>camunda-bpm-reactor-spring-starter</artifactId>
         <groupId>${groupId.extension}</groupId>
+        <artifactId>camunda-bpm-reactor-spring-starter</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>

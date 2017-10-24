@@ -21,11 +21,6 @@ package org.camunda.bpm.extension.reactor.projectreactor.core.support;
  */
 public final class SpecificationExceptions {
 
-  public static IllegalStateException spec_2_12_exception() {
-    return new IllegalStateException("Spec. Rule 2.12 - Subscriber.onSubscribe MUST NOT be called more than once " +
-      "(based on object equality)");
-  }
-
   public static NullPointerException spec_2_13_exception() {
     return new NullPointerException("Spec 2.13: Signal cannot be null");
   }

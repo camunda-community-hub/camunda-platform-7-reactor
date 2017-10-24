@@ -14,7 +14,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.camunda.bpm.extension.reactor</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>camunda-bpm-reactor-eventbus</artifactId>
     </dependency>
   </dependencies>

@@ -40,9 +40,7 @@ public abstract class ReactorProcessor<IN, OUT> implements
 
   @SuppressWarnings("unused")
   private volatile int subscriberCount = 0;
-  protected static final AtomicIntegerFieldUpdater<ReactorProcessor> SUBSCRIBER_COUNT =
-    AtomicIntegerFieldUpdater
-      .newUpdater(ReactorProcessor.class, "subscriberCount");
+  protected static final AtomicIntegerFieldUpdater<ReactorProcessor> SUBSCRIBER_COUNT = AtomicIntegerFieldUpdater.newUpdater(ReactorProcessor.class, "subscriberCount");
 
   protected Subscription upstreamSubscription;
 

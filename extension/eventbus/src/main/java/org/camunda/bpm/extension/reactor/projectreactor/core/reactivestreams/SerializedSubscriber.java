@@ -68,14 +68,6 @@ public class SerializedSubscriber<T> implements Subscription, Subscriber<T>, Non
     }
   }
 
-  private static final class RequestSentinel {
-    final long n;
-
-    RequestSentinel(long n) {
-      this.n = n;
-    }
-  }
-
   private static final class ErrorSentinel {
     final Throwable e;
 

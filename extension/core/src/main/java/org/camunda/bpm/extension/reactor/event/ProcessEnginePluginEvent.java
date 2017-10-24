@@ -1,6 +1,5 @@
 package org.camunda.bpm.extension.reactor.event;
 
-
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.camunda.bpm.extension.reactor.projectreactor.bus.Event;

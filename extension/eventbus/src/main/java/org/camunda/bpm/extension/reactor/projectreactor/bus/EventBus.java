@@ -44,6 +44,7 @@ import javax.annotation.Nullable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -173,7 +174,7 @@ public class EventBus implements Bus<Event<?>>, Consumer<Event<?>> {
                   @Nullable Router router,
                   @Nullable Consumer<Throwable> dispatchErrorHandler,
                   @Nullable final Consumer<Throwable> uncaughtErrorHandler) {
-    this(Registries.<Object, Consumer<? extends Event<?>>>create(),
+    this(Registries.create(),
       dispatcher,
       router,
       dispatchErrorHandler,
@@ -198,7 +199,7 @@ public class EventBus implements Bus<Event<?>>, Consumer<Event<?>> {
                   @Nullable Router router,
                   @Nullable Consumer<Throwable> dispatchErrorHandler,
                   @Nullable final Consumer<Throwable> uncaughtErrorHandler) {
-    Assert.notNull(consumerRegistry, "Consumer Registry cannot be null.");
+    Objects.requireNonNull(consumerRegistry, "Consumer Registry cannot be null.");
     this.consumerRegistry = consumerRegistry;
     this.dispatcher = (null == dispatcher ? SynchronousDispatcher.INSTANCE : dispatcher);
     this.router = (null == router ? DEFAULT_EVENT_ROUTER : router);

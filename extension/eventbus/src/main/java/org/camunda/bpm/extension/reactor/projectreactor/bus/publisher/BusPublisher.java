@@ -30,15 +30,12 @@ import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
 /**
- * Emit signals whenever an Event arrives from the {@link org.camunda.bpm.extension.reactor.projectreactor.bus.selector.Selector} topic from the {@link
- * org.camunda.bpm.extension.reactor.projectreactor.bus.Bus}.
+ * Emit signals whenever an Event arrives from the {@link Selector} topic from the {@link Bus}.
  * This stream will never emit a {@link org.reactivestreams.Subscriber#onComplete()}.
  * <p>
  * Create such stream with the provided factory, E.g.:
  * <pre>
- * {@code
- * Streams.create(eventBus.on($("topic"))).consume(System.out::println)
- * }
+ * {@code Streams.create(eventBus.on($("topic"))).consume(System.out::println)}
  * </pre>
  *
  * @author Stephane Maldini
@@ -48,7 +45,6 @@ public final class BusPublisher<T> implements Publisher<T> {
   private final Selector selector;
   private final Bus<T> observable;
   private final boolean ordering;
-
 
   public BusPublisher(final @Nonnull Bus<T> observable,
                       final @Nonnull Selector selector) {
@@ -71,12 +67,7 @@ public final class BusPublisher<T> implements Publisher<T> {
 
     subscriber.onSubscribe(new Subscription() {
 
-      final Registration<Object, Consumer<? extends T>> registration = observable.on(selector, new Consumer<T>() {
-        @Override
-        public void accept(T event) {
-          subscriber.onNext(event);
-        }
-      });
+      final Registration<Object, Consumer<? extends T>> registration = observable.on(selector, event -> subscriber.onNext(event));
 
       @Override
       public void request(long n) {
