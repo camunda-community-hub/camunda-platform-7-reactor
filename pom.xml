@@ -18,7 +18,6 @@
 
   <modules>
     <module>extension</module>
-    <module>examples</module>
   </modules>
 
   <properties>
@@ -29,7 +28,6 @@
     <surefire.runOrder>reversealphabetical</surefire.runOrder>
 
     <groupId.extension>org.camunda.bpm.extension.reactor</groupId.extension>
-    <groupId.example>org.camunda.bpm.extension.reactor.example</groupId.example>
   </properties>
 
   <dependencyManagement>
@@ -58,6 +56,7 @@
   </dependencyManagement>
 
   <build>
+    <defaultGoal>clean install</defaultGoal>
     <plugins>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -67,6 +66,15 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>examples</id>
+      <modules>
+        <module>examples</module>
+      </modules>
+    </profile>
+  </profiles>
 
   <licenses>
     <license>
