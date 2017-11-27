@@ -12,11 +12,15 @@
   <groupId>org.camunda.bpm.extension.reactor</groupId>
   <artifactId>camunda-bpm-reactor-eventbus</artifactId>
 
+  <properties>
+    <reactive-streams.version>1.0.0</reactive-streams.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.reactivestreams</groupId>
       <artifactId>reactive-streams</artifactId>
-      <version>1.0.1</version>
+      <version>${reactive-streams.version}</version>
       <exclusions>
         <exclusion>
           <artifactId>commons-logging</artifactId>
@@ -66,6 +70,13 @@
       <groupId>io.vavr</groupId>
       <artifactId>vavr</artifactId>
       <version>0.9.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.reactivestreams</groupId>
+      <artifactId>reactive-streams-tck</artifactId>
+      <version>${reactive-streams.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
