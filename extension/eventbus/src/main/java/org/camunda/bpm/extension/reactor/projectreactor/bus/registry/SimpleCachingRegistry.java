@@ -48,15 +48,12 @@ public class SimpleCachingRegistry<K, V> implements Registry<K, V> {
   public synchronized Registration<K, V> register(final Selector<K> sel, V obj) {
     List<Registration<K, ? extends V>> regs;
     if (null == (regs = registrations.get(sel))) {
-      regs = registrations.computeIfAbsent(sel, s -> new ArrayList<Registration<K, ? extends V>>());
+      regs = registrations.computeIfAbsent(sel, s -> new ArrayList<>());
     }
 
-    Registration<K, V> reg = new CachableRegistration<>(sel, obj, new Runnable() {
-      @Override
-      public void run() {
-        registrations.remove(sel);
-        cache.clear();
-      }
+    Registration<K, V> reg = new CachableRegistration<>(sel, obj, () -> {
+      registrations.remove(sel);
+      cache.clear();
     });
     regs.add(reg);
 

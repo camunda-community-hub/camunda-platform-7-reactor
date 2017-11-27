@@ -204,16 +204,13 @@ public class EventBus implements Bus<Event<?>>, Consumer<Event<?>> {
     this.dispatcher = (null == dispatcher ? SynchronousDispatcher.INSTANCE : dispatcher);
     this.router = (null == router ? DEFAULT_EVENT_ROUTER : router);
     if (null == dispatchErrorHandler) {
-      this.dispatchErrorHandler = new Consumer<Throwable>() {
-        @Override
-        public void accept(Throwable t) {
-          Class<? extends Throwable> type = t.getClass();
-          EventBus.this.router.route(type,
-            Event.wrap(t),
-            EventBus.this.consumerRegistry.select(type),
-            null,
-            null);
-        }
+      this.dispatchErrorHandler = t -> {
+        Class<? extends Throwable> type = t.getClass();
+        EventBus.this.router.route(type,
+          Event.wrap(t),
+          EventBus.this.consumerRegistry.select(type),
+          null,
+          null);
       };
     } else {
       this.dispatchErrorHandler = dispatchErrorHandler;
@@ -288,7 +285,7 @@ public class EventBus implements Bus<Event<?>>, Consumer<Event<?>> {
 
   @Override
   public boolean respondsToKey(Object key) {
-    List<Registration<Object, ? extends Consumer<? extends Event<?>>>> registrations = consumerRegistry.select(key);
+    final List<Registration<Object, ? extends Consumer<? extends Event<?>>>> registrations = consumerRegistry.select(key);
     if (registrations.isEmpty()) return false;
 
     for (Registration<?, ?> reg : registrations) {
@@ -307,15 +304,12 @@ public class EventBus implements Bus<Event<?>>, Consumer<Event<?>> {
 
     final Class<?> tClass = extractGeneric(consumer);
 
-    Consumer<T> proxyConsumer = new Consumer<T>() {
-      @Override
-      public void accept(T e) {
-        if (null != selector.getHeaderResolver()) {
-          e.getHeaders().setAll(selector.getHeaderResolver().resolve(e.getKey()));
-        }
-        if (tClass == null || e.getData() == null || tClass.isAssignableFrom(e.getData().getClass())) {
-          consumer.accept(e);
-        }
+    final Consumer<T> proxyConsumer = e -> {
+      if (null != selector.getHeaderResolver()) {
+        e.getHeaders().setAll(selector.getHeaderResolver().resolve(e.getKey()));
+      }
+      if (tClass == null || e.getData() == null || tClass.isAssignableFrom(e.getData().getClass())) {
+        consumer.accept(e);
       }
     };
 
@@ -379,12 +373,7 @@ public class EventBus implements Bus<Event<?>>, Consumer<Event<?>> {
    * @since 1.1, 2.0
    */
   public final EventBus notify(@Nonnull final Publisher<?> source, @Nonnull final Object key) {
-    return notify(source, new Function<Object, Object>() {
-      @Override
-      public Object apply(Object o) {
-        return key;
-      }
-    });
+    return notify(source, (Function<Object, Object>) o -> key);
   }
 
   /**
@@ -579,12 +568,7 @@ public class EventBus implements Bus<Event<?>>, Consumer<Event<?>> {
    * @param <T>      The type of the data.
    */
   public <T> void schedule(final Consumer<T> consumer, final T data) {
-    dispatcher.dispatch(null, new Consumer<Event<?>>() {
-      @Override
-      public void accept(Event<?> event) {
-        consumer.accept(data);
-      }
-    }, dispatchErrorHandler);
+    dispatcher.dispatch(null, (Consumer<Event<?>>) event -> consumer.accept(data), dispatchErrorHandler);
   }
 
   @Override
@@ -642,7 +626,7 @@ public class EventBus implements Bus<Event<?>>, Consumer<Event<?>> {
 
         Event<?> replyEv;
         if (null == reply) {
-          replyEv = new Event<Void>(Void.class);
+          replyEv = new Event<>(Void.class);
         } else {
           replyEv = (Event.class.isAssignableFrom(reply.getClass()) ? (Event<?>) reply : Event.wrap(reply));
         }
