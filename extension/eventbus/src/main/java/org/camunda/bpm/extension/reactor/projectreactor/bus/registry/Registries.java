@@ -29,7 +29,7 @@ public abstract class Registries {
 
   static {
     try {
-      GS_COLLECTIONS_AVAILABLE = (null != Class.forName("com.gs.collections.api.list.MutableList"));
+      GS_COLLECTIONS_AVAILABLE = (null != Class.forName("org.eclipse.collections.api.list.MutableList"));
     } catch (ClassNotFoundException e) {
     }
   }

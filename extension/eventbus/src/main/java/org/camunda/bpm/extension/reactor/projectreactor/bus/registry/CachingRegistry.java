@@ -16,11 +16,11 @@
 
 package org.camunda.bpm.extension.reactor.projectreactor.bus.registry;
 
-import com.gs.collections.api.block.procedure.Procedure;
-import com.gs.collections.api.list.MutableList;
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.list.mutable.MultiReaderFastList;
-import com.gs.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.api.block.procedure.Procedure;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.list.mutable.MultiReaderFastList;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.camunda.bpm.extension.reactor.projectreactor.bus.selector.Selector;
 
 import java.util.Iterator;

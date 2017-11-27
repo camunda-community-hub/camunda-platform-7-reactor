@@ -3,6 +3,9 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <properties>
+    <eclipse-collections.version>9.0.0</eclipse-collections.version>
+  </properties>
   <parent>
     <groupId>org.camunda.bpm.extension.reactor.project</groupId>
     <artifactId>camunda-bpm-reactor-extension-root</artifactId>
@@ -34,16 +37,14 @@
     </dependency>
 
     <dependency>
-      <groupId>com.goldmansachs</groupId>
-      <artifactId>gs-collections</artifactId>
-      <version>7.0.3</version>
-      <optional>true</optional>
-      <exclusions>
-        <exclusion>
-          <artifactId>commons-logging</artifactId>
-          <groupId>commons-logging</groupId>
-        </exclusion>
-      </exclusions>
+      <groupId>org.eclipse.collections</groupId>
+      <artifactId>eclipse-collections</artifactId>
+      <version>${eclipse-collections.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.collections</groupId>
+      <artifactId>eclipse-collections-api</artifactId>
+      <version>${eclipse-collections.version}</version>
     </dependency>
 
     <dependency>
