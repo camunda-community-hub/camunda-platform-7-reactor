@@ -33,14 +33,13 @@
       <groupId>com.goldmansachs</groupId>
       <artifactId>gs-collections</artifactId>
       <version>7.0.3</version>
-      <scope>compile</scope>
+      <optional>true</optional>
       <exclusions>
         <exclusion>
           <artifactId>commons-logging</artifactId>
           <groupId>commons-logging</groupId>
         </exclusion>
       </exclusions>
-      <optional>true</optional>
     </dependency>
 
     <dependency>

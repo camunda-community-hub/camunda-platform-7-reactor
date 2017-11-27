@@ -8,7 +8,7 @@
   </parent>
 
   <groupId>${groupId.example}</groupId>
-  <artifactId>camunda-bpm-reactor-examples-cmmn-task-listener</artifactId>
+  <artifactId>camunda-bpm-reactor-example-cmmn-task-listener</artifactId>
 
   <dependencyManagement>
     <dependencies>
