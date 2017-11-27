@@ -25,9 +25,9 @@ import org.camunda.bpm.extension.reactor.projectreactor.fn.Pausable;
  */
 public class CachableRegistration<K, V> implements Registration<K, V> {
 
-  private static final Selector<Void> NO_MATCH = new ObjectSelector<Void, Void>(null) {
+  private final Selector<K> NO_MATCH = new ObjectSelector<K, Void>(null) {
     @Override
-    public boolean matches(Void key) {
+    public boolean matches(K key) {
       return false;
     }
   };
@@ -51,7 +51,7 @@ public class CachableRegistration<K, V> implements Registration<K, V> {
   @Override
   @SuppressWarnings("unchecked")
   public Selector<K> getSelector() {
-    return (!cancelled ? selector : (Selector<K>) NO_MATCH);
+    return (!cancelled ? selector : NO_MATCH);
   }
 
   @Override
