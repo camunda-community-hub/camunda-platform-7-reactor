@@ -64,10 +64,12 @@ import java.util.function.Supplier;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class EventBus implements Bus<Event<?>>, Consumer<Event<?>> {
 
+
   private static final Router DEFAULT_EVENT_ROUTER = new ConsumerFilteringRouter(
     new PassThroughFilter()
   );
 
+  private final Logger log = LoggerFactory.getLogger(EventBus.class);
   private final Dispatcher dispatcher;
   private final Registry<Object, Consumer<? extends Event<?>>> consumerRegistry;
   private final Router router;
@@ -218,19 +220,11 @@ public class EventBus implements Bus<Event<?>>, Consumer<Event<?>> {
 
     this.uncaughtErrorHandler = uncaughtErrorHandler;
 
-    this.on(new ClassSelector(Throwable.class), new Consumer<Event<Throwable>>() {
-      Logger log;
-
-      @Override
-      public void accept(Event<Throwable> ev) {
-        if (null == uncaughtErrorHandler) {
-          if (null == log) {
-            log = LoggerFactory.getLogger(EventBus.class);
-          }
-          log.error(ev.getData().getMessage(), ev.getData());
-        } else {
-          uncaughtErrorHandler.accept(ev.getData());
-        }
+    this.on(new ClassSelector(Throwable.class), (Consumer<Event<Throwable>>) ev -> {
+      if (uncaughtErrorHandler == null) {
+        log.error(ev.getData().getMessage(), ev.getData());
+      } else {
+        uncaughtErrorHandler.accept(ev.getData());
       }
     });
   }
@@ -286,13 +280,14 @@ public class EventBus implements Bus<Event<?>>, Consumer<Event<?>> {
   @Override
   public boolean respondsToKey(Object key) {
     final List<Registration<Object, ? extends Consumer<? extends Event<?>>>> registrations = consumerRegistry.select(key);
-    if (registrations.isEmpty()) return false;
-
-    for (Registration<?, ?> reg : registrations) {
-      if (!reg.isCancelled()) {
-        return true;
-      }
+    if (registrations.isEmpty()) {
+      return false;
     }
+
+    if(registrations.stream().anyMatch(r -> !r.isCancelled())) {
+      return true;
+    }
+
     return false;
   }
 
