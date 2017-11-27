@@ -76,36 +76,21 @@ public class CamundaEventBus implements Serializable {
    * @return caseExecutionListener that fires all parse events to bus
    */
   public CaseExecutionListener getCaseExecutionListener() {
-    return new CaseExecutionListener() {
-      @Override
-      public void notify(DelegateCaseExecution caseExecution) throws Exception {
-        CamundaEventBus.this.notify(caseExecution);
-      }
-    };
+    return caseExecution -> CamundaEventBus.this.notify(caseExecution);
   }
 
   /**
    * @return ExecutionListener that fires all parse events to bus
    */
   public ExecutionListener getExecutionListener() {
-    return new ExecutionListener() {
-      @Override
-      public void notify(final DelegateExecution execution) throws Exception {
-        CamundaEventBus.this.notify(execution);
-      }
-    };
+    return execution -> CamundaEventBus.this.notify(execution);
   }
 
   /**
    * @return taskListener that fires all parse events to bus
    */
   public TaskListener getTaskListener() {
-    return new TaskListener() {
-      @Override
-      public void notify(DelegateTask task) {
-        CamundaEventBus.this.notify(task);
-      }
-    };
+    return task -> CamundaEventBus.this.notify(task);
   }
 
   /**
