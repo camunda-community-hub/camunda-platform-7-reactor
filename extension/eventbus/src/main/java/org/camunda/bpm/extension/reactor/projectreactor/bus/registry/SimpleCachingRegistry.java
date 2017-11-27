@@ -88,8 +88,12 @@ public class SimpleCachingRegistry<K, V> implements Registry<K, V> {
       return selectedRegs;
     }
 
-    final List<Registration<K, ? extends V>> regs = new ArrayList<Registration<K, ? extends V>>();
-    registrations.forEach((s, l) -> regs.addAll(l));
+    final List<Registration<K, ? extends V>> regs = new ArrayList<>();
+    registrations.forEach((selector, list) -> {
+      if(selector.matches(key)) {
+        regs.addAll(list);
+      }
+    });
 
     if (regs.isEmpty() && null != onNotFound) {
       onNotFound.accept(key);
