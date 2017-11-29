@@ -2,12 +2,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>camunda-bpm-reactor-core</artifactId>
 
   <parent>
-    <groupId>org.camunda.bpm.extension</groupId>
+    <groupId>org.camunda.bpm.extension.reactor.project</groupId>
     <artifactId>camunda-bpm-reactor-extension-root</artifactId>
-    <version>1.2</version>
+    <version>2.0.0-SNAPSHOT</version>
   </parent>
+
+  <groupId>${groupId.extension}</groupId>
+  <artifactId>camunda-bpm-reactor-core</artifactId>
+
+  <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>camunda-bpm-reactor-eventbus</artifactId>
+    </dependency>
+  </dependencies>
 
 </project>

@@ -18,13 +18,13 @@ import org.camunda.bpm.extension.reactor.event.ProcessEnginePluginEvent.PostProc
 import org.camunda.bpm.extension.reactor.event.ProcessEnginePluginEvent.PostInitEvent;
 import org.camunda.bpm.extension.reactor.event.ProcessEnginePluginEvent.PreInitEvent;
 import org.slf4j.Logger;
-import reactor.bus.EventBus;
-import reactor.bus.selector.Selectors;
-import reactor.bus.spec.EventBusSpec;
-import reactor.core.dispatch.SynchronousDispatcher;
-import reactor.fn.Consumer;
+import org.camunda.bpm.extension.reactor.projectreactor.bus.EventBus;
+import org.camunda.bpm.extension.reactor.projectreactor.bus.selector.Selectors;
+import org.camunda.bpm.extension.reactor.projectreactor.bus.spec.EventBusSpec;
+import org.camunda.bpm.extension.reactor.projectreactor.core.dispatch.SynchronousDispatcher;
 
 import java.io.Serializable;
+import java.util.function.Consumer;
 
 import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.selector;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -66,7 +66,7 @@ public class CamundaEventBus implements Serializable {
   }
 
   /**
-   * @return this eventbus downcasted to standard api
+   * @return this projectreactor downcasted to standard api
    */
   public EventBus get() {
     return eventBus;
@@ -76,36 +76,21 @@ public class CamundaEventBus implements Serializable {
    * @return caseExecutionListener that fires all parse events to bus
    */
   public CaseExecutionListener getCaseExecutionListener() {
-    return new CaseExecutionListener() {
-      @Override
-      public void notify(DelegateCaseExecution caseExecution) throws Exception {
-        CamundaEventBus.this.notify(caseExecution);
-      }
-    };
+    return caseExecution -> CamundaEventBus.this.notify(caseExecution);
   }
 
   /**
    * @return ExecutionListener that fires all parse events to bus
    */
   public ExecutionListener getExecutionListener() {
-    return new ExecutionListener() {
-      @Override
-      public void notify(final DelegateExecution execution) throws Exception {
-        CamundaEventBus.this.notify(execution);
-      }
-    };
+    return execution -> CamundaEventBus.this.notify(execution);
   }
 
   /**
    * @return taskListener that fires all parse events to bus
    */
   public TaskListener getTaskListener() {
-    return new TaskListener() {
-      @Override
-      public void notify(DelegateTask task) {
-        CamundaEventBus.this.notify(task);
-      }
-    };
+    return task -> CamundaEventBus.this.notify(task);
   }
 
   /**
@@ -121,26 +106,11 @@ public class CamundaEventBus implements Serializable {
 
   public void register(final ProcessEnginePlugin processEnginePlugin) {
 
-    eventBus.on(Selectors.type(PreInitEvent.class), new Consumer<PreInitEvent>() {
-      @Override
-      public void accept(PreInitEvent event) {
-        processEnginePlugin.preInit(event.getData());
-      }
-    });
+    eventBus.on(Selectors.type(PreInitEvent.class), (Consumer<PreInitEvent>) event -> processEnginePlugin.preInit(event.getData()));
 
-    eventBus.on(Selectors.type(PostInitEvent.class), new Consumer<PostInitEvent>() {
-      @Override
-      public void accept(PostInitEvent event) {
-        processEnginePlugin.postInit(event.getData());
-      }
-    });
+    eventBus.on(Selectors.type(PostInitEvent.class), (Consumer<PostInitEvent>) event -> processEnginePlugin.postInit(event.getData()));
 
-    eventBus.on(Selectors.type(PostProcessEngineBuild.class), new Consumer<PostProcessEngineBuild>() {
-      @Override
-      public void accept(PostProcessEngineBuild event) {
-        processEnginePlugin.postProcessEngineBuild(event.getData());
-      }
-    });
+    eventBus.on(Selectors.type(PostProcessEngineBuild.class), (Consumer<PostProcessEngineBuild>) event -> processEnginePlugin.postProcessEngineBuild(event.getData()));
   }
 
   /**

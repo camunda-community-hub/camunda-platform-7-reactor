@@ -1,6 +1,6 @@
 package org.camunda.bpm.extension.reactor.event;
 
-import reactor.fn.Consumer;
+import java.util.function.Consumer;
 
 public abstract class DelegateEventConsumer implements Consumer<DelegateEvent> {
 

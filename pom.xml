@@ -11,43 +11,44 @@
     <relativePath />
   </parent>
 
-  <groupId>org.camunda.bpm.extension</groupId>
+  <groupId>org.camunda.bpm.extension.reactor.project</groupId>
   <artifactId>camunda-bpm-reactor-root</artifactId>
-  <version>1.2</version>
+  <version>2.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
     <module>extension</module>
-    <module>examples</module>
   </modules>
 
   <properties>
-    <version.java>1.7</version.java>
+    <version.java>1.8</version.java>
 
-    <encoding>UTF-8</encoding>
-    <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
-    <project.build.resourceEncoding>${encoding}</project.build.resourceEncoding>
-
-    <camunda.version>7.4.0</camunda.version>
-    <reactor.version>2.0.8.RELEASE</reactor.version>
+    <camunda.version>7.7.0</camunda.version>
     <slf4j.version>1.7.12</slf4j.version>
     <surefire.runOrder>reversealphabetical</surefire.runOrder>
+
+    <groupId.extension>org.camunda.bpm.extension.reactor</groupId.extension>
   </properties>
 
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.camunda.bpm.extension</groupId>
+        <groupId>${groupId.extension}</groupId>
+        <artifactId>camunda-bpm-reactor-eventbus</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${groupId.extension}</groupId>
         <artifactId>camunda-bpm-reactor-core</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.camunda.bpm.extension</groupId>
+        <groupId>${groupId.extension}</groupId>
         <artifactId>camunda-bpm-reactor-spring</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.camunda.bpm.extension</groupId>
+        <groupId>${groupId.extension}</groupId>
         <artifactId>camunda-bpm-reactor-spring-starter</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -55,15 +56,27 @@
   </dependencyManagement>
 
   <build>
+    <defaultGoal>clean install</defaultGoal>
     <plugins>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.20.1</version>
         <configuration>
           <runOrder>${surefire.runOrder}</runOrder>
         </configuration>
       </plugin>
     </plugins>
+
   </build>
+
+  <profiles>
+    <profile>
+      <id>examples</id>
+      <modules>
+        <module>examples</module>
+      </modules>
+    </profile>
+  </profiles>
 
   <licenses>
     <license>
@@ -76,7 +89,6 @@
     <connection>scm:git:git@github.com:camunda/camunda-bpm-reactor.git</connection>
     <url>scm:git:git@github.com:camunda/camunda-bpm-reactor.git</url>
     <developerConnection>scm:git:git@github.com:camunda/camunda-bpm-reactor.git</developerConnection>
-    <tag>1.2</tag>
   </scm>
 
   <!-- repositories used for distribution of releases and snapshots, DO NOT CHANGE -->
