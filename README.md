@@ -69,7 +69,16 @@ This extensions works with delegateTasks and delegateEvents directly. These cann
 
 * [Jan Galinski](https://github.com/jangalinski), [Holisticon AG](http://www.holisticon.de/)
 * [Philipp Ossler](https://github.com/saig0), [Camunda Services GmbH](http://www.camunda.org/)
+
+## Contributors
+
 * [Malte Sörensen](https://github.com/malteser), [Holisticon AG](http://www.holisticon.de/)
+* [Patrick Schalk](https://github.com/pschalk), [Holisticon AG](http://www.holisticon.de/)
+
+## Sponsors
+
+![Kühne+Nagel](https://raw.githubusercontent.com/camunda/camunda-bpm-custom-batch/master/docs/sponsor_kn.jpeg)
+
 
 ## License
 
