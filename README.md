@@ -1,6 +1,11 @@
-<img style="float: right;" src="https://avatars1.githubusercontent.com/u/4201559?s=400&v=4" size="100" />
+<p align="right">
+  <img src="http://camunda.github.io/camunda-bpm-assert/resources/images/camunda.png" width="50" />
+  <img src="https://avatars1.githubusercontent.com/u/4201559?s=400&v=4" width="50" />
+</p>
 
-# ![camunda logo](http://camunda.github.io/camunda-bpm-assert/resources/images/camunda.png)&nbsp;camunda-bpm-reactor
+
+
+# camunda-bpm-reactor
 
 [![Build Status](https://travis-ci.org/camunda/camunda-bpm-reactor.svg?branch=master)](https://travis-ci.org/camunda/camunda-bpm-reactor)  [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension/camunda-bpm-reactor-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension/camunda-bpm-reactor-core)
 
