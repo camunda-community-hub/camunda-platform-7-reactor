@@ -9,7 +9,7 @@
   </parent>
 
   <groupId>${groupId.example}</groupId>
-  <artifactId>camunda-bpm-reactor-examples-spring-plugin</artifactId>
+  <artifactId>camunda-bpm-reactor-examples-spring-starter</artifactId>
 
   <dependencyManagement>
     <dependencies>
@@ -27,7 +27,7 @@
 
     <dependency>
       <groupId>${groupId.extension}</groupId>
-      <artifactId>camunda-bpm-reactor-spring</artifactId>
+      <artifactId>camunda-bpm-reactor-spring-starter</artifactId>
     </dependency>
 
     <dependency>

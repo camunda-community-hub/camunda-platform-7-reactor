@@ -3,22 +3,19 @@ package org.camunda.bpm.extension.example.reactor;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.reactor.bus.CamundaSelector;
-import org.camunda.bpm.extension.reactor.spring.CamundaReactorConfiguration;
 import org.camunda.bpm.extension.reactor.spring.EnableCamundaEventBus;
 import org.camunda.bpm.extension.reactor.spring.listener.ReactorTaskListener;
 import org.camunda.bpm.spring.boot.starter.annotation.EnableProcessApplication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Component;
 
 @SpringBootApplication
 @EnableProcessApplication
-@EnableCamundaEventBus
-public class ReactorSpringApplication {
+public class ReactorSpringStarterApplication {
 
   public static void main(final String... args) {
-    SpringApplication.run(ReactorSpringApplication.class, args);
+    SpringApplication.run(ReactorSpringStarterApplication.class, args);
   }
 
   @Component

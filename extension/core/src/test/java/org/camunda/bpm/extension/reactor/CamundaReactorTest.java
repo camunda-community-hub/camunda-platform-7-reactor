@@ -1,6 +1,7 @@
 package org.camunda.bpm.extension.reactor;
 
 import org.camunda.bpm.engine.ProcessEngine;
+import org.camunda.bpm.engine.impl.cfg.CompositeProcessEnginePlugin;
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.camunda.bpm.extension.reactor.bus.CamundaEventBus;
@@ -36,6 +37,29 @@ public class CamundaReactorTest {
       engine.close();
     }
   }
+
+
+  @Test
+  public void get_eventBus_from_engine_composite() {
+    final CamundaEventBus eventBus = new CamundaEventBus();
+    ReactorProcessEnginePlugin plugin = new ReactorProcessEnginePlugin(eventBus);
+
+    ReactorProcessEngineConfiguration configuration = new ReactorProcessEngineConfiguration(eventBus);
+    configuration.getProcessEnginePlugins().clear();
+
+    configuration.getProcessEnginePlugins().add(new CompositeProcessEnginePlugin(plugin));
+
+    ProcessEngine engine = configuration.buildProcessEngine();
+
+    try {
+      assertThat(CamundaReactor.eventBus(engine)).isEqualTo(eventBus);
+
+    } finally {
+      engine.close();
+    }
+  }
+
+
 
   @Test
   public void get_eventBus_from_default_engine() {

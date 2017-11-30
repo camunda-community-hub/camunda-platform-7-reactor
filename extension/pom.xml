@@ -40,7 +40,7 @@
       </dependency>
       <dependency>
         <groupId>${groupId.extension}</groupId>
-        <artifactId>camunda-bpm-reactor-eventbus</artifactId>
+        <artifactId>camunda-bpm-reactor-core</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>

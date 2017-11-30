@@ -1,11 +1,11 @@
 package org.camunda.bpm.extension.reactor;
 
-import org.camunda.bpm.container.RuntimeContainerDelegate;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.delegate.DelegateCaseExecution;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
+import org.camunda.bpm.engine.impl.cfg.CompositeProcessEnginePlugin;
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.camunda.bpm.engine.impl.cfg.ProcessEnginePlugin;
 import org.camunda.bpm.extension.reactor.bus.CamundaEventBus;
@@ -15,7 +15,12 @@ import org.camunda.bpm.extension.reactor.event.DelegateExecutionEvent;
 import org.camunda.bpm.extension.reactor.event.DelegateTaskEvent;
 import org.camunda.bpm.extension.reactor.plugin.ReactorProcessEnginePlugin;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public final class CamundaReactor {
 
@@ -27,6 +32,10 @@ public final class CamundaReactor {
 
   public static DelegateExecutionEvent wrap(final DelegateExecution delegateExecution) {
     return new DelegateExecutionEvent(delegateExecution);
+  }
+
+  private static Supplier<IllegalStateException> illegalState(String msg) {
+    return () -> new IllegalStateException(msg);
   }
 
   public static DelegateCaseExecutionEvent wrap(final DelegateCaseExecution delegateCaseExecution) {
@@ -44,17 +53,28 @@ public final class CamundaReactor {
    * @return the camunda eventBus
    */
   public static CamundaEventBus eventBus(final ProcessEngine processEngine) {
-    ProcessEngineConfigurationImpl configuration = (ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration();
-    final List<ProcessEnginePlugin> plugins = configuration.getProcessEnginePlugins();
+    final ProcessEngineConfigurationImpl configuration = (ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration();
+    final List<ProcessEnginePlugin> plugins = Optional.ofNullable(configuration.getProcessEnginePlugins()).orElse(Collections.EMPTY_LIST);
 
-    if (plugins != null) {
-      for (ProcessEnginePlugin plugin : plugins) {
-        if (plugin instanceof ReactorProcessEnginePlugin) {
-          return ((ReactorProcessEnginePlugin) plugin).getEventBus();
-        }
-      }
+    final Function<List<ProcessEnginePlugin>, Optional<CamundaEventBus>> filterReactorPlugin = l -> l.stream()
+      .filter(plugin -> plugin instanceof ReactorProcessEnginePlugin)
+      .map(ReactorProcessEnginePlugin.class::cast)
+      .map(ReactorProcessEnginePlugin::getEventBus)
+      .findFirst();
+
+    Optional<CamundaEventBus> reactorProcessEnginePlugin = filterReactorPlugin.apply(plugins);
+    if (reactorProcessEnginePlugin.isPresent()) {
+      return reactorProcessEnginePlugin.get();
     }
-    throw new IllegalStateException("No eventBus found. Make sure the Reactor plugin is configured correctly.");
+
+    return plugins.stream()
+      .filter(plugin -> plugin instanceof CompositeProcessEnginePlugin)
+      .map(CompositeProcessEnginePlugin.class::cast)
+      .map(CompositeProcessEnginePlugin::getPlugins)
+      .map(filterReactorPlugin)
+      .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
+      .findFirst()
+      .orElseThrow(illegalState("No eventBus found. Make sure the Reactor plugin is configured correctly."));
   }
 
   /**
@@ -63,11 +83,8 @@ public final class CamundaReactor {
    * @return the camunda eventBus
    */
   public static CamundaEventBus eventBus() {
-    final ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
-    if (processEngine == null) {
-      throw new IllegalStateException("No processEngine registered.");
-    }
-    return eventBus(processEngine);
+    return eventBus(Optional.ofNullable(ProcessEngines.getDefaultProcessEngine())
+      .orElseThrow(illegalState("No processEngine registered.")));
   }
 
   public static ReactorProcessEnginePlugin plugin() {

@@ -17,8 +17,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = ReactorSpringApplication.class)
-public class ReactorSpringApplicationTest {
+@SpringBootTest(classes = ReactorSpringStarterApplication.class)
+public class ReactorSpringStarterApplicationTest {
 
   @Autowired
   private ProcessEngine processEngine;

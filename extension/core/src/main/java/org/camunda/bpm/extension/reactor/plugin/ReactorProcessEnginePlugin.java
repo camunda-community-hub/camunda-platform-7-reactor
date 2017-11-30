@@ -1,6 +1,7 @@
 package org.camunda.bpm.extension.reactor.plugin;
 
 import org.camunda.bpm.engine.ProcessEngine;
+import org.camunda.bpm.engine.ProcessEngineConfiguration;
 import org.camunda.bpm.engine.impl.bpmn.parser.BpmnParseListener;
 import org.camunda.bpm.engine.impl.cfg.AbstractProcessEnginePlugin;
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -12,8 +13,10 @@ import org.camunda.bpm.extension.reactor.plugin.parse.RegisterAllCmmnTransformLi
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ReactorProcessEnginePlugin extends AbstractProcessEnginePlugin {
+
 
   private final CamundaEventBus eventBus;
 

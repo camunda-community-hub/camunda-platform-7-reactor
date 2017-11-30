@@ -18,6 +18,7 @@
 
   <modules>
     <module>extension</module>
+    <module>examples</module>
   </modules>
 
   <properties>
@@ -33,23 +34,23 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>${groupId.extension}</groupId>
         <artifactId>camunda-bpm-reactor-eventbus</artifactId>
+        <groupId>${groupId.extension}</groupId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>${groupId.extension}</groupId>
         <artifactId>camunda-bpm-reactor-core</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
         <groupId>${groupId.extension}</groupId>
+        <version>${project.version}</version>
+        </dependency>
+      <dependency>
         <artifactId>camunda-bpm-reactor-spring</artifactId>
+        <groupId>${groupId.extension}</groupId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>${groupId.extension}</groupId>
         <artifactId>camunda-bpm-reactor-spring-starter</artifactId>
+        <groupId>${groupId.extension}</groupId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>
@@ -66,17 +67,7 @@
         </configuration>
       </plugin>
     </plugins>
-
   </build>
-
-  <profiles>
-    <profile>
-      <id>examples</id>
-      <modules>
-        <module>examples</module>
-      </modules>
-    </profile>
-  </profiles>
 
   <licenses>
     <license>
