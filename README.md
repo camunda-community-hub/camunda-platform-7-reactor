@@ -1,4 +1,6 @@
-# ![camunda logo](http://camunda.github.io/camunda-bpm-assert/resources/images/camunda.png)&nbsp;camunda-bpm-reactor&nbsp;[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension/camunda-bpm-reactor-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension/camunda-bpm-reactor-core)
+# ![camunda logo](http://camunda.github.io/camunda-bpm-assert/resources/images/camunda.png)&nbsp;camunda-bpm-reactor
+
+[![Build Status](https://travis-ci.org/camunda/camunda-bpm-reactor.svg?branch=master)](https://travis-ci.org/camunda/camunda-bpm-reactor)  [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension/camunda-bpm-reactor-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension/camunda-bpm-reactor-core)
 
 This is the current development branch for 2.0.0 which will have some major changes.
 
