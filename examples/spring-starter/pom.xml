@@ -9,7 +9,7 @@
   </parent>
 
   <groupId>${groupId.example}</groupId>
-  <artifactId>camunda-bpm-reactor-examples-spring-starter</artifactId>
+  <artifactId>camunda-bpm-reactor-example-spring-starter</artifactId>
 
   <dependencyManagement>
     <dependencies>
@@ -24,7 +24,6 @@
   </dependencyManagement>
 
   <dependencies>
-
     <dependency>
       <groupId>${groupId.extension}</groupId>
       <artifactId>camunda-bpm-reactor-spring-starter</artifactId>
@@ -47,6 +46,7 @@
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
+
 
     <dependency>
       <groupId>org.slf4j</groupId>

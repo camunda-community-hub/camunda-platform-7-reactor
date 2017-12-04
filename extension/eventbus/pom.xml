@@ -3,9 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <properties>
-    <eclipse-collections.version>9.0.0</eclipse-collections.version>
-  </properties>
+
   <parent>
     <groupId>org.camunda.bpm.extension.reactor.project</groupId>
     <artifactId>camunda-bpm-reactor-extension-root</artifactId>
@@ -17,6 +15,7 @@
 
   <properties>
     <reactive-streams.version>1.0.0</reactive-streams.version>
+    <eclipse-collections.version>9.0.0</eclipse-collections.version>
   </properties>
 
   <dependencies>
@@ -80,6 +79,4 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-
 </project>

@@ -9,7 +9,7 @@
   </parent>
 
   <groupId>${groupId.example}</groupId>
-  <artifactId>camunda-bpm-reactor-examples-spring-plugin</artifactId>
+  <artifactId>camunda-bpm-reactor-example-spring-plugin</artifactId>
 
   <dependencyManagement>
     <dependencies>
