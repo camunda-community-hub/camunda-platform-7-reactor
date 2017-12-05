@@ -15,76 +15,80 @@
  */
 package org.camunda.bpm.extension.reactor.projectreactor.processor;
 
-import org.camunda.bpm.extension.reactor.projectreactor.reactivestreams.PublisherFactory;
-import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscription;
-import org.reactivestreams.tck.TestEnvironment;
+import static org.reactivestreams.tck.TestEnvironment.envDefaultNoSignalsTimeoutMillis;
 
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.camunda.bpm.extension.reactor.projectreactor.reactivestreams.PublisherFactory;
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscription;
+import org.reactivestreams.tck.TestEnvironment;
+
 /**
  * @author Stephane Maldini
  */
 public abstract class AbstractProcessorTest extends org.reactivestreams.tck.IdentityProcessorVerification<Long> {
 
-	public AbstractProcessorTest() {
-		super(new TestEnvironment(2000L, true), 3500);
-	}
+  public AbstractProcessorTest() {
+    super(new TestEnvironment(2000L, envDefaultNoSignalsTimeoutMillis(), true), 3500);
+  }
 
-	@Override
-	public ExecutorService publisherExecutorService() {
-		return Executors.newCachedThreadPool();
-	}
+  @Override
+  public ExecutorService publisherExecutorService() {
+    return Executors.newCachedThreadPool();
+  }
 
-	@Override
-	public Long createElement(int element) {
-		return (long) element;
-	}
+  @Override
+  public Long createElement(int element) {
+    return (long) element;
+  }
 
-	@Override
-	public void required_mustRequestFromUpstreamForElementsThatHaveBeenRequestedLongAgo() throws Throwable {
-		//IGNORE since subscribers see distinct data
-	}
+  @Override
+  public void required_mustRequestFromUpstreamForElementsThatHaveBeenRequestedLongAgo() throws Throwable {
+    //IGNORE since subscribers see distinct data
+  }
 
-	@Override
-	public Publisher<Long> createHelperPublisher(final long elements) {
-		if (elements < 100 && elements > 0) {
-			return PublisherFactory.forEach(
-					(s) -> {
-						long cursor = s.context().getAndIncrement();
-						if (cursor < elements){
-							s.onNext(cursor);
-						}else{
-							s.onComplete();
-						}
-					},
-					s -> new AtomicLong(0L)
-			);
-		} else {
-			final Random random = new Random();
-			return PublisherFactory.forEach(
-					s -> s.onNext(random.nextLong())
-			);
-		}
-	}
+  @Override
+  public Publisher<Long> createHelperPublisher(final long elements) {
+    if (elements < 100 && elements > 0) {
+      return PublisherFactory.forEach(
+        s -> {
+          long cursor = s.context().getAndIncrement();
+          if (cursor < elements) {
+            s.onNext(cursor);
+          }
+          else {
+            s.onComplete();
+          }
+        },
+        s -> new AtomicLong(0L)
+      );
+    }
+    else {
+      final Random random = new Random();
+      return PublisherFactory.forEach(
+        s -> s.onNext(random.nextLong())
+      );
+    }
+  }
 
-	@Override
-	public Publisher<Long> createFailedPublisher() {
-		return s -> {
-			s.onSubscribe(new Subscription() {
-				@Override
-				public void request(long n) {
-				}
+  @Override
+  public Publisher<Long> createFailedPublisher() {
+    return s -> {
+      s.onSubscribe(new Subscription() {
+        @Override
+        public void request(long n) {
+        }
 
-				@Override
-				public void cancel() {
-				}
-			});
-			s.onError(new Exception("test"));
+        @Override
+        public void cancel() {
+        }
+      });
+      s.onError(new Exception("test"));
 
-		};
-	}
+    };
+  }
 }
