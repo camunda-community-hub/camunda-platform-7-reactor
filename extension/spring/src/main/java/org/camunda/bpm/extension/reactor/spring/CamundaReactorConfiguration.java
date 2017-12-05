@@ -5,7 +5,7 @@ import org.camunda.bpm.extension.reactor.plugin.ReactorProcessEnginePlugin;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.camunda.bpm.extension.reactor.projectreactor.bus.EventBus;
+import org.camunda.bpm.extension.reactor.projectreactor.EventBus;
 
 @Configuration
 public class CamundaReactorConfiguration {

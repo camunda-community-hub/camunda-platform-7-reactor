@@ -16,7 +16,7 @@
 
 package org.camunda.bpm.extension.reactor.projectreactor.io.queue;
 
-import org.camunda.bpm.extension.reactor.projectreactor.core.queue.CompletableQueue;
+import org.camunda.bpm.extension.reactor.projectreactor.queue.CompletableQueue;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

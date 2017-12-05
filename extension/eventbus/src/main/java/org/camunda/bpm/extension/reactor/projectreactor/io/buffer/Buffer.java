@@ -16,10 +16,8 @@
 
 package org.camunda.bpm.extension.reactor.projectreactor.io.buffer;
 
-import org.camunda.bpm.extension.reactor.projectreactor.core.support.Assert;
-import org.camunda.bpm.extension.reactor.projectreactor.core.support.Recyclable;
+import static java.util.Objects.requireNonNull;
 
-import javax.annotation.concurrent.NotThreadSafe;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.BufferOverflowException;
@@ -36,6 +34,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
+
+import javax.annotation.concurrent.NotThreadSafe;
+
+import org.camunda.bpm.extension.reactor.projectreactor.support.Recyclable;
 
 /**
  * A {@literal Buffer} is a general-purpose IO utility class that wraps a {@link ByteBuffer}. It provides optional
@@ -1181,7 +1183,7 @@ public class Buffer implements Recyclable, Comparable<Buffer>, Iterable<Byte>, R
    * @return A list of {@link View Views} pointing to the slices.
    */
   public List<View> slice(int... positions) {
-    Assert.notNull(positions, "Positions cannot be null.");
+    requireNonNull(positions, "Positions cannot be null.");
     if (positions.length == 0) {
       return Collections.emptyList();
     }

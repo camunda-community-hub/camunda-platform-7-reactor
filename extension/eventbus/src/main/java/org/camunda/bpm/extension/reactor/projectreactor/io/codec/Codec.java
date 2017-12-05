@@ -16,8 +16,8 @@
 
 package org.camunda.bpm.extension.reactor.projectreactor.io.codec;
 
-import org.camunda.bpm.extension.reactor.projectreactor.core.reactivestreams.PublisherFactory;
-import org.camunda.bpm.extension.reactor.projectreactor.core.reactivestreams.SubscriberBarrier;
+import org.camunda.bpm.extension.reactor.projectreactor.reactivestreams.PublisherFactory;
+import org.camunda.bpm.extension.reactor.projectreactor.reactivestreams.SubscriberBarrier;
 import org.camunda.bpm.extension.reactor.projectreactor.io.buffer.Buffer;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;

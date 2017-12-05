@@ -18,8 +18,8 @@ import org.camunda.bpm.extension.reactor.CamundaReactor;
 import org.camunda.bpm.model.bpmn.instance.FlowElement;
 import org.camunda.bpm.model.cmmn.instance.CmmnElement;
 
-import org.camunda.bpm.extension.reactor.projectreactor.bus.selector.Selector;
-import org.camunda.bpm.extension.reactor.projectreactor.bus.selector.Selectors;
+import org.camunda.bpm.extension.reactor.projectreactor.selector.Selector;
+import org.camunda.bpm.extension.reactor.projectreactor.selector.Selectors;
 
 public class SelectorBuilder {
 

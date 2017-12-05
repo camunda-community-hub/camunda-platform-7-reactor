@@ -16,29 +16,6 @@
 
 package org.camunda.bpm.extension.reactor.projectreactor;
 
-import com.lmax.disruptor.WaitStrategy;
-import com.lmax.disruptor.dsl.ProducerType;
-import org.camunda.bpm.extension.reactor.projectreactor.core.Dispatcher;
-import org.camunda.bpm.extension.reactor.projectreactor.core.DispatcherSupplier;
-import org.camunda.bpm.extension.reactor.projectreactor.core.config.ConfigurationReader;
-import org.camunda.bpm.extension.reactor.projectreactor.core.config.DispatcherConfiguration;
-import org.camunda.bpm.extension.reactor.projectreactor.core.config.DispatcherType;
-import org.camunda.bpm.extension.reactor.projectreactor.core.config.PropertiesConfigurationReader;
-import org.camunda.bpm.extension.reactor.projectreactor.core.config.ReactorConfiguration;
-import org.camunda.bpm.extension.reactor.projectreactor.core.dispatch.MpscDispatcher;
-import org.camunda.bpm.extension.reactor.projectreactor.core.dispatch.RingBufferDispatcher;
-import org.camunda.bpm.extension.reactor.projectreactor.core.dispatch.SynchronousDispatcher;
-import org.camunda.bpm.extension.reactor.projectreactor.core.dispatch.TailRecurseDispatcher;
-import org.camunda.bpm.extension.reactor.projectreactor.core.dispatch.ThreadPoolExecutorDispatcher;
-import org.camunda.bpm.extension.reactor.projectreactor.core.dispatch.WorkQueueDispatcher;
-import org.camunda.bpm.extension.reactor.projectreactor.core.dispatch.wait.AgileWaitingStrategy;
-import org.camunda.bpm.extension.reactor.projectreactor.core.internal.PlatformDependent;
-import org.camunda.bpm.extension.reactor.projectreactor.core.processor.CancelException;
-import org.camunda.bpm.extension.reactor.projectreactor.fn.timer.HashWheelTimer;
-import org.camunda.bpm.extension.reactor.projectreactor.fn.timer.Timer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,6 +30,29 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import org.camunda.bpm.extension.reactor.projectreactor.config.ConfigurationReader;
+import org.camunda.bpm.extension.reactor.projectreactor.config.DispatcherConfiguration;
+import org.camunda.bpm.extension.reactor.projectreactor.config.DispatcherType;
+import org.camunda.bpm.extension.reactor.projectreactor.config.PropertiesConfigurationReader;
+import org.camunda.bpm.extension.reactor.projectreactor.config.ReactorConfiguration;
+import org.camunda.bpm.extension.reactor.projectreactor.dispatch.DispatcherSupplier;
+import org.camunda.bpm.extension.reactor.projectreactor.dispatch.MpscDispatcher;
+import org.camunda.bpm.extension.reactor.projectreactor.dispatch.RingBufferDispatcher;
+import org.camunda.bpm.extension.reactor.projectreactor.dispatch.SynchronousDispatcher;
+import org.camunda.bpm.extension.reactor.projectreactor.dispatch.TailRecurseDispatcher;
+import org.camunda.bpm.extension.reactor.projectreactor.dispatch.ThreadPoolExecutorDispatcher;
+import org.camunda.bpm.extension.reactor.projectreactor.dispatch.WorkQueueDispatcher;
+import org.camunda.bpm.extension.reactor.projectreactor.dispatch.wait.AgileWaitingStrategy;
+import org.camunda.bpm.extension.reactor.projectreactor.internal.PlatformDependent;
+import org.camunda.bpm.extension.reactor.projectreactor.processor.CancelException;
+import org.camunda.bpm.extension.reactor.projectreactor.timer.HashWheelTimer;
+import org.camunda.bpm.extension.reactor.projectreactor.timer.Timer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.lmax.disruptor.WaitStrategy;
+import com.lmax.disruptor.dsl.ProducerType;
 
 /**
  * @author Jon Brisbin
@@ -186,10 +186,10 @@ public class Environment implements Iterable<Map.Entry<String, Dispatcher>>, Clo
    * Obtain the default timer from the current environment. The timer is created lazily so it is preferrable to fetch
    * them out of the critical path.
    * <p/>
-   * The default timer is a {@link org.camunda.bpm.extension.reactor.projectreactor.fn.timer.HashWheelTimer}. It is suitable for non blocking periodic work
+   * The default timer is a {@link HashWheelTimer}. It is suitable for non blocking periodic work
    * such as eventing, memory access, lock=free code, dispatching...
    *
-   * @return the root timer, usually a {@link org.camunda.bpm.extension.reactor.projectreactor.fn.timer.HashWheelTimer}
+   * @return the root timer, usually a {@link HashWheelTimer}
    */
   public static Timer timer() {
     return get().getTimer();
@@ -460,7 +460,7 @@ public class Environment implements Iterable<Map.Entry<String, Dispatcher>>, Clo
   private volatile Consumer<? super Throwable> errorConsumer;
 
   /**
-   * Creates a new Environment that will use a {@link org.camunda.bpm.extension.reactor.projectreactor.core.config.PropertiesConfigurationReader} to obtain its
+   * Creates a new Environment that will use a {@link org.camunda.bpm.extension.reactor.projectreactor.config.PropertiesConfigurationReader} to obtain its
    * initial configuration. The configuration will be read from the classpath at the location {@code
    * META-INF/reactor/reactor-environment.properties}.
    */
@@ -781,7 +781,7 @@ public class Environment implements Iterable<Map.Entry<String, Dispatcher>>, Clo
   }
 
   /**
-   * Get the {@code Environment}-wide {@link org.camunda.bpm.extension.reactor.projectreactor.fn.timer.HashWheelTimer}.
+   * Get the {@code Environment}-wide {@link HashWheelTimer}.
    *
    * @return the timer.
    */

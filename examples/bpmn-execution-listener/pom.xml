@@ -8,7 +8,7 @@
     <version>2.0.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>${groupId.example}</groupId>
+  <groupId>org.camunda.bpm.extension.reactor.example</groupId>
   <artifactId>camunda-bpm-reactor-example-bpmn-execution-listener</artifactId>
 
   <dependencyManagement>
@@ -30,7 +30,7 @@
     </dependency>
 
     <dependency>
-      <groupId>${groupId.extension}</groupId>
+      <groupId>org.camunda.bpm.extension.reactor</groupId>
       <artifactId>camunda-bpm-reactor-core</artifactId>
     </dependency>
 
@@ -38,7 +38,7 @@
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <version>1.4.187</version>
+      <version>${h2.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

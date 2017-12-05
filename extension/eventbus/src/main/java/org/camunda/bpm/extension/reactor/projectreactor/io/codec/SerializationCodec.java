@@ -16,7 +16,7 @@
 
 package org.camunda.bpm.extension.reactor.projectreactor.io.codec;
 
-import org.camunda.bpm.extension.reactor.projectreactor.core.support.Assert;
+import org.camunda.bpm.extension.reactor.projectreactor.support.Assert;
 import org.camunda.bpm.extension.reactor.projectreactor.io.buffer.Buffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

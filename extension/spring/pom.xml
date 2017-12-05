@@ -8,13 +8,19 @@
     <version>2.0.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>${groupId.extension}</groupId>
+  <groupId>org.camunda.bpm.extension.reactor</groupId>
   <artifactId>camunda-bpm-reactor-spring</artifactId>
 
   <dependencies>
     <dependency>
-      <groupId>${groupId.extension}</groupId>
+      <groupId>org.camunda.bpm.extension.reactor</groupId>
       <artifactId>camunda-bpm-reactor-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.camunda.bpm</groupId>
+      <artifactId>camunda-engine</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -43,7 +49,5 @@
       <artifactId>jcl-over-slf4j</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
-
 </project>

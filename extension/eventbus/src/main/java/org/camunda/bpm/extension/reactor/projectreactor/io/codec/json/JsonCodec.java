@@ -16,18 +16,20 @@
 
 package org.camunda.bpm.extension.reactor.projectreactor.io.codec.json;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.camunda.bpm.extension.reactor.projectreactor.core.support.Assert;
-import org.camunda.bpm.extension.reactor.projectreactor.io.buffer.Buffer;
-import org.camunda.bpm.extension.reactor.projectreactor.io.codec.BufferCodec;
-import org.camunda.bpm.extension.reactor.projectreactor.io.codec.Codec;
+import static java.util.Objects.requireNonNull;
 
 import java.io.IOException;
 import java.util.function.Consumer;
 import java.util.function.Function;
+
+import org.camunda.bpm.extension.reactor.projectreactor.io.buffer.Buffer;
+import org.camunda.bpm.extension.reactor.projectreactor.io.codec.BufferCodec;
+import org.camunda.bpm.extension.reactor.projectreactor.io.codec.Codec;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * A codec for decoding JSON into Java objects and encoding Java objects into JSON.
@@ -76,7 +78,7 @@ public class JsonCodec<IN, OUT> extends BufferCodec<IN, OUT> {
   @SuppressWarnings("unchecked")
   public JsonCodec(Class<IN> inputType, Module customModule, Byte delimiter) {
     super(delimiter);
-    Assert.notNull(inputType, "inputType must not be null");
+    requireNonNull(inputType, "inputType must not be null");
     this.inputType = inputType;
 
     this.mapper = new ObjectMapper();

@@ -8,12 +8,12 @@
     <version>2.0.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>${groupId.extension}</groupId>
+  <groupId>org.camunda.bpm.extension.reactor</groupId>
   <artifactId>camunda-bpm-reactor-spring-starter</artifactId>
 
   <dependencies>
     <dependency>
-      <groupId>${groupId.extension}</groupId>
+      <groupId>org.camunda.bpm.extension.reactor</groupId>
       <artifactId>camunda-bpm-reactor-spring</artifactId>
     </dependency>
 

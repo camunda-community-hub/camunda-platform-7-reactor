@@ -3,7 +3,7 @@ package org.camunda.bpm.extension.reactor.event;
 import org.camunda.bpm.engine.delegate.DelegateCaseExecution;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
-import org.camunda.bpm.extension.reactor.projectreactor.bus.Event;
+import org.camunda.bpm.extension.reactor.projectreactor.Event;
 
 public abstract class DelegateEvent<T> extends Event<T> {
 

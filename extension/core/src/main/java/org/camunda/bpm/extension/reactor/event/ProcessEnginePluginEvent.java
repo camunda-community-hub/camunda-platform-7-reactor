@@ -2,7 +2,7 @@ package org.camunda.bpm.extension.reactor.event;
 
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.camunda.bpm.extension.reactor.projectreactor.bus.Event;
+import org.camunda.bpm.extension.reactor.projectreactor.Event;
 
 /**
  * @param <T> the type of the event value (configuration or engine)

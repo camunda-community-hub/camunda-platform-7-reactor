@@ -18,10 +18,10 @@ import org.camunda.bpm.extension.reactor.event.ProcessEnginePluginEvent.PostProc
 import org.camunda.bpm.extension.reactor.event.ProcessEnginePluginEvent.PostInitEvent;
 import org.camunda.bpm.extension.reactor.event.ProcessEnginePluginEvent.PreInitEvent;
 import org.slf4j.Logger;
-import org.camunda.bpm.extension.reactor.projectreactor.bus.EventBus;
-import org.camunda.bpm.extension.reactor.projectreactor.bus.selector.Selectors;
-import org.camunda.bpm.extension.reactor.projectreactor.bus.spec.EventBusSpec;
-import org.camunda.bpm.extension.reactor.projectreactor.core.dispatch.SynchronousDispatcher;
+import org.camunda.bpm.extension.reactor.projectreactor.EventBus;
+import org.camunda.bpm.extension.reactor.projectreactor.selector.Selectors;
+import org.camunda.bpm.extension.reactor.projectreactor.spec.EventBusSpec;
+import org.camunda.bpm.extension.reactor.projectreactor.dispatch.SynchronousDispatcher;
 
 import java.io.Serializable;
 import java.util.function.Consumer;

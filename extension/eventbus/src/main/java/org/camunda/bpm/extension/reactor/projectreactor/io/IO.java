@@ -15,9 +15,9 @@
  */
 package org.camunda.bpm.extension.reactor.projectreactor.io;
 
-import org.camunda.bpm.extension.reactor.projectreactor.core.reactivestreams.PublisherFactory;
-import org.camunda.bpm.extension.reactor.projectreactor.core.reactivestreams.SubscriberWithContext;
-import org.camunda.bpm.extension.reactor.projectreactor.core.support.ReactorFatalException;
+import org.camunda.bpm.extension.reactor.projectreactor.reactivestreams.PublisherFactory;
+import org.camunda.bpm.extension.reactor.projectreactor.reactivestreams.SubscriberWithContext;
+import org.camunda.bpm.extension.reactor.projectreactor.support.ReactorFatalException;
 import org.camunda.bpm.extension.reactor.projectreactor.io.buffer.Buffer;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;

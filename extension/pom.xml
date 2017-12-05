@@ -39,7 +39,7 @@
         <type>pom</type>
       </dependency>
       <dependency>
-        <groupId>${groupId.extension}</groupId>
+        <groupId>org.camunda.bpm.extension.reactor</groupId>
         <artifactId>camunda-bpm-reactor-core</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -48,16 +48,15 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.camunda.bpm</groupId>
-      <artifactId>camunda-engine</artifactId>
-      <scope>provided</scope>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
     </dependency>
 
     <!-- test -->
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <version>1.4.187</version>
+      <version>${h2.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

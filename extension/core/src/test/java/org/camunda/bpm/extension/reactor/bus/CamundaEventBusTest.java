@@ -26,8 +26,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import org.camunda.bpm.extension.reactor.projectreactor.bus.Event;
-import org.camunda.bpm.extension.reactor.projectreactor.bus.selector.Selectors;
+import org.camunda.bpm.extension.reactor.projectreactor.Event;
+import org.camunda.bpm.extension.reactor.projectreactor.selector.Selectors;
 import java.util.function.Consumer;
 
 @RunWith(Enclosed.class)
