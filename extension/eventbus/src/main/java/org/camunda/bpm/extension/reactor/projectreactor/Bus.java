@@ -16,10 +16,10 @@
 
 package org.camunda.bpm.extension.reactor.projectreactor;
 
+import java.util.function.Consumer;
+
 import org.camunda.bpm.extension.reactor.projectreactor.registry.Registration;
 import org.camunda.bpm.extension.reactor.projectreactor.selector.Selector;
-
-import java.util.function.Consumer;
 
 /**
  * Basic unit of event handling in Reactor.
@@ -47,8 +47,7 @@ public interface Bus<T> {
    * @return A {@link Registration} object that allows the caller to interact with the given mapping
    */
   <V extends T> Registration<Object, Consumer<? extends T>> on(final Selector selector,
-                                                               final Consumer<V> consumer);
-
+    final Consumer<V> consumer);
 
   /**
    * Notify this component that an {@link Event} is ready to be processed.
@@ -58,4 +57,8 @@ public interface Bus<T> {
    * @return {@literal this}
    */
   Bus notify(Object key, T ev);
+
+  default Bus notifyAndWrap(Object key, Object data) {
+    return this.notify(key, (T) Event.wrap(data));
+  }
 }
