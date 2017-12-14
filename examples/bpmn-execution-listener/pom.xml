@@ -34,6 +34,12 @@
       <artifactId>camunda-bpm-reactor-core</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>com.fasterxml.uuid</groupId>
+      <artifactId>java-uuid-generator</artifactId>
+      <version>3.1.0</version>
+    </dependency>
+
     <!-- test -->
     <dependency>
       <groupId>com.h2database</groupId>
