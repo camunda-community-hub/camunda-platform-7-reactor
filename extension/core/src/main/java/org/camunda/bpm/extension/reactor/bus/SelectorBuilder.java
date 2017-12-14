@@ -185,7 +185,7 @@ public class SelectorBuilder {
    * @return process or case definition key
    */
   static String defintionKey(String definitionId) {
-    return definitionId.replaceAll("(\\w+):\\d+:\\d+", "$1");
+    return definitionId.replaceAll("(\\w+):\\d+:[\\w-]+", "$1");
   }
 
   static String defintionKey(DelegateTask task) {
