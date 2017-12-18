@@ -132,6 +132,11 @@ public class SelectorBuilderTest {
     public void retrieve_caseDefinitionKey_from_definitionId() {
       assertThat(caseDefintionKey("case_a:1:3")).isEqualTo("case_a");
     }
+
+    @Test
+    public void retrieve_processDefinitionKey_from_definitionIdUUID() {
+      assertThat(SelectorBuilder.defintionKey("process_a:1:b8315d43-e0b3-11e7-bccb-54ee75c51662")).isEqualTo("process_a");
+    }
   }
 
   public static class NotificationKey {

@@ -16,7 +16,7 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.extension.reactor.bus.CamundaSelector;
 
-@CamundaSelector(type = "intermediateThrowEvent", event = ExecutionListener.EVENTNAME_START)
+@CamundaSelector(type = "intermediateThrowEvent", event = ExecutionListener.EVENTNAME_START, process = "process")
 public class KpiExecutionListener implements ExecutionListener {
 
   private static final String NAME_PREFIX = "KPI:";
