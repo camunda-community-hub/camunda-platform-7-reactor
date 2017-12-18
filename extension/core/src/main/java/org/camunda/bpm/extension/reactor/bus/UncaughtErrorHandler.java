@@ -2,12 +2,12 @@ package org.camunda.bpm.extension.reactor.bus;
 
 
 import org.camunda.bpm.engine.ProcessEngineException;
-import java.util.function.Consumer;
+import org.camunda.bpm.extension.reactor.projectreactor.support.ErrorHandler;
 
 /**
  * Singleton instance of errorHandler that applies when execution of listeners fails.
  */
-public enum UncaughtErrorHandler implements Consumer<Throwable> {
+public enum UncaughtErrorHandler implements ErrorHandler {
   INSTANCE;
 
   @Override
@@ -17,6 +17,6 @@ public enum UncaughtErrorHandler implements Consumer<Throwable> {
     } else if (throwable instanceof RuntimeException) {
       throw (RuntimeException) throwable;
     }
-    throw new RuntimeException(throwable);
+    THROW_RUNTIME_EXCEPTION.accept(throwable);
   }
 }

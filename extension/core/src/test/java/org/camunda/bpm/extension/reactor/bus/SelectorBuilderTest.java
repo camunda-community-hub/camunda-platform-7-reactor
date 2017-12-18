@@ -1,12 +1,11 @@
 package org.camunda.bpm.extension.reactor.bus;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.caseDefintionKey;
-import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.fromCamundaSelector;
-import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.selector;
 import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context.bpmn;
 import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context.cmmn;
 import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context.task;
+import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.fromCamundaSelector;
+import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.selector;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -14,8 +13,10 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.delegate.DelegateTask;
-import org.camunda.bpm.engine.delegate.TaskListener;
+import org.camunda.bpm.engine.repository.ProcessDefinition;
+import org.camunda.bpm.extension.reactor.CamundaReactorTestHelper;
 import org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
@@ -120,33 +121,22 @@ public class SelectorBuilderTest {
 
   }
 
-  public static class GetDefinitionKey {
 
-
-    @Test
-    public void retrieve_processDefinitionKey_from_definitionId() {
-      assertThat(SelectorBuilder.defintionKey("process_a:1:3")).isEqualTo("process_a");
-    }
-
-    @Test
-    public void retrieve_caseDefinitionKey_from_definitionId() {
-      assertThat(caseDefintionKey("case_a:1:3")).isEqualTo("case_a");
-    }
-
-    @Test
-    public void retrieve_processDefinitionKey_from_definitionIdUUID() {
-      assertThat(SelectorBuilder.defintionKey("process_a:1:b8315d43-e0b3-11e7-bccb-54ee75c51662")).isEqualTo("process_a");
-    }
-  }
 
   public static class NotificationKey {
 
     @Test
     public void creates_key_for_task() {
+      ProcessDefinition processDefinition = CamundaReactorTestHelper.processDefinition();
       final DelegateTask task = mock(DelegateTask.class, RETURNS_DEEP_STUBS);
+
+      RepositoryService repositoryService = mock(RepositoryService.class);
+      when(repositoryService.getProcessDefinition(processDefinition.getId())).thenReturn(processDefinition);
+      when(task.getProcessEngineServices().getRepositoryService()).thenReturn(repositoryService);
 
       when(task.getBpmnModelElementInstance().getElementType().getTypeName()).thenReturn("userTask");
       when(task.getProcessDefinitionId()).thenReturn("process:1:1");
+
       when(task.getEventName()).thenReturn("create");
       when(task.getTaskDefinitionKey()).thenReturn("task1");
 

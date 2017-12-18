@@ -15,6 +15,7 @@ import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.reactor.CamundaReactor;
+import org.camunda.bpm.extension.reactor.fn.GetProcessDefinitionKey;
 import org.camunda.bpm.model.bpmn.instance.FlowElement;
 import org.camunda.bpm.model.cmmn.instance.CmmnElement;
 
@@ -23,7 +24,7 @@ import org.camunda.bpm.extension.reactor.projectreactor.selector.Selectors;
 
 public class SelectorBuilder {
 
-  public static enum Context {
+  public enum Context {
     task,
     bpmn,
     cmmn;
@@ -41,7 +42,7 @@ public class SelectorBuilder {
     return selector()
       .context(Context.task)
       .type(null)
-      .process(defintionKey(delegateTask))
+      .process(GetProcessDefinitionKey.from(delegateTask))
       .element(delegateTask.getTaskDefinitionKey())
       .event(delegateTask.getEventName());
   }
@@ -55,7 +56,7 @@ public class SelectorBuilder {
     return selector()
       .context(Context.bpmn)
       .type(typeName)
-      .process(defintionKey(delegateExecution.getProcessDefinitionId()))
+      .process(GetProcessDefinitionKey.from(delegateExecution))
       .element(element)
       .event(delegateExecution.getEventName());
   }
@@ -67,7 +68,7 @@ public class SelectorBuilder {
     return selector()
       .context(Context.cmmn)
       .type(typeName)
-      .caseDefinitionKey(caseDefintionKey(delegateCaseExecution.getCaseDefinitionId()))
+      .caseDefinitionKey(GetProcessDefinitionKey.from(delegateCaseExecution))
       .element(element)
       .event(delegateCaseExecution.getEventName());
   }
@@ -176,39 +177,6 @@ public class SelectorBuilder {
       }
     }
     return topic;
-  }
-
-  /**
-   * Ugly hack, delegate task should contain processdefinitionKey or caseDefinitionKey.
-   *
-   * @param definitionId the process or case definition id
-   * @return process or case definition key
-   */
-  static String defintionKey(String definitionId) {
-    return definitionId.replaceAll("(\\w+):\\d+:[\\w-]+", "$1");
-  }
-
-  static String defintionKey(DelegateTask task) {
-    if (task.getProcessDefinitionId() == null) {
-      return defintionKey(task.getCaseDefinitionId());
-    } else {
-      return defintionKey(task.getProcessDefinitionId());
-    }
-  }
-
-  /**
-   * Yet anpother ugly hack, delegate task should contain caseDefinitionKey.
-   *
-   * @param caseDefinitionId
-   * @return case definition key
-   * @see #defintionKey(String)
-   */
-  static String caseDefintionKey(String caseDefinitionId) {
-    return defintionKey(caseDefinitionId);
-  }
-
-  static String caseDefintionKey(DelegateCaseExecution execution) {
-    return caseDefintionKey(execution.getCaseDefinitionId());
   }
 
   @Override

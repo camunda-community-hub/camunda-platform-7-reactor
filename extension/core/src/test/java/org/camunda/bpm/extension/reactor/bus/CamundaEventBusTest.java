@@ -1,13 +1,18 @@
 package org.camunda.bpm.extension.reactor.bus;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.selector;
 import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context.bpmn;
 import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context.cmmn;
 import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context.task;
+import static org.camunda.bpm.extension.reactor.bus.SelectorBuilder.selector;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.function.Consumer;
 
 import org.camunda.bpm.engine.ProcessEngineException;
+import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.CaseExecutionListener;
 import org.camunda.bpm.engine.delegate.DelegateCaseExecution;
@@ -15,8 +20,13 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
+import org.camunda.bpm.engine.repository.CaseDefinition;
+import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.extension.reactor.CamundaReactorTestHelper;
 import org.camunda.bpm.extension.reactor.bus.SelectorBuilder.Context;
+import org.camunda.bpm.extension.reactor.projectreactor.Event;
+import org.camunda.bpm.extension.reactor.projectreactor.selector.Selectors;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
@@ -25,10 +35,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-
-import org.camunda.bpm.extension.reactor.projectreactor.Event;
-import org.camunda.bpm.extension.reactor.projectreactor.selector.Selectors;
-import java.util.function.Consumer;
 
 @RunWith(Enclosed.class)
 public class CamundaEventBusTest {
@@ -58,6 +64,8 @@ public class CamundaEventBusTest {
 
     @Mock
     protected CaseExecutionListener caseExecutionListener;
+
+
   }
 
   public static class PreventWrongSubscription extends Common {
@@ -107,6 +115,20 @@ public class CamundaEventBusTest {
 
   public static class PublishSubscribe extends Common {
 
+    private final RepositoryService repositoryService = mock(RepositoryService.class);
+
+    private ProcessDefinition processDefinition = CamundaReactorTestHelper.processDefinition();
+    private CaseDefinition caseDefinition = CamundaReactorTestHelper.caseDefinition();
+
+
+    @Before
+    public void setUp() throws Exception {
+      when(repositoryService.getProcessDefinition(processDefinition.getId())).thenReturn(processDefinition);
+      when(repositoryService.getCaseDefinition(caseDefinition.getId())).thenReturn(caseDefinition);
+
+    }
+
+
     @CamundaSelector
     public class ToAnyTask implements TaskListener {
 
@@ -122,6 +144,8 @@ public class CamundaEventBusTest {
       ToAnyTask listener = new ToAnyTask();
       eventBus.register(listener);
 
+      when(delegateTask.getProcessEngineServices().getRepositoryService()).thenReturn(repositoryService);
+
       eventBus.notify(delegateTask);
 
       assertThat(listener.value).isEqualTo("foo");
@@ -132,6 +156,7 @@ public class CamundaEventBusTest {
       eventBus.register(SelectorBuilder.selector().context(bpmn), executionListener);
 
       DelegateExecution execution = CamundaReactorTestHelper.delegateExecution();
+      when(execution.getProcessEngineServices().getRepositoryService()).thenReturn(repositoryService);
 
       eventBus.notify(execution);
 
@@ -143,6 +168,8 @@ public class CamundaEventBusTest {
       eventBus.register(SelectorBuilder.selector().context(task), taskListener);
 
       DelegateTask task = CamundaReactorTestHelper.delegateTask();
+      when(task.getProcessEngineServices().getRepositoryService()).thenReturn(repositoryService);
+
 
       eventBus.notify(task);
 
@@ -154,6 +181,7 @@ public class CamundaEventBusTest {
       eventBus.register(SelectorBuilder.selector().context(cmmn), caseExecutionListener);
 
       DelegateCaseExecution execution= CamundaReactorTestHelper.delegateCaseExecution();
+      when(execution.getProcessEngineServices().getRepositoryService()).thenReturn(repositoryService);
 
       eventBus.notify(execution);
 

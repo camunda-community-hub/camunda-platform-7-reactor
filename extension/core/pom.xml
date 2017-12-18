@@ -14,10 +14,10 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.camunda.bpm</groupId>
-      <artifactId>camunda-engine</artifactId>
-      <scope>provided</scope>
-    </dependency>
+    <groupId>org.camunda.bpm</groupId>
+    <artifactId>camunda-engine</artifactId>
+    <scope>provided</scope>
+  </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>camunda-bpm-reactor-eventbus</artifactId>
