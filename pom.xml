@@ -13,7 +13,7 @@
 
   <groupId>org.camunda.bpm.extension.reactor.project</groupId>
   <artifactId>camunda-bpm-reactor-root</artifactId>
-  <version>2.1.1</version>
+  <version>2.2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
@@ -84,7 +84,7 @@
     <connection>scm:git:git@github.com:camunda/camunda-bpm-reactor.git</connection>
     <url>scm:git:git@github.com:camunda/camunda-bpm-reactor.git</url>
     <developerConnection>scm:git:git@github.com:camunda/camunda-bpm-reactor.git</developerConnection>
-    <tag>2.1.1</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <!-- repositories used for distribution of releases and snapshots, DO NOT CHANGE -->
