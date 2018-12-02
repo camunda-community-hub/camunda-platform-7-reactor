@@ -48,7 +48,6 @@ public class UriPathTemplate {
   //private static final String  NAME_REPLACEMENT = "([^\\/.]*)";
 
   private final List<String> pathVariables = new ArrayList<String>();
-  private final HashMap<String, Matcher> matchers = new HashMap<String, Matcher>();
   private final HashMap<String, Map<String, Object>> vars = new HashMap<String, Map<String, Object>>();
 
   private final Pattern uriPattern;
@@ -132,14 +131,7 @@ public class UriPathTemplate {
   }
 
   private Matcher matcher(String uri) {
-    Matcher m = matchers.get(uri);
-    if (null == m) {
-      m = uriPattern.matcher(uri);
-      synchronized (matchers) {
-        matchers.put(uri, m);
-      }
-    }
-    return m;
+    return uriPattern.matcher(uri);
   }
 
 }
