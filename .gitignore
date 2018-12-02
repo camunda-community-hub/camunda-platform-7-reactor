@@ -27,3 +27,4 @@ _tmp/
 # No process pngs
 # -------------------------
 extension/**.png
+.tmp
