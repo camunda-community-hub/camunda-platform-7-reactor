@@ -11,18 +11,14 @@ import org.camunda.bpm.engine.impl.pvm.process.TransitionImpl;
 import org.camunda.bpm.engine.impl.task.TaskDefinition;
 import org.camunda.bpm.engine.impl.util.xml.Element;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
-import static org.camunda.bpm.engine.delegate.ExecutionListener.EVENTNAME_END;
-import static org.camunda.bpm.engine.delegate.ExecutionListener.EVENTNAME_START;
-import static org.camunda.bpm.engine.delegate.ExecutionListener.EVENTNAME_TAKE;
-import static org.camunda.bpm.engine.delegate.TaskListener.EVENTNAME_ASSIGNMENT;
-import static org.camunda.bpm.engine.delegate.TaskListener.EVENTNAME_COMPLETE;
-import static org.camunda.bpm.engine.delegate.TaskListener.EVENTNAME_CREATE;
-import static org.camunda.bpm.engine.delegate.TaskListener.EVENTNAME_DELETE;
+import static org.camunda.bpm.engine.delegate.ExecutionListener.*;
+import static org.camunda.bpm.engine.delegate.TaskListener.*;
 
 public class RegisterAllBpmnParseListener extends AbstractBpmnParseListener {
+
+  private boolean reactorListenerFirstOnUserTask = false;
 
   public static final List<String> TASK_EVENTS = Arrays.asList(
     EVENTNAME_COMPLETE,
@@ -36,170 +32,171 @@ public class RegisterAllBpmnParseListener extends AbstractBpmnParseListener {
   private final TaskListener taskListener;
   private final ExecutionListener executionListener;
 
-  public RegisterAllBpmnParseListener(final TaskListener taskListener, final ExecutionListener executionListener) {
+  public RegisterAllBpmnParseListener(final TaskListener taskListener, final ExecutionListener executionListener, final boolean reactorListenerFirstOnUserTask) {
     this.taskListener = taskListener;
     this.executionListener = executionListener;
+    this.reactorListenerFirstOnUserTask = reactorListenerFirstOnUserTask;
   }
 
   @Override
-  public void parseUserTask(Element userTaskElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseUserTask(final Element userTaskElement, final ScopeImpl scope, final ActivityImpl activity) {
     addTaskListener(taskDefinition(activity));
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseBoundaryErrorEventDefinition(Element errorEventDefinition, boolean interrupting, ActivityImpl activity, ActivityImpl nestedErrorEventActivity) {
+  public void parseBoundaryErrorEventDefinition(final Element errorEventDefinition, final boolean interrupting, final ActivityImpl activity, final ActivityImpl nestedErrorEventActivity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseBoundaryEvent(Element boundaryEventElement, ScopeImpl scopeElement, ActivityImpl activity) {
+  public void parseBoundaryEvent(final Element boundaryEventElement, final ScopeImpl scopeElement, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseBoundaryMessageEventDefinition(Element element, boolean interrupting, ActivityImpl activity) {
+  public void parseBoundaryMessageEventDefinition(final Element element, final boolean interrupting, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseBoundarySignalEventDefinition(Element signalEventDefinition, boolean interrupting, ActivityImpl activity) {
+  public void parseBoundarySignalEventDefinition(final Element signalEventDefinition, final boolean interrupting, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseBoundaryTimerEventDefinition(Element timerEventDefinition, boolean interrupting, ActivityImpl activity) {
+  public void parseBoundaryTimerEventDefinition(final Element timerEventDefinition, final boolean interrupting, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseBusinessRuleTask(Element businessRuleTaskElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseBusinessRuleTask(final Element businessRuleTaskElement, final ScopeImpl scope, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseCallActivity(Element callActivityElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseCallActivity(final Element callActivityElement, final ScopeImpl scope, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseCompensateEventDefinition(Element compensateEventDefinition, ActivityImpl activity) {
+  public void parseCompensateEventDefinition(final Element compensateEventDefinition, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseEndEvent(Element endEventElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseEndEvent(final Element endEventElement, final ScopeImpl scope, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseEventBasedGateway(Element eventBasedGwElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseEventBasedGateway(final Element eventBasedGwElement, final ScopeImpl scope, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseExclusiveGateway(Element exclusiveGwElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseExclusiveGateway(final Element exclusiveGwElement, final ScopeImpl scope, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseInclusiveGateway(Element inclusiveGwElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseInclusiveGateway(final Element inclusiveGwElement, final ScopeImpl scope, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseIntermediateCatchEvent(Element intermediateEventElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseIntermediateCatchEvent(final Element intermediateEventElement, final ScopeImpl scope, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseIntermediateMessageCatchEventDefinition(Element messageEventDefinition, ActivityImpl activity) {
+  public void parseIntermediateMessageCatchEventDefinition(final Element messageEventDefinition, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseIntermediateSignalCatchEventDefinition(Element signalEventDefinition, ActivityImpl activity) {
+  public void parseIntermediateSignalCatchEventDefinition(final Element signalEventDefinition, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseIntermediateThrowEvent(Element intermediateEventElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseIntermediateThrowEvent(final Element intermediateEventElement, final ScopeImpl scope, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseIntermediateTimerEventDefinition(Element timerEventDefinition, ActivityImpl activity) {
+  public void parseIntermediateTimerEventDefinition(final Element timerEventDefinition, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseManualTask(Element manualTaskElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseManualTask(final Element manualTaskElement, final ScopeImpl scope, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseMultiInstanceLoopCharacteristics(Element activityElement, Element multiInstanceLoopCharacteristicsElement, ActivityImpl activity) {
+  public void parseMultiInstanceLoopCharacteristics(final Element activityElement, final Element multiInstanceLoopCharacteristicsElement, final ActivityImpl activity) {
     // DO NOT IMPLEMENT!
     // we do not notify on entering a multi-instance activity, this will be done for every single execution inside that loop.
   }
 
   @Override
-  public void parseParallelGateway(Element parallelGwElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseParallelGateway(final Element parallelGwElement, final ScopeImpl scope, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseProcess(Element processElement, ProcessDefinitionEntity processDefinition) {
+  public void parseProcess(final Element processElement, final ProcessDefinitionEntity processDefinition) {
     // FIXME: is it a good idea to implement genenric global process listeners?
   }
 
   @Override
-  public void parseReceiveTask(Element receiveTaskElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseReceiveTask(final Element receiveTaskElement, final ScopeImpl scope, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseScriptTask(Element scriptTaskElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseScriptTask(final Element scriptTaskElement, final ScopeImpl scope, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseSendTask(Element sendTaskElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseSendTask(final Element sendTaskElement, final ScopeImpl scope, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseSequenceFlow(Element sequenceFlowElement, ScopeImpl scopeElement, TransitionImpl transition) {
+  public void parseSequenceFlow(final Element sequenceFlowElement, final ScopeImpl scopeElement, final TransitionImpl transition) {
     addExecutionListener(transition);
   }
 
   @Override
-  public void parseServiceTask(Element serviceTaskElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseServiceTask(final Element serviceTaskElement, final ScopeImpl scope, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseStartEvent(Element startEventElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseStartEvent(final Element startEventElement, final ScopeImpl scope, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseSubProcess(Element subProcessElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseSubProcess(final Element subProcessElement, final ScopeImpl scope, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseTask(Element taskElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseTask(final Element taskElement, final ScopeImpl scope, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   @Override
-  public void parseTransaction(Element transactionElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseTransaction(final Element transactionElement, final ScopeImpl scope, final ActivityImpl activity) {
     addExecutionListener(activity);
   }
 
   void addExecutionListener(final ActivityImpl activity) {
-    for (String event : EXECUTION_EVENTS) {
+    for (final String event : EXECUTION_EVENTS) {
       activity.addListener(event, executionListener);
     }
   }
@@ -208,10 +205,32 @@ public class RegisterAllBpmnParseListener extends AbstractBpmnParseListener {
     transition.addListener(EVENTNAME_TAKE, executionListener);
   }
 
-  void addTaskListener(TaskDefinition taskDefinition) {
-    for (String event : TASK_EVENTS) {
-      taskDefinition.addTaskListener(event, taskListener);
+  void addTaskListener(final TaskDefinition taskDefinition) {
+    if(reactorListenerFirstOnUserTask) {
+      taskDefinition.setTaskListeners(reactorListenerFirstMap(taskDefinition.getTaskListeners(), TASK_EVENTS, taskListener));
+    } else {
+      for (final String event : TASK_EVENTS) {
+        taskDefinition.addTaskListener(event, taskListener);
+      }
     }
+  }
+
+  /**
+   * Adds the reactor listener to the first place of each event listener list
+   */
+  private static <T> Map<String, List<T>> reactorListenerFirstMap(final Map<String, List<T>> origListenerMap, final List<String> events, final T listener) {
+    final Map<String, List<T>> taskListenersReOrdered = new HashMap<>();
+
+    for (final String event : events) {
+      final List<T> taskListenerListReOrdered = new ArrayList<>();
+      taskListenerListReOrdered.add(listener);
+      if(origListenerMap.get(event) != null && !origListenerMap.get(event).isEmpty()) {
+        taskListenerListReOrdered.addAll(origListenerMap.get(event));
+      }
+      taskListenersReOrdered.put(event, taskListenerListReOrdered);
+    }
+
+    return taskListenersReOrdered;
   }
 
   /**
