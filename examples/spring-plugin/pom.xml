@@ -31,9 +31,9 @@
     </dependency>
 
     <dependency>
-      <groupId>org.camunda.bpm.extension.springboot</groupId>
+      <groupId>org.camunda.bpm.springboot</groupId>
       <artifactId>camunda-bpm-spring-boot-starter</artifactId>
-      <version>2.2.0</version>
+      <version>${camunda-spring-boot-starter.version}</version>
     </dependency>
 
     <dependency>
