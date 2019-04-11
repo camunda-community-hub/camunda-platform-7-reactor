@@ -29,6 +29,8 @@
     <jackson.version>2.8.10</jackson.version>
     <h2.version>1.4.196</h2.version>
 
+    <spring-boot.version>2.1.1.RELEASE</spring-boot.version>
+
     <surefire.runOrder>reversealphabetical</surefire.runOrder>
     <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
     <!-- disable javadoc linter for JDK8 to not fail on incomplete javadoc -->

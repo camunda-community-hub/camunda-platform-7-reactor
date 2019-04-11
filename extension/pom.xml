@@ -18,10 +18,6 @@
     <module>spring-starter</module>
   </modules>
 
-  <properties>
-    <spring-boot.version>1.5.8.RELEASE</spring-boot.version>
-  </properties>
-
   <dependencyManagement>
     <dependencies>
       <dependency>
