@@ -17,13 +17,19 @@ public class ReactorProcessEngineConfiguration extends StandaloneInMemProcessEng
     return buildRule(new CamundaEventBus());
   }
 
-  public static ProcessEngineRule buildRule(CamundaEventBus camundaEventBus) {
+  public static ProcessEngineRule buildRule(final CamundaEventBus camundaEventBus) {
     final ReactorProcessEngineConfiguration configuration = new ReactorProcessEngineConfiguration(camundaEventBus);
 
     return new ProcessEngineRule(configuration.buildProcessEngine());
   }
 
-  public ReactorProcessEngineConfiguration(CamundaEventBus camundaEventBus) {
+  public static ProcessEngineRule buildRule(final CamundaEventBus camundaEventBus, final boolean reactorListenerFirstOnUserTask) {
+    final ReactorProcessEngineConfiguration configuration = new ReactorProcessEngineConfiguration(camundaEventBus, reactorListenerFirstOnUserTask);
+
+    return new ProcessEngineRule(configuration.buildProcessEngine());
+  }
+
+  public ReactorProcessEngineConfiguration(final CamundaEventBus camundaEventBus) {
     this.history = HISTORY_FULL;
     this.databaseSchemaUpdate = DB_SCHEMA_UPDATE_DROP_CREATE;
 
@@ -31,6 +37,16 @@ public class ReactorProcessEngineConfiguration extends StandaloneInMemProcessEng
     this.expressionManager = new MockExpressionManager();
 
     this.getProcessEnginePlugins().add(new ReactorProcessEnginePlugin(camundaEventBus));
+  }
+
+  public ReactorProcessEngineConfiguration(final CamundaEventBus camundaEventBus, final boolean reactorListenerFirstOnUserTask) {
+    this.history = HISTORY_FULL;
+    this.databaseSchemaUpdate = DB_SCHEMA_UPDATE_DROP_CREATE;
+
+    this.jobExecutorActivate = false;
+    this.expressionManager = new MockExpressionManager();
+
+    this.getProcessEnginePlugins().add(new ReactorProcessEnginePlugin(camundaEventBus, reactorListenerFirstOnUserTask));
   }
 
 

@@ -11,7 +11,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_19i23hz" sourceRef="Task_09vd3a4" targetRef="EndEvent_0non8j7" />
     <bpmn:userTask id="Task_09vd3a4" name="Do it!" camunda:assignee="Bud Spencer">
       <bpmn:extensionElements>
-        <camunda:taskListener delegateExpression="${taskCreateListener}" event="create" />
+        <camunda:taskListener delegateExpression="${testTaskCreateListener}" event="create" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1j18ma1</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_19i23hz</bpmn:outgoing>

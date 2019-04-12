@@ -13,15 +13,15 @@ import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.runtimeS
 import static org.camunda.bpm.engine.test.mock.Mocks.register;
 
 @Deployment(resources="ProcessWithExistingListeners.bpmn")
-public class TasksWithExistingListenersTest {
+public class TasksWithExistingListenersReactorListenerFirstTest {
 
   private final CamundaEventBus eventBus = new CamundaEventBus();
 
   @Rule
-  public final ProcessEngineRule processEngineRule = ReactorProcessEngineConfiguration.buildRule(eventBus);
+  public final ProcessEngineRule processEngineRule = ReactorProcessEngineConfiguration.buildRule(eventBus, true);
 
   @Test
-  public void reactor_listener_is_called_last() {
+  public void reactor_listener_is_called_first() {
     final TestTaskCreateListener customTestTaskCreateListener = new TestTaskCreateListener();
     final TestTaskCreateListener reactorTestTaskCreateListener = new TestTaskCreateListener();
 
@@ -36,7 +36,7 @@ public class TasksWithExistingListenersTest {
 
       assertThat(customTestTaskCreateListener.calledTime).isNotNull();
       assertThat(reactorTestTaskCreateListener.calledTime).isNotNull();
-      assertThat(customTestTaskCreateListener.calledTime.before(reactorTestTaskCreateListener.calledTime)).isTrue();
+      assertThat(customTestTaskCreateListener.calledTime.after(reactorTestTaskCreateListener.calledTime)).isTrue();
     }
 
   }
