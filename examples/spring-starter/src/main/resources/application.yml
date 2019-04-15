@@ -1,0 +1,4 @@
+camunda:
+  bpm:
+    reactor:
+      reactor-listener-first-on-user-task: true

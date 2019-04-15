@@ -10,6 +10,8 @@ import org.camunda.bpm.engine.impl.pvm.process.ScopeImpl;
 import org.camunda.bpm.engine.impl.pvm.process.TransitionImpl;
 import org.camunda.bpm.engine.impl.task.TaskDefinition;
 import org.camunda.bpm.engine.impl.util.xml.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -18,7 +20,9 @@ import static org.camunda.bpm.engine.delegate.TaskListener.*;
 
 public class RegisterAllBpmnParseListener extends AbstractBpmnParseListener {
 
-  private boolean reactorListenerFirstOnUserTask = false;
+  private final static Logger log = LoggerFactory.getLogger(RegisterAllBpmnParseListener.class);
+
+  private final boolean reactorListenerFirstOnUserTask;
 
   public static final List<String> TASK_EVENTS = Arrays.asList(
     EVENTNAME_COMPLETE,
@@ -36,6 +40,8 @@ public class RegisterAllBpmnParseListener extends AbstractBpmnParseListener {
     this.taskListener = taskListener;
     this.executionListener = executionListener;
     this.reactorListenerFirstOnUserTask = reactorListenerFirstOnUserTask;
+
+    log.info("Move reactor listeners to top for user tasks = {}", this.reactorListenerFirstOnUserTask);
   }
 
   @Override
