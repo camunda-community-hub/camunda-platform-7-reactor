@@ -61,14 +61,14 @@ public class ReactorProcessEnginePlugin extends AbstractProcessEnginePlugin {
 
   private static List<BpmnParseListener> customPreBPMNParseListeners(final ProcessEngineConfigurationImpl processEngineConfiguration) {
     if (processEngineConfiguration.getCustomPreBPMNParseListeners() == null) {
-      processEngineConfiguration.setCustomPreBPMNParseListeners(new ArrayList<BpmnParseListener>());
+      processEngineConfiguration.setCustomPreBPMNParseListeners(new ArrayList<>());
     }
     return processEngineConfiguration.getCustomPreBPMNParseListeners();
   }
 
   private static List<CmmnTransformListener> customPreCMMNTransformListeners(final ProcessEngineConfigurationImpl processEngineConfiguration) {
     if (processEngineConfiguration.getCustomPreCmmnTransformListeners() == null) {
-      processEngineConfiguration.setCustomPreCmmnTransformListeners(new ArrayList<CmmnTransformListener>());
+      processEngineConfiguration.setCustomPreCmmnTransformListeners(new ArrayList<>());
     }
     return processEngineConfiguration.getCustomPreCmmnTransformListeners();
   }

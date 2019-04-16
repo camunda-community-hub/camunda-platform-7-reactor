@@ -24,7 +24,7 @@ public class CamundaReactorConfiguration {
 
   @Bean
   public ReactorProcessEnginePlugin reactorProcessEnginePlugin(final CamundaEventBus camundaEventBus,
-        @Value("${camunda.bpm.reactor.reactor-listener-first-on-user-task}") final boolean reactorListenerFirstOnUserTask) {
+        @Value("${camunda.bpm.reactor.reactor-listener-first-on-user-task ?: false}") final boolean reactorListenerFirstOnUserTask) {
     return new ReactorProcessEnginePlugin(camundaEventBus, reactorListenerFirstOnUserTask);
   }
 
