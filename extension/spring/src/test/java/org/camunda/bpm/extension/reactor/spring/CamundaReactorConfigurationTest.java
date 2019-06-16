@@ -21,7 +21,7 @@ public class CamundaReactorConfigurationTest {
   private ReactorProcessEnginePlugin plugin;
 
   @Test
-  public void inject_sucessfully() throws Exception {
+  public void inject_sucessfully() {
     assertThat(plugin.getEventBus()).isEqualTo(bus);
   }
 }

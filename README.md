@@ -62,6 +62,15 @@ public class TaskCreateListener implements TaskListener {
 
 More examples can be found in the sub-module [examples](examples).
 
+### Configuration
+
+If you have multiple task listener for an event, per default the task listener from this extension gets called in the end.
+When setting the following property to true, the reactor task listener get's always called first!
+
+```java
+camunda.bpm.reactor.reactor-listener-first-on-user-task: true
+```
+
 ## Noteworthy
 
 This extensions works with delegateTasks and delegateEvents directly. These cannot be used outside the current thread, so the eventBus used is synchronous. 
