@@ -13,7 +13,7 @@
 
   <properties>
     <groupId.example>org.camunda.bpm.extension.reactor.example</groupId.example>
-    <camunda-spring-boot-starter.version>3.2.0</camunda-spring-boot-starter.version>
+    <camunda-spring-boot-starter.version>3.3.3</camunda-spring-boot-starter.version>
   </properties>
 
   <dependencyManagement>
