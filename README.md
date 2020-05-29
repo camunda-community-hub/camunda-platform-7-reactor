@@ -14,6 +14,14 @@ for the previous version, please go to https://github.com/camunda/camunda-bpm-re
 
 Event-based listeners and delegates for camunda.
 
+> A note on this extension:
+> the underlying reactor-eventbus was dropped when the reactor framework moved to pivotal afew years ago.
+> This extension works on a fork (see extension/eventbus) of that bus, which unfortunately is not very well tested, it is supposed to work "as is" (and does).
+>
+> Since the original extension authors meanwhile moved on to work with the camunda spring boot starter and use the spring event bridge to achive the same effect as this extension does, it is not maintained on a regular basis.
+>
+> TLDR: Use at own risk. It has proven to work in production environments. But if you are on spring-boot: do not use the reactor, use the spring-native event-bridge. And if you want this extension to prosper in the future: contact us and become a maintainer.
+
 ## What is this about? 
 
 This extension provides a process engine plugin that registers Execution- and TaskListeners to all possible elements and all possible events. These listeners then publish their delegates (DelegateTask, DelegateExcution) to an event bus.
