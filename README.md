@@ -1,24 +1,24 @@
+[![Build project with Maven](https://github.com/camunda-community-hub/camunda-bpm-reactor/actions/workflows/build.yml/badge.svg)](https://github.com/camunda-community-hub/camunda-bpm-reactor/actions/workflows/build.yml) 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension.reactor/camunda-bpm-reactor-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension.reactor/camunda-bpm-reactor-core)
+[![](https://img.shields.io/badge/Community%20Extension-An%20open%20source%20community%20maintained%20project-FF4700)](https://github.com/camunda-community-hub/community)
+[![](https://img.shields.io/badge/Lifecycle-Deprecated-yellowgreen)](https://github.com/Camunda-Community-Hub/community/blob/main/extension-lifecycle.md#deprecated-)
+
 <p align="right">
-  <img src="http://camunda.github.io/camunda-bpm-assert/resources/images/camunda.png" width="50" />
+  <img src="https://camunda.github.io/camunda-bpm-assert/resources/images/camunda.png" width="50" />
   <img src="https://avatars1.githubusercontent.com/u/4201559?s=400&v=4" width="50" />
 </p>
 
-
-
 # camunda-bpm-reactor
-
-[![Build Status](https://travis-ci.org/camunda/camunda-bpm-reactor.svg?branch=master)](https://travis-ci.org/camunda/camunda-bpm-reactor)  [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension.reactor/camunda-bpm-reactor-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension.reactor/camunda-bpm-reactor-core)
 
 for the previous version, please go to https://github.com/camunda/camunda-bpm-reactor/tree/1.2
 
-
-Event-based listeners and delegates for camunda.
+Event-based listeners and delegates for Camunda BPM.
 
 > A note on this extension:
 > the underlying reactor-eventbus was dropped when the reactor framework moved to pivotal afew years ago.
 > This extension works on a fork (see extension/eventbus) of that bus, which unfortunately is not very well tested, it is supposed to work "as is" (and does).
 >
-> Since the original extension authors meanwhile moved on to work with the camunda spring boot starter and use the spring event bridge to achive the same effect as this extension does, it is not maintained on a regular basis.
+> Since the original extension authors meanwhile moved on to work with the camunda spring boot starter and use the spring event bridge to achieve the same effect as this extension does, it is not maintained on a regular basis.
 >
 > TLDR: Use at own risk. It has proven to work in production environments. But if you are on spring-boot: do not use the reactor, use the spring-native event-bridge. And if you want this extension to prosper in the future: contact us and become a maintainer.
 
@@ -75,7 +75,7 @@ More examples can be found in the sub-module [examples](examples).
 If you have multiple task listener for an event, per default the task listener from this extension gets called in the end.
 When setting the following property to true, the reactor task listener get's always called first!
 
-```java
+```properties
 camunda.bpm.reactor.reactor-listener-first-on-user-task: true
 ```
 
