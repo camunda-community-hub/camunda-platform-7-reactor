@@ -28,6 +28,8 @@ public class RegisterAllBpmnParseListener extends AbstractBpmnParseListener {
     EVENTNAME_COMPLETE,
     EVENTNAME_ASSIGNMENT,
     EVENTNAME_CREATE,
+    EVENTNAME_UPDATE,
+    EVENTNAME_TIMEOUT,
     EVENTNAME_DELETE);
   public static final List<String> EXECUTION_EVENTS = Arrays.asList(
     EVENTNAME_START,
