@@ -1,3 +1,4 @@
+[![Camunda Platform 7](https://img.shields.io/badge/Compatible%20with-Camunda%20Platform%207-26d07c)](https://img.shields.io/badge/Compatible%20with-Camunda%20Platform%207-26d07c)
 [![Build project with Maven](https://github.com/camunda-community-hub/camunda-bpm-reactor/actions/workflows/build.yml/badge.svg)](https://github.com/camunda-community-hub/camunda-bpm-reactor/actions/workflows/build.yml) 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension.reactor/camunda-bpm-reactor-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.camunda.bpm.extension.reactor/camunda-bpm-reactor-core)
 [![](https://img.shields.io/badge/Community%20Extension-An%20open%20source%20community%20maintained%20project-FF4700)](https://github.com/camunda-community-hub/community)
@@ -10,7 +11,7 @@
   <img src="https://avatars1.githubusercontent.com/u/4201559?s=400&v=4" width="50" />
 </p>
 
-# camunda-bpm-reactor
+# camunda-platform-7-reactor
 
 for the previous version, please go to https://github.com/camunda/camunda-bpm-reactor/tree/1.2
 
