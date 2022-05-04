@@ -11,6 +11,8 @@
   <img src="https://avatars1.githubusercontent.com/u/4201559?s=400&v=4" width="50" />
 </p>
 
+# DEPRECATED: Note that this project is deprecated and archived
+
 # camunda-platform-7-reactor
 
 for the previous version, please go to https://github.com/camunda/camunda-bpm-reactor/tree/1.2
